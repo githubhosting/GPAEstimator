@@ -1,5 +1,8 @@
 import base64
+import hashlib
+from functools import wraps
 from typing import Literal, Union
+from threading import Thread
 
 from requests import Session
 from bs4 import BeautifulSoup
@@ -15,10 +18,11 @@ class Scraper:
     def __init__(self):
         self.Se: Union["Session", None] = None
 
-    def start_session(self):
+    def __enter__(self):
         self.Se = Session()
+        return self
 
-    def stop_session(self):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.Se.close()
         self.Se = None
 
@@ -33,3 +37,28 @@ class Scraper:
 
     def get_img(self, URL) -> bytes:
         return base64.encodebytes(self.Se.get(URL).content)
+
+
+def cached(cache):
+    def cashee(func):
+        func.cache = cache
+
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            hasher = hashlib.md5()
+            for arg in args: hasher.update(str(arg).encode())
+            for key, val in kwargs.items():
+                hasher.update(str(key).encode())
+                hasher.update(str(val).encode())
+            _hash = hasher.hexdigest()
+            try:
+                r = func.cache[_hash]
+                print(f"[Log] Using Cache")
+                return r
+            except KeyError:
+                if result := func(self, *args, **kwargs): func.cache[_hash] = result
+                return result
+
+        return wrapper
+
+    return cashee

@@ -5,7 +5,6 @@ T_URL = f"{D_URL}"
 HEAD = "1MS"
 YEAR = "21"
 DEPT = "IS"
-S = Scraper()
 
 
 def get_payload():
@@ -62,9 +61,8 @@ def brute_loop(payload, i):
 
 
 if __name__ == '__main__':
-    S.start_session()
-    pl = get_payload()
-    set_payload(pl, "1ms21is017", 7, 6, 2003)
-    st = get_stats(pl)
-    print(st)
-    S.stop_session()
+    with Scraper() as S:
+        pl = get_payload()
+        set_payload(pl, "1ms21is017", 7, 6, 2003)
+        st = get_stats(pl)
+        print(st)

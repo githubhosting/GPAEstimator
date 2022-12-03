@@ -1,3 +1,4 @@
+import os
 import time
 
 # from image import show_img
@@ -6,11 +7,10 @@ from scraper import Scraper
 D_URL = "https://exam.msrit.edu"
 T_URL = f"{D_URL}/eresultseven/"
 HEAD = "1MS"
-YEAR = "21"
-DEPT = "CI"
+YEAR = "19"
+DEPT = "AT"
 TOLERATE = 5
 SLEEP = 0.125
-S = Scraper()
 
 
 def get_payload():
@@ -40,8 +40,8 @@ if __name__ == '__main__':
     pl = get_payload()
     tol = TOLERATE
     i = 1
-    S.start_session()
-    with open(f"results_{DEPT}_{YEAR}.csv", "w+") as file:
+    if not os.path.exists(f"results/{DEPT}"): os.mkdir(f"results/{DEPT}")
+    with Scraper() as S, open(f"results/{DEPT}/results_{DEPT}_{YEAR}.csv", "w+") as file:
         file.write((stat := f"{'name':64},{'usn':{len(HEAD+YEAR+DEPT)+3+5}},{'sgpa':5},photo") + "\n")
         print(stat)
         while tol > 0:
@@ -54,4 +54,3 @@ if __name__ == '__main__':
             tol = TOLERATE
             file.write((stat := f"{stats['name']:64},{stats['usn']:{len(HEAD+YEAR+DEPT)+3+5}},{stats['sgpa']:5.2f},{stats['photo']}") + "\n")
             print(stat)
-    S.stop_session()
