@@ -2,15 +2,16 @@ import base64
 import hashlib
 from functools import wraps
 from typing import Literal, Union
-from threading import Thread
+from abc import ABCMeta, abstractmethod
 
 from requests import Session
 from bs4 import BeautifulSoup
 
 
-class Scraper:
+class Scraper(metaclass=ABCMeta):
     HEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/96.0.4664.45 Safari/537.36",
         "X-Amzn-Trace-Id": "Root=1-61acac03-6279b8a6274777eb44d81aae",
         "X-Client-Data": "CJW2yQEIpLbJAQjEtskBCKmdygEIuevKAQjr8ssBCOaEzAEItoXMAQjLicwBCKyOzAEI3I7MARiOnssB"
     }
@@ -47,13 +48,11 @@ def cached(cache):
         def wrapper(self, *args, **kwargs):
             hasher = hashlib.md5()
             for arg in args: hasher.update(str(arg).encode())
-            for key, val in kwargs.items():
-                hasher.update(str(key).encode())
+            for _, val in kwargs.items():
                 hasher.update(str(val).encode())
             _hash = hasher.hexdigest()
             try:
                 r = func.cache[_hash]
-                print(f"[Log] Using Cache")
                 return r
             except KeyError:
                 if result := func(self, *args, **kwargs): func.cache[_hash] = result
@@ -62,3 +61,17 @@ def cached(cache):
         return wrapper
 
     return cashee
+
+
+def gen_usn(year: str, dept: str, i: int, head="1MS") -> str:
+    return f"{head}{year}{dept}{i:03}"
+
+
+def roll_range(start=1, stop=None):
+    if stop is None: stop = float('inf')
+    assert isinstance(start, int) and start > 0, \
+        "start must be int > 0"
+    i = start
+    while i < stop:
+        yield i
+        i += 1
