@@ -42,13 +42,15 @@ class Scraper(metaclass=ABCMeta):
 		return base64.encodebytes(self.Se.get(URL).content)
 
 
-def cached(cache):
+def cached(cache, ignore: tuple = None):
+	if ignore is None: ignore = ()
+
 	def casher(func):
 		func.cache = cache
 
 		@wraps(func)
 		def wrapper(self, **kwargs):
-			_hash = hash_it(kwargs)
+			_hash = hash_it(kwargs, ignore=ignore)
 			try:
 				r = func.cache[_hash]
 				return r
@@ -61,9 +63,10 @@ def cached(cache):
 	return casher
 
 
-def hash_it(kwargs):
+def hash_it(kwargs, ignore):
 	hasher = hashlib.md5()
 	for key in sorted(kwargs):
+		if key in ignore: continue
 		hasher.update(str(key).encode())
 		hasher.update(str(kwargs[key]).encode())
 	return hasher.hexdigest()
@@ -89,7 +92,7 @@ def gen_usn(year: int, dept: str, i: int, temp=False) -> str:
 
 
 def validate_usn(usn):
-	return re.search(r"^1MS\d{2}[A-Z]{2}\d{3}$", usn) is not None
+	return re.search(r"^1MS\d{2}[A-Z]{2}\d{3}(-T)?$", usn) is not None
 
 
 def roll_range(start=1, stop=None):

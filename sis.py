@@ -1,3 +1,5 @@
+import json
+import time
 from threading import Thread
 from typing import Union
 
@@ -24,9 +26,11 @@ def gen_payload() -> dict[str, str]:
 class SisScraper(Scraper):
 	URL = "https://parents.msrit.edu/"
 	MARKS_CURL = "index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard"
+	CREDS_CURL = "index.php?option=com_coursefeedback&controller=feedbackentry&task=feedback"
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
 		set_cache(CACHE_NAME, self.brute_year)
+		set_cache(CACHE_NAME + "creds", self.__credits_worker)
 		super(SisScraper, self).__exit__(exc_type, exc_val, exc_tb)
 
 	def get_logged_body(self, payload):
@@ -71,7 +75,26 @@ class SisScraper(Scraper):
 			"tot": tuple(map(int, mark[7])),
 		}
 
-	def get_marks(self, lite=False) -> dict[str, Union[dict, tuple]]:
+	@cached(get_cache(CACHE_NAME + "creds"), ignore=("curl",))
+	def __credits_worker(self, *, curl, code) -> Union[tuple[str, int], None]:
+		body = self.get_curl_body(curl)
+		sub_code, cred = body.find_all("table")[2:4]
+		if sub_code.find_all("div")[1].text != code: return
+		return code, int(float(cred.find("div").text))
+
+	def get_credits(self) -> dict[str, int]:
+		body = self.get_curl_body(self.CREDS_CURL)
+		if body is None: return {}
+		head = body.find("div", {"id": "sims-container"})
+		subs = head.find_all("a")
+		creds = {}
+		for sub in subs:
+			k = sub.parent.parent.parent.find("tr").text.split()[0]
+			k, v = self.__credits_worker(curl=sub.get("href"), code=k)
+			creds[k] = v
+		return creds
+
+	def get_marks(self, lite=False) -> dict[str, Union[dict, dict]]:
 		body = self.get_curl_body(self.MARKS_CURL)
 		if body is None: return {}
 		subs = body.find("tbody").find_all("tr")
@@ -79,7 +102,11 @@ class SisScraper(Scraper):
 			chart = body.find_all("script")[4].text
 			marks = dict(eval(chart[chart.find("["):chart.rfind("]") + 1]))
 			for (key, val), sub in zip(marks.items(), subs):
-				marks[key] = (sub.text.split("\n")[2], int(sub.find_all("button")[-2].text), val)
+				marks[key] = {
+					"sub": sub.text.split("\n")[2],
+					"attd": int(sub.find_all("button")[-2].text),
+					"tot": (val, 50),
+				}
 			return marks
 		marks = {}
 		workers = []
@@ -161,7 +188,9 @@ class SisScraper(Scraper):
 				tol -= 1
 				continue
 			tol = 4
-			if i % 5 == 0: set_cache(CACHE_NAME, self.brute_year)
+			if i % 5 == 0:
+				set_cache(CACHE_NAME, self.brute_year)
+				set_cache(CACHE_NAME + "creds", self.__credits_worker)
 
 			# === meta worker
 			pl["passwd"] = dob
@@ -169,6 +198,10 @@ class SisScraper(Scraper):
 
 			# === marks worker
 			marks = self.get_marks(lite)
+
+			# === creds worker
+			creds = self.get_credits()
+			for k, v in creds.items(): marks[k]["cred"] = v
 
 			yield meta, marks
 
@@ -193,4 +226,32 @@ def micro(year: int, dept: str, i: int, temp: bool = False, dob: str = None, lit
 		# === marks worker
 		marks = SIS.get_marks(lite)
 
+		# === creds worker
+		creds = SIS.get_credits()
+		for k, v in creds.items(): marks[k]["cred"] = v
+
 		return meta, marks
+
+
+if __name__ == '__main__':
+	YEAR = 2021
+	DEPT = "IS"
+	TEMP = False
+	LITE = True
+
+	"""
+	if lite is true, minimal information is given and is faster
+	"""
+
+	# super macro
+	# todo
+
+	# macro
+	# todo
+
+	# === single usn example
+	t = time.time()
+	m1, m2 = micro(YEAR, DEPT, 1, TEMP, lite=LITE)
+	print(time.time() - t)
+	print(json.dumps(m1, indent=4, sort_keys=True))
+	print(json.dumps(m2, indent=4, sort_keys=True))
