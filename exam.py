@@ -79,6 +79,7 @@ def micro(year: int, dept: str, i: int, temp: bool = False):
 if __name__ == '__main__':
 	YEAR = 2021
 	DEPT = "IS"
+	TEMP = False
 
 	# super macro
 	# for DEPT in ["AD", "AI", "AT", "BT", "CH", "CI", "CS", "CV", "CY", "EC", "EE", "ET", "IS", "ME"]:
@@ -89,5 +90,5 @@ if __name__ == '__main__':
 	# todo
 
 	# === single usn example
-	s = micro(YEAR, DEPT, 1)
+	s = micro(YEAR, DEPT, 1, TEMP)
 	print(s)
