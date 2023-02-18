@@ -82,8 +82,13 @@ def set_cache(name, func):
 		pickle.dump(func.cache, file)
 
 
-def gen_usn(year: str, dept: str, i: int, temp=False) -> str:
+def gen_usn(year: int, dept: str, i: int, temp=False) -> str:
 	return (f"1MS{year}{dept}{i:03}" + ("-T" if temp else "")).upper()
+
+
+def validate_usn(usn):
+	# todo
+	pass
 
 
 def roll_range(start=1, stop=None):
