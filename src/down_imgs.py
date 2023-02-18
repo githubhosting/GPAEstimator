@@ -5,7 +5,7 @@ import wget
 if __name__ == '__main__':
 	yn = input("IO & Network intensive task: continue?(y/n): ")
 	if yn.lower() == "y":
-		for sub in list(os.walk('results'))[1:]:
+		for sub in list(os.walk('../results'))[1:]:
 			for res in sub[-1]:
 				with open(f"{sub[0]}\\{res}", 'r+') as f:
 					for row in f.readlines()[1:]:
