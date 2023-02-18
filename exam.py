@@ -40,7 +40,7 @@ class ExamScraper(Scraper):
 			"photo": f"{url[0]}://{url[1]}" + body.find_all("img")[1]['src'],
 		}
 
-	def stats_dept(self, year, dept, temp=False, start=1, stop=None):
+	def stats_dept(self, year: int, dept: str, temp: bool = False, start: int = 1, stop: int = None):
 		tol = 4
 		pl = gen_payload()
 		for i in roll_range(start, stop):
@@ -54,10 +54,10 @@ class ExamScraper(Scraper):
 			yield stat
 
 
-def macro(year: str, dept: str, temp=False, file=None, dry: bool = False):
+def macro(year: int, dept: str, temp=False, file=None, dry: bool = False):
 	if not os.path.exists(f"results/{dept}") and not dry: os.makedirs(f"results/{dept}")
 	file = f"results/{dept}/results_{dept}_{year}.csv" if file is None else file
-	USN_LEN = 3 + len(year + dept) + 3 + 5
+	USN_LEN = 3 + 2 + 2 + 3 + 5  # head + year + dept + i + space
 	with ExamScraper("https://exam.msrit.edu/eresultseven/") as EXAM, \
 			(tempfile.TemporaryFile("w+") if dry else open(file, "w+")) as f:
 		write = f"{'usn':{USN_LEN}}, {'name':64}, {'sgpa':5}, photo"
@@ -69,7 +69,7 @@ def macro(year: str, dept: str, temp=False, file=None, dry: bool = False):
 			print(write)
 
 
-def micro(year, dept, i, temp=False):
+def micro(year: int, dept: str, i: int, temp: bool = False):
 	with ExamScraper("https://exam.msrit.edu/eresultseven/") as Exam:
 		pl = gen_payload()
 		pl['usn'] = gen_usn(year, dept, i, temp)
@@ -77,13 +77,17 @@ def micro(year, dept, i, temp=False):
 
 
 if __name__ == '__main__':
-	YEAR = "21"
+	YEAR = 21
 	DEPT = "IS"
-
-	s = micro(YEAR, DEPT, 1)
-	print(s)
 
 	# super macro
 	# for DEPT in ["AD", "AI", "AT", "BT", "CH", "CI", "CS", "CV", "CY", "EC", "EE", "ET", "IS", "ME"]:
 	# 	for YEAR in ["19", "20", "21"]:
 	# 		macro(YEAR, DEPT, dry=True)
+
+	# macro
+	# todo
+
+	# === single usn example
+	s = micro(YEAR, DEPT, 1)
+	print(s)

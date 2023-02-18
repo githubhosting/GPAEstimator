@@ -1,8 +1,5 @@
-import time
 from typing import Union
 from threading import Thread
-
-import requests
 
 from scraper import Scraper, get_cache, set_cache, cached, roll_range, gen_usn
 
@@ -76,6 +73,7 @@ class SisScraper(Scraper):
 
 	def get_marks(self, lite=False) -> dict[str, Union[dict, tuple]]:
 		body = self.get_curl_body(self.MARKS_CURL)
+		if body is None: return {}
 		subs = body.find("tbody").find_all("tr")
 		if lite:
 			chart = body.find_all("script")[4].text
@@ -92,7 +90,8 @@ class SisScraper(Scraper):
 		for worker in workers: worker.join()
 		return marks
 
-	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE: list = None) -> Union[str, None, bool]:
+	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE: list = None) -> Union[
+		str, None, bool]:
 		assert isinstance(_INTERNAL_THREAD_USE, list) or _INTERNAL_THREAD_USE is None
 		payload = gen_payload()
 		for day in range(1, 32):
@@ -131,7 +130,9 @@ class SisScraper(Scraper):
 		for year in [y := join_year - 18, y - 1, y + 1, y - 2, y - 3]:
 			if dob := self.brute_year(usn=usn, year=year): return dob
 
-	def stats_dept(self, year, dept, start=1, stop=None, temp=False, dobs: dict[int, str] = None, lite=False):
+	def stats_dept(self, year: int, dept: str, start: int = 1, stop: int = None, temp: bool = False,
+				   dobs: dict[int, str] = None,
+				   lite: bool = False):
 		if dobs is None: dobs = {}
 		pl = gen_payload()
 		tol = 4
@@ -164,7 +165,7 @@ class SisScraper(Scraper):
 # todo: attendance
 
 
-def micro(year, dept, i, temp=False, dob=None, lite=False):
+def micro(year: int, dept: str, i: int, temp: bool = False, dob: str = None, lite: bool = False):
 	with SisScraper() as SIS:
 		pl = gen_payload()
 		pl['username'] = gen_usn(year, dept, i, temp)
