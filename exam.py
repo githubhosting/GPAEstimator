@@ -77,7 +77,7 @@ def micro(year: int, dept: str, i: int, temp: bool = False):
 
 
 if __name__ == '__main__':
-	YEAR = 21
+	YEAR = 2021
 	DEPT = "IS"
 
 	# super macro

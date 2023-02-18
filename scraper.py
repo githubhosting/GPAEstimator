@@ -1,12 +1,13 @@
 import base64
 import hashlib
 import pickle
+import re
+from abc import ABCMeta
 from functools import wraps
 from typing import Literal, Union
-from abc import ABCMeta
 
-from requests import Session
 from bs4 import BeautifulSoup
+from requests import Session
 
 
 class Scraper(metaclass=ABCMeta):
@@ -83,12 +84,12 @@ def set_cache(name, func):
 
 
 def gen_usn(year: int, dept: str, i: int, temp=False) -> str:
-	return (f"1MS{year}{dept}{i:03}" + ("-T" if temp else "")).upper()
+	assert year > 2000
+	return (f"1MS{year - 2000}{dept}{i:03}" + ("-T" if temp else "")).upper()
 
 
 def validate_usn(usn):
-	# todo
-	pass
+	return re.search(r"^1MS\d{2}[A-Z]{2}\d{3}$", usn) is not None
 
 
 def roll_range(start=1, stop=None):
