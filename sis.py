@@ -131,13 +131,13 @@ class SisScraper(Scraper):
 		for year in [y := join_year - 18, y - 1, y + 1, y - 2, y - 3]:
 			if dob := self.brute_year(usn=usn, year=year): return dob
 
-	def stats_dept(self, year, dept, start=1, stop=None, dobs: dict[int, str] = None, lite=False):
+	def stats_dept(self, year, dept, start=1, stop=None, temp=False, dobs: dict[int, str] = None, lite=False):
 		if dobs is None: dobs = {}
 		pl = gen_payload()
 		tol = 4
 		for i in roll_range(start, stop):
 			if tol <= 0: return
-			pl["username"] = gen_usn(year, dept, i)
+			pl["username"] = gen_usn(year, dept, i, temp)
 
 			# === dob worker
 			if i not in dobs:
@@ -164,10 +164,10 @@ class SisScraper(Scraper):
 # todo: attendance
 
 
-def micro(year, dept, i, dob=None, lite=False):
+def micro(year, dept, i, temp=False, dob=None, lite=False):
 	with SisScraper() as SIS:
 		pl = gen_payload()
-		pl['username'] = gen_usn(year, dept, i)
+		pl['username'] = gen_usn(year, dept, i, temp)
 
 		# === dob worker
 		if dob is None: dob = SIS.get_dob(pl['username'])
