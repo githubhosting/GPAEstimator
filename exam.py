@@ -84,6 +84,6 @@ if __name__ == '__main__':
 	s = micro(gen_usn(YEAR, DEPT, 17))
 	print(s)
 
-# for DEPT in ["AD", "AI", "AT", "BT", "CH", "CI", "CS", "CV", "CY", "EC", "EE", "ET", "IS", "ME"]:
-#     for YEAR in ["19", "20", "21"]:
-#         macro(HEAD, YEAR, DEPT, dry=False)
+#   for DEPT in ["AD", "AI", "AT", "BT", "CH", "CI", "CS", "CV", "CY", "EC", "EE", "ET", "IS", "ME"]:
+#       for YEAR in ["19", "20", "21"]:
+#           macro(HEAD, YEAR, DEPT, dry=False)
