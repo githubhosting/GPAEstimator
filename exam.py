@@ -40,12 +40,12 @@ class ExamScraper(Scraper):
 			"photo": f"{url[0]}://{url[1]}" + body.find_all("img")[1]['src'],
 		}
 
-	def stats_dept(self, year, dept, start=1, stop=None):
+	def stats_dept(self, year, dept, temp=False, start=1, stop=None):
 		tol = 4
 		pl = gen_payload()
 		for i in roll_range(start, stop):
 			if tol <= 0: return
-			pl["usn"] = gen_usn(year, dept, i)
+			pl["usn"] = gen_usn(year, dept, i, temp)
 			stat = self.get_stats(pl)
 			if len(stat) == 0:
 				tol -= 1
@@ -54,7 +54,7 @@ class ExamScraper(Scraper):
 			yield stat
 
 
-def macro(year: str, dept: str, file=None, dry: bool = False):
+def macro(year: str, dept: str, temp=False, file=None, dry: bool = False):
 	if not os.path.exists(f"results/{dept}") and not dry: os.makedirs(f"results/{dept}")
 	file = f"results/{dept}/results_{dept}_{year}.csv" if file is None else file
 	USN_LEN = 3 + len(year + dept) + 3 + 5
@@ -63,16 +63,16 @@ def macro(year: str, dept: str, file=None, dry: bool = False):
 		write = f"{'usn':{USN_LEN}}, {'name':64}, {'sgpa':5}, photo"
 		if not dry: f.write(write + "\n")
 		print(write)
-		for stat in EXAM.stats_dept(year, dept):
+		for stat in EXAM.stats_dept(year, dept, temp):
 			write = f"{stat['usn']:{USN_LEN}}, {stat['name']:64}, {stat['sgpa']:5}, {stat['photo']}"
 			if not dry: f.write(write + "\n")
 			print(write)
 
 
-def micro(year, dept, i):
+def micro(year, dept, i, temp=False):
 	with ExamScraper("https://exam.msrit.edu/eresultseven/") as Exam:
 		pl = gen_payload()
-		pl['usn'] = gen_usn(year, dept, i)
+		pl['usn'] = gen_usn(year, dept, i, temp)
 		return Exam.get_stats(pl)
 
 
