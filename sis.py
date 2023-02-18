@@ -160,7 +160,11 @@ class SisScraper(Scraper):
 			yield meta, marks
 
 
-def stats_i(year, dept, i, dob=None, lite=False):
+# todo: macro
+# todo: attendance
+
+
+def micro(year, dept, i, dob=None, lite=False):
 	with SisScraper() as SIS:
 		pl = gen_payload()
 		pl['username'] = gen_usn(year, dept, i)
@@ -176,4 +180,4 @@ def stats_i(year, dept, i, dob=None, lite=False):
 		# === marks worker
 		marks = SIS.get_marks(lite)
 
-	return meta, marks
+		return meta, marks

@@ -5,6 +5,16 @@ from urllib.parse import urlparse
 from scraper import Scraper, gen_usn, roll_range
 
 
+def gen_payload() -> dict[str, str]:
+	return {
+		"usn": "",
+		"osolCatchaTxt": "",
+		"osolCatchaTxtInst": "0",
+		"option": "com_examresult",
+		"task": "getResult"
+	}
+
+
 class ExamScraper(Scraper):
 	def __init__(self, url="https://exam.msrit.edu/"):
 		self.URL = url + ("/" if url[-1] != "/" else "")
@@ -44,16 +54,6 @@ class ExamScraper(Scraper):
 			yield stat
 
 
-def gen_payload() -> dict[str, str]:
-	return {
-		"usn": "",
-		"osolCatchaTxt": "",
-		"osolCatchaTxtInst": "0",
-		"option": "com_examresult",
-		"task": "getResult"
-	}
-
-
 def macro(year: str, dept: str, file=None, dry: bool = False):
 	if not os.path.exists(f"results/{dept}") and not dry: os.makedirs(f"results/{dept}")
 	file = f"results/{dept}/results_{dept}_{year}.csv" if file is None else file
@@ -69,21 +69,21 @@ def macro(year: str, dept: str, file=None, dry: bool = False):
 			print(write)
 
 
-def micro(usn):
+def micro(year, dept, i):
 	with ExamScraper("https://exam.msrit.edu/eresultseven/") as Exam:
 		pl = gen_payload()
-		pl['usn'] = usn
+		pl['usn'] = gen_usn(year, dept, i)
 		return Exam.get_stats(pl)
 
 
 if __name__ == '__main__':
-	HEAD = "1MS"
 	YEAR = "21"
 	DEPT = "IS"
 
-	s = micro(gen_usn(YEAR, DEPT, 17))
+	s = micro(YEAR, DEPT, 1)
 	print(s)
 
-#   for DEPT in ["AD", "AI", "AT", "BT", "CH", "CI", "CS", "CV", "CY", "EC", "EE", "ET", "IS", "ME"]:
-#       for YEAR in ["19", "20", "21"]:
-#           macro(HEAD, YEAR, DEPT, dry=False)
+	# super macro
+	# for DEPT in ["AD", "AI", "AT", "BT", "CH", "CI", "CS", "CV", "CY", "EC", "EE", "ET", "IS", "ME"]:
+	# 	for YEAR in ["19", "20", "21"]:
+	# 		macro(YEAR, DEPT, dry=True)

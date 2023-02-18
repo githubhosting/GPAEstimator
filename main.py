@@ -1,6 +1,5 @@
-from exam import ExamScraper, gen_payload as exam_pl
-from sis import stats_i
-from scraper import gen_usn, roll_range, set_cache
+from exam import micro
+from sis import micro
 
 
 if __name__ == '__main__':
@@ -12,5 +11,5 @@ if __name__ == '__main__':
 	"""
 
 	# === single usn example
-	m1, m2 = stats_i(YEAR, DEPT, 1, lite=True)
+	m1, m2 = micro(YEAR, DEPT, 1, lite=True)
 	print(m1, m2)
