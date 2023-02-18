@@ -47,11 +47,7 @@ def cached(cache):
 
 		@wraps(func)
 		def wrapper(self, **kwargs):
-			hasher = hashlib.md5()
-			for key in sorted(kwargs):
-				hasher.update(str(key).encode())
-				hasher.update(str(kwargs[key]).encode())
-			_hash = hasher.hexdigest()
+			_hash = hash_it(kwargs)
 			try:
 				r = func.cache[_hash]
 				return r
@@ -62,6 +58,14 @@ def cached(cache):
 		return wrapper
 
 	return casher
+
+
+def hash_it(kwargs):
+	hasher = hashlib.md5()
+	for key in sorted(kwargs):
+		hasher.update(str(key).encode())
+		hasher.update(str(kwargs[key]).encode())
+	return hasher.hexdigest()
 
 
 def get_cache(name) -> dict[str, str]:
