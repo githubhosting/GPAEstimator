@@ -112,7 +112,7 @@ def tab_2(year, dept, i, temp, dob):
 			                     index=[i for i in range(1, len(marks) + 1)])
 			st.table(table)
 	else:
-		st.error("Enter your USN and DOB first", icon="🚨")
+		st.warning("Enter your USN and DOB first", icon="⚠️")
 	return subject_name, creds
 
 
