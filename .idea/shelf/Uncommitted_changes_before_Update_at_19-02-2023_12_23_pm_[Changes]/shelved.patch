@@ -1,0 +1,410 @@
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from exam import micro\r\nfrom sis import micro\r\n\r\n\r\nif __name__ == '__main__':\r\n\tYEAR = 22\r\n\tDEPT = \"IS\"\r\n\tTEMP = True\r\n\r\n\t\"\"\"\r\n\tif lite is true, minimal information is given and is faster\r\n\t\"\"\"\r\n\r\n\t# super macro\r\n\t# todo\r\n\r\n\t# macro\r\n\t# todo\r\n\r\n\t# === single usn example\r\n\tm1, m2 = micro(YEAR, DEPT, 1, True, lite=True)\r\n\tprint(m1, m2)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	
++++ b/main.py	
+@@ -1,22 +1,169 @@
+ from exam import micro
+-from sis import micro
++from sis import micro, CACHE_NAME
++from scraper import get_cache, validate_usn
++import streamlit as st
++import datetime
++import pandas as pd
++
++tab1, tab2, tab3, tab4, tab5 = st.tabs(["Check CIE Marks", "Grades-Score", "Credit-CGPA", "Crack DOB", "How it works?"])
++
++
++def tab_1():
++	year = dept = i = temp = dob = None
++	marks = []
++	subject_code = []
++	subject_name = []
++	attendance = []
++
++	st.title("Check your CIE Marks")
++	usn = st.text_input("Enter your USN").upper()
++
++	if validate_usn(usn):
++		year = int(usn[3:5]) + 2000
++		dept = usn[5:7]
++		i = int(usn[7:10])
++		if len(usn) == 10:
++			temp = False
++		else:
++			temp = True
++		dob = st.date_input("Enter DOB", datetime.date(year - 18, 1, 1))
++		get = st.button("Get Marks")
++		get = True
++		if get:
++			m1, m2 = micro(year, dept, i, temp, dob=dob, lite=True)
++			if not m1:
++				st.error("Invalid USN or DOB", icon="🚨")
++			else:
++				st.subheader(f"Hey {m1['name']}!")
++				st.write(f"Here is your CIE Marks for Semester {m1['sem']}")
++				for sub_code, (sub_name, attd, mark) in m2.items():
++					marks.append(mark)
++					subject_code.append(sub_code)
++					subject_name.append(sub_name)
++					attendance.append(attd)
++				table = pd.DataFrame({"Subject": subject_name, "Marks": marks},
++				                     index=[i for i in range(1, len(marks) + 1)])
++				st.table(table)
++				short_attenddence = []
++				st.write("Here is your attendance for each subject")
++				for i in attendance:
++					if i < 75:
++						short_attenddence.append("🚨")
++					else:
++						short_attenddence.append("✅")
++				table = pd.DataFrame({"Subject": subject_name,
++				                      "Percentage": attendance,
++				                      "Attendance": short_attenddence},
++				                     index=[i for i in range(1, len(marks) + 1)])
++				st.table(table)
++
++	elif usn:
++		st.error('Invalid USN', icon="🚨")
++
++	return year, dept, i, temp, dob
++
++
++def tab_2(year, dept, i, temp, dob):
++	marks = []
++	subject_code = []
++	subject_name = []
++	st.title("Each Subject Scoring Criteria")
++	st.write("You have to score the following marks in SEE to get the respective grade")
++	if dob:
++		m1, m2 = micro(year, dept, i, temp, dob=dob, lite=True)
++		if not m1:
++			st.error("Invalid USN or DOB", icon="🚨")
++		else:
++			for sub_code, (sub_name, attd, mark) in m2.items():
++				marks.append(mark)
++				subject_code.append(sub_code)
++				subject_name.append(sub_name)
++			to_scoreO = []
++			to_score_Aplus = []
++			to_score_A = []
++			to_score_Bplus = []
++			to_score_B = []
++
++			for i in range(len(marks)):
++				const = (90 - marks[i]) * 2
++				to_scoreO.append(const)
++				to_score_Aplus.append(const - 20)
++				to_score_A.append(const - 40)
++				to_score_Bplus.append(const - 60)
++				to_score_B.append(const - 80)
++				if const > 100: to_scoreO[-1] = "-"
++				if const > 120: to_score_Aplus[-1] = "-"
++				if const > 140: to_score_A[-1] = "-"
++				if const > 160: to_score_Bplus[-1] = "-"
++				if const > 180: to_score_B[-1] = "-"
++
++			table = pd.DataFrame({"Subject": subject_name, "Marks": marks, "O": to_scoreO, "A+": to_score_Aplus,
++			                      "A": to_score_A, "B+": to_score_Bplus, "B": to_score_B},
++			                     index=[i for i in range(1, len(marks) + 1)])
++			st.table(table)
++	return subject_name
++
++
++def tab_3(subject_name, dob):
++	credits_each = [2, 1, 3, 3, 3, 3, 3, 1, 1, 1]
++	if dob:
++		st.subheader("Enter your Predicted Grade for each subjects")
++		grade_in_each = []
++		for j in range(len(subject_name)):
++			grade_in_each.append(st.radio(subject_name[j], ["O", "A+", "A", "B+", "B", "C"], horizontal=True))
++		credits_in_each = [
++			10 if k == "O" else 9 if k == "A+" else 8 if k == "A" else 7 if k == "B+" else 6 if k == "B" else 0
++			for k in grade_in_each
++		]
++		total_credits = sum(credits_in_each)
++		total_credits_each = [i * j for i, j in zip(credits_in_each, credits_each)]
++		total_credits_final = sum(total_credits_each)
++		cgpa = total_credits_final / sum(credits_each)
++		st.write("Based on the above grades, this will be your final credits and CGPA")
++		table = pd.DataFrame(
++			{"Subject": subject_name, "Grade": grade_in_each, "Credits": credits_in_each,
++			 "Total Credits": total_credits_each})
++		st.table(table)
++		cgpa = round(cgpa, 3)
++		st.subheader(f"Your CGPA is:\t " f"{cgpa}")
++	else:
++		st.error("Enter USN and DOB first", icon="🚨")
+ 
+ 
+ if __name__ == '__main__':
+-	YEAR = 22
+-	DEPT = "IS"
+-	TEMP = True
++	dobs = get_cache(CACHE_NAME)
+ 
+-	"""
+-	if lite is true, minimal information is given and is faster
+-	"""
++	with tab1:
++		year_, dept_, i_, temp_, dob_ = tab_1()
+ 
+-	# super macro
+-	# todo
++	with tab2:
++		subject_name_ = tab_2(year_, dept_, i_, temp_, dob_)
+ 
+-	# macro
+-	# todo
++	with tab3:
++		tab_3(subject_name_, dob_)
+ 
+-	# === single usn example
+-	m1, m2 = micro(YEAR, DEPT, 1, True, lite=True)
+-	print(m1, m2)
++	with tab4:
++		st.title("Crack DOB")
++		usn = st.text_input("Enter USN number").upper()
++		if validate_usn(usn):
++			year = int(usn[3:5]) + 2000
++			dept = usn[5:7]
++			i = int(usn[7:10])
++			if len(usn) == 10:
++				temp = False
++			else:
++				temp = True
++			get = st.button("Get DOB")
++			if get:
++				m1, m2 = micro(year, dept, i, temp, lite=True)
++				if not m1:
++					st.error("Invalid USN", icon="🚨")
++				else:
++					st.success(f"{m1, m2} ", icon="🎉")
++		elif usn:
++			st.error('Invalid USN', icon="🚨")
++
++	with tab5:
++		st.title("About")
++		st.write(
++			"This is a simple web app to calculate your CGPA based on the marks you scored in the previous semester")
+Index: .idea/codeStyles/codeStyleConfig.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/codeStyles/codeStyleConfig.xml b/.idea/codeStyles/codeStyleConfig.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/codeStyles/codeStyleConfig.xml	
+@@ -0,0 +1,5 @@
++<component name="ProjectCodeStyleConfiguration">
++  <state>
++    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default" />
++  </state>
++</component>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"RITScapping (venv)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	
+@@ -1,4 +1,4 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="RITScapping (venv)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (GPAEstimator)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"ea0ad3ae-9617-4f31-8617-9c5ebb15768a\" name=\"Changes\" comment=\"added future todos, made year int, organized changed files\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/exam.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/exam.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/scraper.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/scraper.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/sis.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/sis.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"smain\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GithubDefaultAccount\">\r\n    <option name=\"defaultAccountId\" value=\"41dea80e-b5ea-4a24-9d22-c59c8615e0c0\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2IOYUrXTFot9rxZdsJHj5rGdqWB\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_MARK_IGNORED_FILES_AS_EXCLUDED\": \"true\",\r\n    \"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"WebServerToolWindowFactoryState\": \"false\",\r\n    \"last.edited.regexp\": \"1MS21IS013\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"settings.editor.selected.configurable\": \"preferences.fileTypes\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RunManager\" selected=\"Python.main\">\r\n    <configuration name=\"down_imgs\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"RITScrapping\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"C:\\Users\\Amith\\PycharmProjects\\RITScrapping\\down_imgs.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"exam (1)\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"RITScrapping\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/exam.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"exam\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"RITScrapping\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"C:\\Users\\Amith\\PycharmProjects\\RITScrapping\\exam.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"main\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"RITScrapping\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/main.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"sis\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"RITScrapping\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/sis.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.main\" />\r\n        <item itemvalue=\"Python.exam (1)\" />\r\n        <item itemvalue=\"Python.sis\" />\r\n        <item itemvalue=\"Python.exam\" />\r\n        <item itemvalue=\"Python.down_imgs\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"ea0ad3ae-9617-4f31-8617-9c5ebb15768a\" name=\"Changes\" comment=\"\" />\r\n      <created>1670054119044</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1670054119044</updated>\r\n      <workItem from=\"1670054122417\" duration=\"23636000\" />\r\n      <workItem from=\"1670121424634\" duration=\"17451000\" />\r\n      <workItem from=\"1673950055978\" duration=\"189000\" />\r\n      <workItem from=\"1674150352805\" duration=\"7522000\" />\r\n      <workItem from=\"1675137073533\" duration=\"879000\" />\r\n      <workItem from=\"1676646067123\" duration=\"29106000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"stable\">\r\n      <created>1670054196084</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1670054196084</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"re-structured, added fast sis\">\r\n      <created>1670054243373</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1670054243373</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"re-structured, added fast sis\">\r\n      <created>1670054341050</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1670054341050</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"re-structured, added fast sis\">\r\n      <created>1670054530442</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1670054530442</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\".\">\r\n      <created>1670121474639</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1670121474639</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"added marks support, cache optimization and bug fix\">\r\n      <created>1676724153212</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1676724153212</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"hasher separated\">\r\n      <created>1676732926100</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1676732926100</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"added future todos, made year int, organized changed files\">\r\n      <created>1676734164039</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1676734164039</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"9\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"smain\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"stable\" />\r\n    <MESSAGE value=\"re-structured, added fast sis\" />\r\n    <MESSAGE value=\".\" />\r\n    <MESSAGE value=\"added marks support, cache optimization and bug fix\" />\r\n    <MESSAGE value=\"hasher separated\" />\r\n    <MESSAGE value=\"added future todos, made year int, organized changed files\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"added future todos, made year int, organized changed files\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <watches-manager>\r\n      <configuration name=\"PythonConfigurationType\">\r\n        <watch expression=\"sub.find_all(&quot;button&quot;)[-2].text\" language=\"Python\" />\r\n      </configuration>\r\n    </watches-manager>\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/RITScrapping$exam.coverage\" NAME=\"exam Coverage Results\" MODIFIED=\"1675137623795\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/RITScrapping$sis_fast.coverage\" NAME=\"sis_fast Coverage Results\" MODIFIED=\"1670054377842\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/RITScrapping$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1676733850664\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/RITScrapping$down_img.coverage\" NAME=\"down_img Coverage Results\" MODIFIED=\"1670143545984\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/RITScrapping$exam_class.coverage\" NAME=\"exam_class Coverage Results\" MODIFIED=\"1670141440557\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/RITScrapping$exam__1_.coverage\" NAME=\"exam (1) Coverage Results\" MODIFIED=\"1676733628198\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/RITScrapping$sis.coverage\" NAME=\"sis Coverage Results\" MODIFIED=\"1675137405827\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -4,11 +4,18 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="added future todos, made year int, organized changed files">
++    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="temp added to all micro and macro">
++      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/RITScrapping.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RITScrapping.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_18_2023_7_51_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_18_2023_7_51_PM__Changes_.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_18_2023_7_52_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_18_2023_7_52_PM__Changes_.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_18_2023_7_53_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_18_2023_7_53_PM__Changes_.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/exam.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/scraper.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/sis.py" beforeDir="false" afterPath="$PROJECT_DIR$/sis.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/siscacheri92gh45.cache" beforeDir="false" afterPath="$PROJECT_DIR$/siscacheri92gh45.cache" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -49,12 +56,11 @@
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+     "WebServerToolWindowFactoryState": "false",
+-    "last.edited.regexp": "1MS21IS013",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+     "node.js.selected.package.tslint": "(autodetect)",
+-    "settings.editor.selected.configurable": "preferences.fileTypes",
++    "settings.editor.selected.configurable": "preferences.general",
+     "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
+@@ -81,28 +87,6 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="exam (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+-      <module name="RITScrapping" />
+-      <option name="INTERPRETER_OPTIONS" value="" />
+-      <option name="PARENT_ENVS" value="true" />
+-      <envs>
+-        <env name="PYTHONUNBUFFERED" value="1" />
+-      </envs>
+-      <option name="SDK_HOME" value="" />
+-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+-      <option name="IS_MODULE_SDK" value="true" />
+-      <option name="ADD_CONTENT_ROOTS" value="true" />
+-      <option name="ADD_SOURCE_ROOTS" value="true" />
+-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/exam.py" />
+-      <option name="PARAMETERS" value="" />
+-      <option name="SHOW_COMMAND_LINE" value="false" />
+-      <option name="EMULATE_TERMINAL" value="false" />
+-      <option name="MODULE_MODE" value="false" />
+-      <option name="REDIRECT_INPUT" value="false" />
+-      <option name="INPUT_FILE" value="" />
+-      <method v="2" />
+-    </configuration>
+     <configuration name="exam" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="RITScrapping" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+@@ -172,10 +156,10 @@
+     <recent_temporary>
+       <list>
+         <item itemvalue="Python.main" />
+-        <item itemvalue="Python.exam (1)" />
+         <item itemvalue="Python.sis" />
+         <item itemvalue="Python.exam" />
+         <item itemvalue="Python.down_imgs" />
++        <item itemvalue="Python.main" />
+       </list>
+     </recent_temporary>
+   </component>
+@@ -193,6 +177,7 @@
+       <workItem from="1674150352805" duration="7522000" />
+       <workItem from="1675137073533" duration="879000" />
+       <workItem from="1676646067123" duration="29106000" />
++      <workItem from="1676787595842" duration="1860000" />
+     </task>
+     <task id="LOCAL-00001" summary="stable">
+       <created>1670054196084</created>
+@@ -236,21 +221,7 @@
+       <option name="project" value="LOCAL" />
+       <updated>1676724153212</updated>
+     </task>
+-    <task id="LOCAL-00007" summary="hasher separated">
+-      <created>1676732926100</created>
+-      <option name="number" value="00007" />
+-      <option name="presentableId" value="LOCAL-00007" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1676732926100</updated>
+-    </task>
+-    <task id="LOCAL-00008" summary="added future todos, made year int, organized changed files">
+-      <created>1676734164039</created>
+-      <option name="number" value="00008" />
+-      <option name="presentableId" value="LOCAL-00008" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1676734164039</updated>
+-    </task>
+-    <option name="localTasksCounter" value="9" />
++    <option name="localTasksCounter" value="7" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -284,9 +255,7 @@
+     <MESSAGE value="re-structured, added fast sis" />
+     <MESSAGE value="." />
+     <MESSAGE value="added marks support, cache optimization and bug fix" />
+-    <MESSAGE value="hasher separated" />
+-    <MESSAGE value="added future todos, made year int, organized changed files" />
+-    <option name="LAST_COMMIT_MESSAGE" value="added future todos, made year int, organized changed files" />
++    <option name="LAST_COMMIT_MESSAGE" value="added marks support, cache optimization and bug fix" />
+   </component>
+   <component name="XDebuggerManager">
+     <watches-manager>
+@@ -296,12 +265,11 @@
+     </watches-manager>
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
++    <SUITE FILE_PATH="coverage/RITScrapping$main.coverage" NAME="main Coverage Results" MODIFIED="1676730994275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/RITScrapping$down_img.coverage" NAME="down_img Coverage Results" MODIFIED="1670143545984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/RITScrapping$sis.coverage" NAME="sis Coverage Results" MODIFIED="1675137405827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/RITScrapping$exam_class.coverage" NAME="exam_class Coverage Results" MODIFIED="1670141440557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+     <SUITE FILE_PATH="coverage/RITScrapping$exam.coverage" NAME="exam Coverage Results" MODIFIED="1675137623795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+     <SUITE FILE_PATH="coverage/RITScrapping$sis_fast.coverage" NAME="sis_fast Coverage Results" MODIFIED="1670054377842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-    <SUITE FILE_PATH="coverage/RITScrapping$main.coverage" NAME="main Coverage Results" MODIFIED="1676733850664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-    <SUITE FILE_PATH="coverage/RITScrapping$down_img.coverage" NAME="down_img Coverage Results" MODIFIED="1670143545984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-    <SUITE FILE_PATH="coverage/RITScrapping$exam_class.coverage" NAME="exam_class Coverage Results" MODIFIED="1670141440557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-    <SUITE FILE_PATH="coverage/RITScrapping$exam__1_.coverage" NAME="exam (1) Coverage Results" MODIFIED="1676733628198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-    <SUITE FILE_PATH="coverage/RITScrapping$sis.coverage" NAME="sis Coverage Results" MODIFIED="1675137405827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/RITScrapping.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/venv\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n  <component name=\"PyDocumentationSettings\">\r\n    <option name=\"format\" value=\"PLAIN\" />\r\n    <option name=\"myDocStringFormat\" value=\"Plain\" />\r\n  </component>\r\n  <component name=\"TestRunnerService\">\r\n    <option name=\"PROJECT_TEST_RUNNER\" value=\"py.test\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/RITScrapping.iml b/.idea/RITScrapping.iml
+--- a/.idea/RITScrapping.iml	
++++ b/.idea/RITScrapping.iml	
+@@ -4,7 +4,7 @@
+     <content url="file://$MODULE_DIR$">
+       <excludeFolder url="file://$MODULE_DIR$/venv" />
+     </content>
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="Python 3.10 (GPAEstimator)" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+   <component name="PyDocumentationSettings">
+Index: scraper.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import base64\r\nimport hashlib\r\nimport pickle\r\nimport re\r\nfrom abc import ABCMeta\r\nfrom functools import wraps\r\nfrom typing import Literal, Union\r\n\r\nfrom bs4 import BeautifulSoup\r\nfrom requests import Session\r\n\r\n\r\nclass Scraper(metaclass=ABCMeta):\r\n\tHEADERS = {\r\n\t\t\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \"\r\n\t\t\t\t\t  \"Chrome/96.0.4664.45 Safari/537.36\",\r\n\t\t\"X-Amzn-Trace-Id\": \"Root=1-61acac03-6279b8a6274777eb44d81aae\",\r\n\t\t\"X-Client-Data\": \"CJW2yQEIpLbJAQjEtskBCKmdygEIuevKAQjr8ssBCOaEzAEItoXMAQjLicwBCKyOzAEI3I7MARiOnssB\"\r\n\t}\r\n\r\n\tdef __init__(self):\r\n\t\tself.Se: Union[\"Session\", None] = None\r\n\r\n\tdef __enter__(self):\r\n\t\tself.Se = Session()\r\n\t\treturn self\r\n\r\n\tdef __exit__(self, exc_type, exc_val, exc_tb):\r\n\t\tself.Se.close()\r\n\t\tself.Se = None\r\n\r\n\tdef get_soup(self, URL, type_: Literal[\"GET\", \"POST\"] = \"GET\", payload_=None) -> BeautifulSoup:\r\n\t\tif type_ == \"GET\":\r\n\t\t\tresponse = self.Se.get(URL, headers=self.HEADERS)\r\n\t\telif type_ == \"POST\":\r\n\t\t\tresponse = self.Se.post(URL, data=payload_, headers=self.HEADERS)\r\n\t\telse:\r\n\t\t\traise ValueError(f\"invalid {type_=}\")\r\n\t\treturn BeautifulSoup(response.content, 'html.parser')\r\n\r\n\tdef get_img(self, URL) -> bytes:\r\n\t\treturn base64.encodebytes(self.Se.get(URL).content)\r\n\r\n\r\ndef cached(cache):\r\n\tdef casher(func):\r\n\t\tfunc.cache = cache\r\n\r\n\t\t@wraps(func)\r\n\t\tdef wrapper(self, **kwargs):\r\n\t\t\t_hash = hash_it(kwargs)\r\n\t\t\ttry:\r\n\t\t\t\tr = func.cache[_hash]\r\n\t\t\t\treturn r\r\n\t\t\texcept KeyError:\r\n\t\t\t\tif (result := func(self, **kwargs)) is not None: func.cache[_hash] = result\r\n\t\t\t\treturn result\r\n\r\n\t\treturn wrapper\r\n\r\n\treturn casher\r\n\r\n\r\ndef hash_it(kwargs):\r\n\thasher = hashlib.md5()\r\n\tfor key in sorted(kwargs):\r\n\t\thasher.update(str(key).encode())\r\n\t\thasher.update(str(kwargs[key]).encode())\r\n\treturn hasher.hexdigest()\r\n\r\n\r\ndef get_cache(name) -> dict[str, str]:\r\n\ttry:\r\n\t\twith open(f'{name}.cache', 'rb') as file:\r\n\t\t\treturn pickle.load(file)\r\n\texcept FileNotFoundError:\r\n\t\treturn {}\r\n\r\n\r\ndef set_cache(name, func):\r\n\tassert hasattr(func, \"cache\")\r\n\twith open(f'{name}.cache', 'wb') as file:\r\n\t\tpickle.dump(func.cache, file)\r\n\r\n\r\ndef gen_usn(year: int, dept: str, i: int, temp=False) -> str:\r\n\tassert year > 2000\r\n\treturn (f\"1MS{year - 2000}{dept}{i:03}\" + (\"-T\" if temp else \"\")).upper()\r\n\r\n\r\ndef validate_usn(usn):\r\n\treturn re.search(r\"^1MS\\d{2}[A-Z]{2}\\d{3}$\", usn) is not None\r\n\r\n\r\ndef roll_range(start=1, stop=None):\r\n\tif stop is None: stop = float('inf')\r\n\tassert isinstance(start, int) and start > 0, \\\r\n\t\t\"start must be int > 0\"\r\n\ti = start\r\n\twhile i < stop:\r\n\t\tyield i\r\n\t\ti += 1\r\n
+===================================================================
+diff --git a/scraper.py b/scraper.py
+--- a/scraper.py	
++++ b/scraper.py	
+@@ -13,7 +13,7 @@
+ class Scraper(metaclass=ABCMeta):
+ 	HEADERS = {
+ 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+-					  "Chrome/96.0.4664.45 Safari/537.36",
++		              "Chrome/96.0.4664.45 Safari/537.36",
+ 		"X-Amzn-Trace-Id": "Root=1-61acac03-6279b8a6274777eb44d81aae",
+ 		"X-Client-Data": "CJW2yQEIpLbJAQjEtskBCKmdygEIuevKAQjr8ssBCOaEzAEItoXMAQjLicwBCKyOzAEI3I7MARiOnssB"
+ 	}
