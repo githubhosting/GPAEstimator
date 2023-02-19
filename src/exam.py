@@ -2,7 +2,7 @@ import os
 import tempfile
 from urllib.parse import urlparse
 
-from scraper import Scraper, gen_usn, roll_range
+from .scraper import Scraper, gen_usn, roll_range
 
 
 def gen_payload() -> dict[str, str]:

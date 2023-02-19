@@ -3,7 +3,7 @@ import time
 from threading import Thread
 from typing import Union
 
-from scraper import Scraper, get_cache, set_cache, cached, roll_range, gen_usn, validate_usn
+from .scraper import Scraper, get_cache, set_cache, cached, roll_range, gen_usn, validate_usn
 
 CACHE_NAME = "siscacheri92gh45"
 
