@@ -7,7 +7,22 @@ from src.exam import micro
 from src.scraper import get_cache, validate_usn
 from src.sis import micro, CACHE_NAME
 
-st.set_page_config(page_title="GPA Calculator", page_icon="📊", layout="centered")
+st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", layout="centered")
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+                footer:after {
+                content:'Made with passion by Amith and Shravan'; 
+                visibility: visible;
+	            display: block;
+	            position: relative;
+	            padding: 15px;
+	            top: 2px;
+	            }
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Check CIE Marks", "Grades-Score", "Credit-CGPA", "Crack DOB", "How it works?"])
 
 
