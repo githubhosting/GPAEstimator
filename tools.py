@@ -20,6 +20,6 @@ def grade_estimates(sub_marks, sub_names, max_marks=100, **kwargs: int):
 	for grade, min_mark in kwargs.items():
 		grade_lists[grade] = lis = []
 		for mark, name in zip(sub_marks, sub_names):
-			to_score = to_score if 0 <= (to_score := min_mark - mark) <= max_marks / 2 else float("nan")
+			to_score = to_score if 0 <= (to_score := min_mark - mark) <= max_marks / 2 else ""
 			lis.append(to_score * 2 if " lab" not in name.lower() else to_score)
 	return grade_lists
