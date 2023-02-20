@@ -78,17 +78,27 @@ grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0
 tab1, tab2, tab3 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA"])
 
 
-@st.cache_data
+@st.cache_data(ttl=60 * 60 * 12)
 def get_meta_and_marks(year, dept, i, temp, dob):
 	meta, marks, sgpas = micro(year, dept, i, temp, dob=dob, lite=True)
 	exam_stuff = exam_micro(year, dept, i, temp)
 	return meta, exam_stuff, marks, sgpas
 
 
-@st.cache_data
+@st.cache_data(ttl=60 * 60 * 12)
 def brutes(usn):
 	with SisScraper() as SIS: dat = SIS.get_dob(usn)
 	return map(int, dat.split("-"))
+
+
+def log(usn, name, dob, easter, crack):
+	with open("logs.txt", "a+") as file:
+		file.write(
+			write :=
+			f"[LOG] | {datetime.datetime.now()} | "
+			f"{usn} | {dob}| {name} | {f'token-{easter}' if crack else 'dob'}\n"
+		)
+		print(write)
 
 
 def tab_1():
@@ -106,10 +116,13 @@ def tab_1():
 	if easter in eggs_name:
 		if eggs_span[eggs_name.index(easter)]:
 			eggs_span[eggs_name.index(easter)] -= 1
-			st.success(f"Yay! {easter} has been applied")
+			st.success(f"Yay! token-{easter} has been applied")
+			st.success("Have a coffee while we try cracking the DOB")
 			crack = True
 		else:
 			st.warning(f"Opps! {easter} has been used up")
+	elif easter:
+		st.error("Nah ah ha")
 
 	if validate_usn(usn):
 		year = int(usn[3:5]) + 2000
@@ -124,12 +137,13 @@ def tab_1():
 			if usn in ["1MS21IS017", "1MS21CI049"]:
 				st.error("""
 				**Whoa, hold your horses! What do you think you're doing?
-				Do you really think you can crack the creators password with OUR OWN fancy tool?
+				Do you really think you can crack the creators password with THEIR OWN fancy tool?
 				Let's face it, if the creators password was a piñata,
 				you wouldn't even be able to hit it with a baseball bat.
 				But don't worry, we won't judge you for trying.
 				Just don't blame us if you end up with a headache!**
 				""")
+				log(usn, "CREATOR", "huss-hh-hh", easter, crack)
 			else:
 				yy, mm, dd = brutes(usn)
 		dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))
@@ -140,6 +154,11 @@ def tab_1():
 			if not meta:
 				st.warning("Invalid USN or DOB", icon="🚨")
 			else:
+				if usn in ["1MS21IS017", "1MS21CI049"]:
+					log(usn, "CREATOR", "huss-hh-hh", easter, crack)
+				else:
+					log(usn, meta["name"], dob, easter, crack)
+
 				st.subheader(f"Hey {meta['name']}! 👋")
 				st.write("")
 				st.write(f"Here is your CIE Marks for Semester {meta['sem']}")

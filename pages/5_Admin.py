@@ -33,6 +33,7 @@ def check_password():
 if check_password():
 	st.header("Admin Panel")
 
+	st.write("\n")
 	st.subheader("Tokens")
 	with st.form("Add Token", True):
 		name = st.text_input("Token Name")
@@ -53,3 +54,9 @@ if check_password():
 		st.download_button("Export SIS Cache", f, "siscacheri92gh45.cache")
 	with open("siscacheri92gh45creds.cache") as f:
 		st.download_button("Export SIS creds Cache", f, "siscacheri92gh45creds.cache")
+	with open("logs.txt", "a+") as f:
+		st.download_button("Export Logs", f, "logs.txt")
+
+	st.subheader("Logs", "a+")
+	with open("logs.txt") as file:
+		for line in file.readlines(): st.write(line)
