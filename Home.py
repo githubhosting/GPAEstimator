@@ -3,10 +3,10 @@ import datetime
 import pandas as pd
 import streamlit as st
 
-from src.exam import micro
-from src.scraper import validate_usn
-from src.sis import micro, SisScraper
-from tools import sub_lists, grade_estimates
+from src.RIRScraping.exam import micro as exam_micro
+from src.RIRScraping.scraper import validate_usn
+from src.RIRScraping.sis import micro, SisScraper
+from src.tools import sub_lists, grade_estimates
 
 th_props = [
 	('text-align', 'left'),
@@ -25,6 +25,7 @@ table_body = [
 	('background-color', '#000'),
 	("display", "inline-block")
 ]
+
 tr_props = [
 	("display", "none"),
 ]
@@ -38,6 +39,7 @@ styles_attd = [
 	dict(selector="td:nth-child(3)", props=td_props),
 	dict(selector="td:nth-child(4)", props=td_props),
 ]
+
 styles_gp = [
 	dict(selector="td:nth-child(3)", props=td_props),
 	dict(selector="td:nth-child(4)", props=td_props),
@@ -51,38 +53,41 @@ st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", lay
 
 def local_css(file_name):
 	with open(file_name) as f:
-		st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
-
-local_css("styles.css")
+		st.write(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 
 def local_html(file_name):
 	with open(file_name) as f:
-		st.markdown(f'{f.read()}', unsafe_allow_html=True)
+		st.write(f'{f.read()}', unsafe_allow_html=True)
 
 
+local_css("styles.css")
 local_html("index.html")
 
 st.title("Calculla - GPA Calculator")
-instruct = """
-<p>Follow the instructions and see the how its calculated <a class="name" target="_self" href="/Instructions_and_Working">Click Here</a></p>
-"""
-st.write(instruct, unsafe_allow_html=True)
+st.write(
+	"""
+		<p>
+		Follow the instructions and see the how its calculated
+		<a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>
+		</p>
+	""", unsafe_allow_html=True
+)
+
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
 tab1, tab2, tab3 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA"])
 
 
 @st.cache_data
-def getMetaAndMarks(year, dept, i, temp, dob):
-	m1, m2 = micro(year, dept, i, temp, dob=dob, lite=True)
-	return m1, m2
+def get_meta_and_marks(year, dept, i, temp, dob):
+	meta, marks, sgpas = micro(year, dept, i, temp, dob=dob, lite=True)
+	exam_stuff = exam_micro(year, dept, i, temp)
+	return meta, exam_stuff, marks, sgpas
 
 
 @st.cache_data
-def bruts(usn):
-	with SisScraper() as SIS:
-		dat = SIS.get_dob(usn)
+def brutes(usn):
+	with SisScraper() as SIS: dat = SIS.get_dob(usn)
 	return map(int, dat.split("-"))
 
 
@@ -91,10 +96,21 @@ def tab_1():
 
 	st.subheader("Check your CIE Marks")
 	usn = st.text_input("Enter your USN").upper()
+	easter = None
+	if " " in usn:
+		usn, easter = usn.split()
+		easter = easter.lower()
+	eggs_name = st.secrets["easters"]["easter_eggs"]
+	eggs_span = st.secrets["easters"]["easter_eggs_counter"]
 	crack = False
-	if usn.endswith("DOB"):
-		usn = usn[:-3]
-		crack = True
+	if easter in eggs_name:
+		if eggs_span[eggs_name.index(easter)]:
+			eggs_span[eggs_name.index(easter)] -= 1
+			st.success(f"Yay! {easter} has been applied")
+			crack = True
+		else:
+			st.warning(f"Opps! {easter} has been used up")
+
 	if validate_usn(usn):
 		year = int(usn[3:5]) + 2000
 		dept = usn[5:7]
@@ -105,13 +121,22 @@ def tab_1():
 			temp = True
 		yy, mm, dd = year - 18, 1, 1
 		if crack:
-			yy, mm, dd = bruts(usn)
-
+			if usn in ["1MS21IS017", "1MS21CI049"]:
+				st.error("""
+				**Whoa, hold your horses! What do you think you're doing?
+				Do you really think you can crack the creators password with OUR OWN fancy tool?
+				Let's face it, if the creators password was a piñata,
+				you wouldn't even be able to hit it with a baseball bat.
+				But don't worry, we won't judge you for trying.
+				Just don't blame us if you end up with a headache!**
+				""")
+			else:
+				yy, mm, dd = brutes(usn)
 		dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))
 		get = st.button("Get Marks")
 
-		if get:
-			meta, marks = getMetaAndMarks(year, dept, i, temp, dob=dob)
+		if get or crack:
+			meta, exam_stuff, marks, sgpas = get_meta_and_marks(year, dept, i, temp, dob=dob)
 			if not meta:
 				st.warning("Invalid USN or DOB", icon="🚨")
 			else:
@@ -131,7 +156,7 @@ def tab_1():
 				st.markdown(
 					"""
 					&nbsp;
-					#### Here is your Attendance %
+					#### Here is your Attendance
 					"""
 				)
 
@@ -151,6 +176,16 @@ def tab_1():
 					for key in short_attendance:
 						remove = str(key).replace("{'", "").replace("'}", "")
 						st.warning(remove)
+
+				for _ in range(5): st.write("\n")
+				st.image(exam_stuff["photo"], exam_stuff["name"], 500)
+
+				st.subheader("The following are your sem sgpa's")
+				table = pd.DataFrame({
+					"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
+					"SGPA": [f"{s:.2f}" for s in sgpas]
+				})
+				st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
 	elif usn:
 		st.error('Invalid USN', icon="🚨")
 
@@ -162,7 +197,7 @@ def tab_2(year, dept, i, temp, dob):
 	st.write("You have to score the following marks in SEE to get the respective grade")
 	sub_codes = sub_names = sub_attds = sub_marks = sub_creds = None
 	if dob:
-		meta, marks = getMetaAndMarks(year, dept, i, temp, dob=dob)
+		meta, exam_stuff, marks, sgpas = get_meta_and_marks(year, dept, i, temp, dob=dob)
 		if not meta:
 			st.error("Invalid USN or DOB", icon="🚨")
 		else:

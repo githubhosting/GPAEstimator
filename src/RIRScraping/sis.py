@@ -27,6 +27,7 @@ class SisScraper(Scraper):
 	URL = "https://parents.msrit.edu/"
 	MARKS_CURL = "index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard"
 	CREDS_CURL = "index.php?option=com_coursefeedback&controller=feedbackentry&task=feedback"
+	SGPAS_CURL = "index.php?option=com_history&task=getResult"
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
 		set_cache(CACHE_NAME, self.brute_year)
@@ -93,6 +94,11 @@ class SisScraper(Scraper):
 			k, v = self.__credits_worker(curl=sub.get("href"), code=k)
 			creds[k] = v
 		return creds
+
+	def get_sem_sgpa(self):
+		body = self.get_curl_body(self.SGPAS_CURL)
+		if body is None: return {}
+		return [float(s.text.replace("SGPA:", "")) for s in body.find_all("span", {"class": "cn-bgcolor1"})]
 
 	def get_marks(self, lite=False) -> dict[str, Union[dict, dict]]:
 		body = self.get_curl_body(self.MARKS_CURL)
@@ -230,7 +236,7 @@ def micro(year: int, dept: str, i: int, temp: bool = False, dob: str = None, lit
 		creds = SIS.get_credits()
 		for k, v in creds.items(): marks[k]["cred"] = v
 
-		return meta, marks
+		return meta, marks, SIS.get_sem_sgpa()
 
 
 if __name__ == '__main__':
