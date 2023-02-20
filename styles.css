@@ -7,20 +7,43 @@ footer {
     visibility: hidden;
 }
 
-footer:after {
-    content: 'Made with passion by Amith and Shravan';
-    visibility: visible;
-    display: block;
-    position: relative;
-    padding: 15px;
-    top: 2px;
+/*footer:after {*/
+/*    content: 'Made with passion by Amith and Shravan';*/
+/*    visibility: visible;*/
+/*    display: block;*/
+/*    position: relative;*/
+/*    padding: 15px;*/
+/*    top: 2px;*/
+/*}*/
+.footer_new {
+    z-index: 999;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
+.ftext {
+    border-top: gray 1px solid;
+    padding-top: 10px;
+    color: white;
+    text-align: center;
+}
+
+.name {
+    font-weight: bold;
+    text-decoration: none;
 }
 
 table {
     border-collapse: collapse;
     border-radius: 15px;
     border-style: hidden; /* hide standard table (collapsed) border */
-    box-shadow: 0 0 0 1px #666;
+    box-shadow: 0 0 0 1.5px #666;
+
 
 }
 
