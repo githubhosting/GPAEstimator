@@ -1,0 +1,30 @@
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+footer:after {
+    content: 'Made with passion by Amith and Shravan';
+    visibility: visible;
+    display: block;
+    position: relative;
+    padding: 15px;
+    top: 2px;
+}
+
+table {
+    border-collapse: collapse;
+    border-radius: 15px;
+    border-style: hidden; /* hide standard table (collapsed) border */
+    box-shadow: 0 0 0 1px #666;
+
+}
+
+td {
+    border: 1px solid #666; /* this draws the cell border */
+    padding: 5px;
+}

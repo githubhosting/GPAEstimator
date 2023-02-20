@@ -19,10 +19,11 @@ td_props = [
 headers_props = [
 	('text-align', 'center'),
 ]
-cell_hover = {
-	'selector': 'td-second-child:hover',
-	'props': [('background-color', '#ffffb3')]
-}
+table_body = [
+	('background-color', '#000'),
+	("display", "inline-block")
+]
+
 styles = [
 	dict(selector="th", props=th_props),
 	dict(selector="td:nth-child(3)", props=td_props),
@@ -31,25 +32,21 @@ styles_attd = [
 	dict(selector="td:nth-child(3)", props=td_props),
 	dict(selector="td:nth-child(4)", props=td_props),
 ]
-st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", layout="centered")
-hide_menu_style = """
-        <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        footer:after {
-        content:'Made with passion by Amith and Shravan'; 
-        visibility: visible;
-        display: block;
-        position: relative;
-        padding: 15px;
-        top: 2px;
-        }
-        </style>
-        """
-st.markdown(hide_menu_style, unsafe_allow_html=True)
+
+st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", layout="centered",
+                   initial_sidebar_state="expanded")
+
+
+def local_css(file_name):
+	with open(file_name) as f:
+		st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+
+local_css("styles.css")
+
 st.title("Calculla - GPA Calculator")
 st.markdown(
-	'Follow the instructions and see the how its calculated <a href="/Instructions-Working" >***Click Here*** </a>',
+	'Follow the instructions and see the how its calculated <a href="/Instruction_and_Working" >***Click Here*** </a>',
 	unsafe_allow_html=True)
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Check CIE Marks", "Grades-Score", "Credit-CGPA", "Crack DOB", "How it works?"])
 
@@ -67,7 +64,7 @@ def tab_1():
 	subject_name = []
 	attendance = []
 
-	st.title("Check your CIE Marks")
+	st.subheader("Check your CIE Marks")
 	usn = st.text_input("Enter your USN").upper()
 
 	if validate_usn(usn):
@@ -80,12 +77,14 @@ def tab_1():
 			temp = True
 		dob = st.date_input("Enter DOB", datetime.date(year - 18, 1, 1))
 		get = st.button("Get Marks")
+		get = True
 		if get:
 			m1, m2 = m1m2(year, dept, i, temp, dob=dob)
 			if not m1:
 				st.warning("Invalid USN or DOB", icon="🚨")
 			else:
 				st.subheader(f"Hey {m1['name']}! 👋")
+				st.write(f"")
 				st.write(f"Here is your CIE Marks for Semester {m1['sem']}")
 				for sub_code, sub in m2.items():
 					marks.append(sub["tot"][0])
@@ -97,7 +96,7 @@ def tab_1():
 				st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 				total_cie_marks = sum(marks)
 				st.subheader(f"Your Total CIE Marks: {total_cie_marks}/{len(marks) * 50}")
-				short_attenddence = []
+				short_attendance = []
 				st.markdown("""
 				&nbsp;
 				
@@ -105,19 +104,19 @@ def tab_1():
 				""")
 				for j in attendance:
 					if j < 75:
-						short_attenddence.append({subject_name[attendance.index(j)]})
+						short_attendance.append({subject_name[attendance.index(j)]})
 				attendance = [str(j) + "%" for j in attendance]
 
 				table = pd.DataFrame({"Subject": subject_name,
 				                      "Percentage": attendance,
-				                      # "Attendance": short_attenddence
+				                      # "Attendance": short_attendance
 				                      },
 				                     index=[k for k in range(1, len(marks) + 1)])
 				st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
-				if short_attenddence:
+				if short_attendance:
 					st.write("")
 					st.write("You have short attendance in the following subjects")
-					for key in short_attenddence:
+					for key in short_attendance:
 						remove = str(key).replace("{'", "").replace("'}", "")
 						st.warning(remove)
 	elif usn:
@@ -158,11 +157,11 @@ def tab_2(year, dept, i, temp, dob):
 				to_score_a.append(const - (40 if not lab else 20))
 				to_score_bp.append(const - (60 if not lab else 30))
 				to_score_b.append(const - (80 if not lab else 40))
-				if const > (100 if not lab else 50): to_score_o[-1] = "-"
-				if const > (120 if not lab else 60): to_score_ap[-1] = "-"
-				if const > (140 if not lab else 70): to_score_a[-1] = "-"
-				if const > (160 if not lab else 80): to_score_bp[-1] = "-"
-				if const > (180 if not lab else 90): to_score_b[-1] = "-"
+				if const > (100 if not lab else 50): to_score_o[-1] = " "
+				if const > (120 if not lab else 60): to_score_ap[-1] = " "
+				if const > (140 if not lab else 70): to_score_a[-1] = " "
+				if const > (160 if not lab else 80): to_score_bp[-1] = " "
+				if const > (180 if not lab else 90): to_score_b[-1] = " "
 
 			table = pd.DataFrame({"Subject": subject_name, "Marks": marks, "O": to_score_o, "A+": to_score_ap,
 			                      "A": to_score_a, "B+": to_score_bp, "B": to_score_b},
@@ -213,25 +212,6 @@ def main():
 			st.write("Welcome to the page")
 		else:
 			st.write("Please contact us to get access!")
-	# st.title("Crack DOB")
-	# usn = st.text_input("Enter USN number").upper()
-	# if validate_usn(usn):
-	# 	year = int(usn[3:5]) + 2000
-	# 	dept = usn[5:7]
-	# 	i = int(usn[7:10])
-	# 	if len(usn) == 10:
-	# 		temp = False
-	# 	else:
-	# 		temp = True
-	# 	get = st.button("Get DOB")
-	# 	if get:
-	# 		m1, m2 = micro(year, dept, i, temp, lite=True)
-	# 		if not m1:
-	# 			st.error("Invalid USN", icon="🚨")
-	# 		else:
-	# 			st.success(f"{m1, m2} ", icon="🎉")
-	# elif usn:
-	# 	st.error('Invalid USN', icon="🚨")
 	with tab5:
 		st.title("About")
 		st.write("This is a simple web app to calculate your GPA based on the marks you scored")
