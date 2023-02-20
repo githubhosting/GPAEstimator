@@ -120,8 +120,8 @@ class SisScraper(Scraper):
 	def brute_month(self, usn: str, year: int, month: int, *, _INTERNAL_THREAD_USE: list = None) \
 			-> Union[str, None, bool]:
 		assert isinstance(_INTERNAL_THREAD_USE, list) or _INTERNAL_THREAD_USE is None
+		usn = usn.upper()
 		if _INTERNAL_THREAD_USE is None:
-			usn = usn.upper()
 			if not validate_usn(usn):
 				if _INTERNAL_THREAD_USE is not None: _INTERNAL_THREAD_USE.append(None)
 				return
@@ -251,7 +251,7 @@ if __name__ == '__main__':
 
 	# === single usn example
 	t = time.time()
-	m1, m2 = micro(YEAR, DEPT, 1, TEMP, lite=LITE)
+	meta_, marks_ = micro(YEAR, DEPT, 1, TEMP, lite=LITE)
 	print(time.time() - t)
-	print(json.dumps(m1, indent=4, sort_keys=True))
-	print(json.dumps(m2, indent=4, sort_keys=True))
+	print(json.dumps(meta_, indent=4, sort_keys=True))
+	print(json.dumps(marks_, indent=4, sort_keys=True))
