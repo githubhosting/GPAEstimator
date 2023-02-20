@@ -23,6 +23,9 @@ table_body = [
 	('background-color', '#000'),
 	("display", "inline-block")
 ]
+tr_props = [
+	("display", "none"),
+]
 
 styles = [
 	dict(selector="th", props=th_props),
@@ -32,9 +35,15 @@ styles_attd = [
 	dict(selector="td:nth-child(3)", props=td_props),
 	dict(selector="td:nth-child(4)", props=td_props),
 ]
+styles_gp = [
+	dict(selector="td:nth-child(3)", props=td_props),
+	dict(selector="td:nth-child(4)", props=td_props),
+	dict(selector="td:nth-child(5)", props=td_props),
+	dict(selector="thead tr th:first-child", props=tr_props),
+	dict(selector="tbody tr th:first-child", props=tr_props),
+]
 
-st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", layout="centered",
-                   initial_sidebar_state="expanded")
+st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", layout="centered")
 
 
 def local_css(file_name):
@@ -44,17 +53,31 @@ def local_css(file_name):
 
 local_css("styles.css")
 
+
+def local_html(file_name):
+	with open(file_name) as f:
+		st.markdown(f'{f.read()}', unsafe_allow_html=True)
+
+
+local_html("index.html")
+
 st.title("Calculla - GPA Calculator")
 st.markdown(
-	'Follow the instructions and see the how its calculated <a href="/Instruction_and_Working" >***Click Here*** </a>',
+	'Follow the instructions and see the how its calculated <a href="/Instructions_and_Working" >***Click Here*** </a>',
 	unsafe_allow_html=True)
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Check CIE Marks", "Grades-Score", "Credit-CGPA", "Crack DOB", "How it works?"])
+tab1, tab2, tab3 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA"])
 
 
 @st.cache_data
 def m1m2(year, dept, i, temp, dob):
 	m1, m2 = micro(year, dept, i, temp, dob=dob, lite=True)
 	return m1, m2
+
+
+@st.cache_data
+def bruts(year, dept, i, temp):
+	brut = micro(year, dept, i, temp, lite=True)
+	return brut
 
 
 def tab_1():
@@ -66,7 +89,6 @@ def tab_1():
 
 	st.subheader("Check your CIE Marks")
 	usn = st.text_input("Enter your USN").upper()
-
 	if validate_usn(usn):
 		year = int(usn[3:5]) + 2000
 		dept = usn[5:7]
@@ -75,9 +97,21 @@ def tab_1():
 			temp = False
 		else:
 			temp = True
-		dob = st.date_input("Enter DOB", datetime.date(year - 18, 1, 1))
+		yy = year - 18
+		mm = 1
+		dd = 1
+		crack_dob = st.checkbox("Crack DOB")
+		if crack_dob:
+			brut = bruts(year, dept, i, temp)
+			if brut:
+				date = brut[0]["dob"]
+				yy = (date[0:4])
+				mm = (date[5:7])
+				dd = (date[8:10])
+
+		dob = st.date_input("Enter DOB", datetime.date(int(yy), int(mm), int(dd)))
 		get = st.button("Get Marks")
-		get = True
+
 		if get:
 			m1, m2 = m1m2(year, dept, i, temp, dob=dob)
 			if not m1:
@@ -169,15 +203,15 @@ def tab_2(year, dept, i, temp, dob):
 			st.table(table)
 	else:
 		st.warning("Enter your USN and DOB first", icon="⚠️")
-	return subject_name, creds
+	return subject_name, subject_code, creds
 
 
-def tab_3(subject_name, dob, credits_each):
+def tab_3(subject_name, subject_code, dob, credits_each):
 	if dob and credits_each:
 		st.subheader("Enter your Predicted Grade for each subjects")
 		grade_in_each = []
 		for j in range(len(subject_name)):
-			grade_in_each.append(st.radio(subject_name[j], ["O", "A+", "A", "B+", "B", "C"], horizontal=True))
+			grade_in_each.append(st.radio(subject_name[j], ["O", "A+", "A", "B+", "B"], horizontal=True))
 		grade_point = [
 			10 if k == "O" else 9 if k == "A+" else 8 if k == "A" else 7 if k == "B+" else 6 if k == "B" else 0
 			for k in grade_in_each
@@ -185,11 +219,12 @@ def tab_3(subject_name, dob, credits_each):
 		weighted_gp = [i * j for i, j in zip(grade_point, credits_each)]
 		total_credits_final = sum(weighted_gp)
 		cgpa = total_credits_final / sum(credits_each)
-		st.write("Based on the above grades, this will be your final credits and CGPA")
+		st.write("")
+		st.write("Based on the above selected grades, The Grade points and Credits for each subject are as follows:")
 		table = pd.DataFrame(
-			{"Subject": subject_name, "Grade": grade_in_each, "Credits": credits_each,
+			{"Subject": subject_code, "Grade": grade_in_each, "Credits": credits_each,
 			 "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, credits_each)]})
-		st.table(table)
+		st.write(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
 		cgpa = round(cgpa, 3)
 		st.subheader(f"Your CGPA is:\t " f"{cgpa}")
 	else:
@@ -201,20 +236,9 @@ def main():
 	with tab1:
 		year_, dept_, i_, temp_, dob_ = tab_1()
 	with tab2:
-		subject_name_, creds_ = tab_2(year_, dept_, i_, temp_, dob_)
+		subject_name_, subject_code_, creds_ = tab_2(year_, dept_, i_, temp_, dob_)
 	with tab3:
-		tab_3(subject_name_, dob_, creds_)
-	with tab4:
-		st.write(f"{st.experimental_user.email} Dont Have access to this page")
-		if st.experimental_user.email == 'revannamrclk@email.com':
-			st.write("Welcome to the page")
-		elif st.experimental_user.email == 'shravanrevanna158@gmail.com':
-			st.write("Welcome to the page")
-		else:
-			st.write("Please contact us to get access!")
-	with tab5:
-		st.title("About")
-		st.write("This is a simple web app to calculate your GPA based on the marks you scored")
+		tab_3(subject_name_, subject_code_, dob_, creds_)
 
 
 if __name__ == '__main__':
