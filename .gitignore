@@ -1,3 +1,4 @@
 results/
 sis/
 photo/
+.streamlit/secrets.toml

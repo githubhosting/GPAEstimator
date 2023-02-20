@@ -55,12 +55,13 @@ with tab1:
 	st.write("4. Note down the expected grades for each subject")
 	st.write("5. Switch to the Credit-CGPA tab and select the grades")
 	st.write("6. Your SGPA will be displayed")
-	st.markdown(
+	st.write(
 		"""
-		Check you CIE Marks 
-		<a href="/" >***Click Here*** </a>
-		""",
-		unsafe_allow_html=True
+			<p>
+			Check you CIE Marks 
+			<a class="name" target="_self" href="/">Click Here</a>
+			</p>
+		""", unsafe_allow_html=True
 	)
 
 with tab2:
