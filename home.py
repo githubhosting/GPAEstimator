@@ -5,7 +5,7 @@ import streamlit as st
 
 from src.exam import micro
 from src.scraper import validate_usn
-from src.sis import micro
+from src.sis import micro, SisScraper
 from tools import sub_lists, grade_estimates
 
 th_props = [
@@ -65,9 +65,10 @@ def local_html(file_name):
 local_html("index.html")
 
 st.title("Calculla - GPA Calculator")
-st.markdown(
-	'Follow the instructions and see the how its calculated <a href="/Instructions_and_Working" >***Click Here*** </a>',
-	unsafe_allow_html=True)
+instruct = """
+<p>Follow the instructions and see the how its calculated <a class="name" target="_self" href="/Instructions_and_Working">Click Here</a></p>
+"""
+st.write(instruct, unsafe_allow_html=True)
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
 tab1, tab2, tab3 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA"])
 
@@ -79,9 +80,10 @@ def getMetaAndMarks(year, dept, i, temp, dob):
 
 
 @st.cache_data
-def bruts(year, dept, i, temp):
-	brut = micro(year, dept, i, temp, lite=True)
-	return brut
+def bruts(usn):
+	with SisScraper() as SIS:
+		dat = SIS.get_dob(usn)
+	return map(int, dat.split("-"))
 
 
 def tab_1():
@@ -89,6 +91,10 @@ def tab_1():
 
 	st.subheader("Check your CIE Marks")
 	usn = st.text_input("Enter your USN").upper()
+	crack = False
+	if usn.endswith("DOB"):
+		usn = usn[:-3]
+		crack = True
 	if validate_usn(usn):
 		year = int(usn[3:5]) + 2000
 		dept = usn[5:7]
@@ -97,8 +103,11 @@ def tab_1():
 			temp = False
 		else:
 			temp = True
-		dob = st.date_input("Enter DOB", datetime.date(year - 18, 1, 1))
+		yy, mm, dd = year - 18, 1, 1
+		if crack:
+			yy, mm, dd = bruts(usn)
 
+		dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))
 		get = st.button("Get Marks")
 
 		if get:
@@ -107,9 +116,8 @@ def tab_1():
 				st.warning("Invalid USN or DOB", icon="🚨")
 			else:
 				st.subheader(f"Hey {meta['name']}! 👋")
-				st.write(f"")
+				st.write("")
 				st.write(f"Here is your CIE Marks for Semester {meta['sem']}")
-
 				sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
 
 				table = pd.DataFrame(
@@ -118,6 +126,7 @@ def tab_1():
 				)
 				st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 				total_cie_marks = sum(sub_marks)
+				st.write("\n")
 				st.subheader(f"Your Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}")
 				st.markdown(
 					"""
@@ -160,7 +169,7 @@ def tab_2(year, dept, i, temp, dob):
 			sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
 			grade_lists = grade_estimates(
 				sub_marks, sub_names,
-				**{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40, "F": 0}
+				**{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
 			)
 			table = pd.DataFrame(
 				{"Subject": sub_names, "Marks": sub_marks, **grade_lists},
