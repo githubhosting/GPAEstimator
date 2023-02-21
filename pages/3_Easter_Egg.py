@@ -1,8 +1,11 @@
 import streamlit as st
 
-st.write(
+from Home import local_css
+
+local_css("styles.css")
+
+st.markdown(
 	"""
-	(1)
 	With this info, you can find your age,
 	Counting the years since you were a babe.
 	

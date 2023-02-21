@@ -39,6 +39,14 @@ styles_attd = [
 	dict(selector="td:nth-child(3)", props=td_props),
 	dict(selector="td:nth-child(4)", props=td_props),
 ]
+centre_props = [
+	("text-align", "center"),
+	("display", "inline-block"),
+	("align-items", "center"),
+	("justify-content", "center"),
+	("width", "100%"),
+	("align", "center"),
+]
 
 styles_gp = [
 	dict(selector="td:nth-child(3)", props=td_props),
@@ -67,10 +75,10 @@ local_html("index.html")
 st.title("Calculla - GPA Calculator")
 st.write(
 	"""
-		<p>
+	<p>
 		Follow the instructions and see the how its calculated
 		<a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>
-		</p>
+	</p>
 	""", unsafe_allow_html=True
 )
 
@@ -133,6 +141,12 @@ def valid_usn(usn, crack, easter):
 			log(usn, "CREATOR", "huss-hh-hh", easter, crack)
 		else:
 			yy, mm, dd = brutes(usn)
+			bruteing_done = True
+
+			dobf = datetime.date(yy, mm, dd)
+			formated_dob = dobf.strftime("%d %B %Y")
+			st.success(f"Cracked!")
+			st.write(f"**DOB:** {formated_dob}")
 	dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd), disabled=crack)
 
 	if st.button("Get Marks") or crack:
@@ -144,53 +158,59 @@ def valid_usn(usn, crack, easter):
 				log(usn, "CREATOR", "huss-hh-hh", easter, crack)
 			else:
 				log(usn, meta["name"], dob, easter, crack)
+				st.markdown(
+					f"""
+					<h3 align="left">Hey {meta['name']} !  <img width="30" vertical-align:sub src="https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true"><h3> 
+					""", unsafe_allow_html=True
+				)
+				st.write(f"Here is your CIE Marks for Semester {meta['sem']}")
+				sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
 
-			st.subheader(f"Hey {meta['name']}! 👋")
-			st.write("")
-			st.write(f"Here is your CIE Marks for Semester {meta['sem']}")
-			sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
+				table = pd.DataFrame(
+					{"Subject": sub_names, "Marks": sub_marks},
+					index=[j for j in range(1, len(sub_marks) + 1)]
+				)
+				st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
+				total_cie_marks = sum(sub_marks)
+				st.write("\n")
+				st.markdown(
+					f"""
+				    <h2 align="center">Your Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h2>
+				    """, unsafe_allow_html=True)
+				st.markdown(""" ##### Here is your Attendance """)
 
-			table = pd.DataFrame(
-				{"Subject": sub_names, "Marks": sub_marks},
-				index=[j for j in range(1, len(sub_marks) + 1)]
-			)
-			st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
-			total_cie_marks = sum(sub_marks)
-			st.write("\n")
-			st.subheader(f"Your Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}")
-			st.markdown(
-				"""
-				&nbsp;
-				#### Here is your Attendance
-				"""
-			)
+				short_attendance = []
+				for j in sub_attds:
+					if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
+				attendance = [str(j) + "%" for j in sub_attds]
 
-			short_attendance = []
-			for j in sub_attds:
-				if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
-			attendance = [str(j) + "%" for j in sub_attds]
+				table = pd.DataFrame(
+					{"Subject": sub_names, "Percentage": attendance},
+					index=[k for k in range(1, len(sub_marks) + 1)]
+				)
+				st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
+				if short_attendance:
+					st.write("")
+					st.write("You have short attendance in the following subjects")
+					for key in short_attendance:
+						remove = str(key).replace("{'", "").replace("'}", "")
+						st.warning(remove)
 
-			table = pd.DataFrame(
-				{"Subject": sub_names, "Percentage": attendance},
-				index=[k for k in range(1, len(sub_marks) + 1)]
-			)
-			st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
-			if short_attendance:
-				st.write("")
-				st.write("You have short attendance in the following subjects")
-				for key in short_attendance:
-					remove = str(key).replace("{'", "").replace("'}", "")
-					st.warning(remove)
+					for _ in range(5): st.write("\n")
+					st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
 
-			for _ in range(5): st.write("\n")
-			st.image(exam_stuff["photo"], exam_stuff["name"], 500)
-
-			st.subheader("The following are your sem sgpa's")
-			table = pd.DataFrame({
-				"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
-				"SGPA": [f"{s:.2f}" for s in sgpas]
-			})
-			st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
+					st.subheader("The following are Semester SGPA's")
+					table = pd.DataFrame({
+						"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
+						"SGPA": [f"{s:.2f}" for s in sgpas]
+					})
+					st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
+				st.subheader("The following are your sem sgpa's")
+				table = pd.DataFrame({
+					"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
+					"SGPA": [f"{s:.2f}" for s in sgpas]
+				})
+				st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
 	return year, dept, i, temp, dob
 
 
@@ -208,8 +228,14 @@ def tab_1():
 	crack = False
 	if easter in eggs_name:
 		if eggs_span[eggs_name.index(easter)]:
-			st.success(f"Yay! token-{easter} has been applied")
-			st.success("Have a coffee while we try cracking the DOB")
+			bruteing_done = st.button("Dissable success message")
+			brueting_done = False
+			placeholder = st.empty()
+			with placeholder.container():
+				st.success(f"Yay! token-{easter} has been applied! 🎊")
+				st.info("Have a coffee while we try cracking the DOB")
+			if bruteing_done:
+				placeholder.empty()
 			crack = True
 		else:
 			st.warning(f"Opps! {easter} has been used up")
