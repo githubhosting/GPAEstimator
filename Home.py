@@ -1,4 +1,5 @@
 import datetime
+import time
 
 import pandas as pd
 import streamlit as st
@@ -123,7 +124,7 @@ def deduct(easter):
 	eggs_span[eggs_name.index(easter)] -= 1
 
 
-def valid_usn(usn, crack, easter):
+def valid_usn(usn, crack, easter, placeholder):
 	year = int(usn[3:5]) + 2000
 	dept = usn[5:7]
 	i = int(usn[7:10])
@@ -139,17 +140,29 @@ def valid_usn(usn, crack, easter):
 		if usn in ["1MS21IS017", "1MS21CI049"]:
 			st.error(crack_forbid_msg)
 			log(usn, "CREATOR", "huss-hh-hh", easter, crack)
+			crack = False
 		else:
+			t = time.time()
 			yy, mm, dd = brutes(usn)
-			bruteing_done = True
-
+			t = time.time() - t
 			dobf = datetime.date(yy, mm, dd)
 			formated_dob = dobf.strftime("%d %B %Y")
-			st.success(f"Cracked!")
-			st.write(f"**DOB:** {formated_dob}")
-	dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd), disabled=crack)
+			if t < 3:
+				time.sleep(4)
+				t += 4
+			placeholder.empty()
+			st.success(f"Cracked! in {t:.2f} seconds 🎉")
+			st.info(f"**DOB:** {formated_dob}")
+			dob = datetime.date(yy, mm, dd)
+	if not crack:
+		dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))
 
-	if st.button("Get Marks") or crack:
+	if crack or st.button("Get Marks"):
+		welcome = "Hey"
+		symbol = '<img width="30" vertical-align:sub src="https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true">'
+		if crack:
+			welcome = "Stalking"
+			symbol = "🕵️"
 		meta, exam_stuff, marks, sgpas = get_meta_and_marks(year, dept, i, temp, dob=dob)
 		if not meta:
 			st.warning("Invalid USN or DOB", icon="🚨")
@@ -160,10 +173,10 @@ def valid_usn(usn, crack, easter):
 				log(usn, meta["name"], dob, easter, crack)
 				st.markdown(
 					f"""
-					<h3 align="left">Hey {meta['name']} !  <img width="30" vertical-align:sub src="https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true"><h3> 
+					<h3 align="left">{welcome} {meta['name']} ! {symbol} <h3> 
 					""", unsafe_allow_html=True
 				)
-				st.write(f"Here is your CIE Marks for Semester {meta['sem']}")
+				st.write(f"#### CIE Marks for Semester {meta['sem']}", unsafe_allow_html=True)
 				sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
 
 				table = pd.DataFrame(
@@ -175,9 +188,9 @@ def valid_usn(usn, crack, easter):
 				st.write("\n")
 				st.markdown(
 					f"""
-				    <h2 align="center">Your Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h2>
+				    <h2 align="center">Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h2>
 				    """, unsafe_allow_html=True)
-				st.markdown(""" ##### Here is your Attendance """)
+				st.markdown(""" ##### Attendance for this semester """)
 
 				short_attendance = []
 				for j in sub_attds:
@@ -215,7 +228,7 @@ def valid_usn(usn, crack, easter):
 
 
 def tab_1():
-	year = dept = i = temp = dob = None
+	year = dept = i = temp = dob = placeholder = None
 
 	st.subheader("Check your CIE Marks")
 	usn = st.text_input("Enter your USN").strip().upper()
@@ -228,14 +241,10 @@ def tab_1():
 	crack = False
 	if easter in eggs_name:
 		if eggs_span[eggs_name.index(easter)]:
-			bruteing_done = st.button("Dissable success message")
-			brueting_done = False
 			placeholder = st.empty()
 			with placeholder.container():
 				st.success(f"Yay! token-{easter} has been applied! 🎊")
 				st.info("Have a coffee while we try cracking the DOB")
-			if bruteing_done:
-				placeholder.empty()
 			crack = True
 		else:
 			st.warning(f"Opps! {easter} has been used up")
@@ -243,7 +252,7 @@ def tab_1():
 		st.error("Nah ah ha")
 
 	if validate_usn(usn):
-		year, dept, i, temp, dob = valid_usn(usn, crack, easter)
+		year, dept, i, temp, dob = valid_usn(usn, crack, easter, placeholder)
 	elif usn:
 		st.error('Invalid USN', icon="🚨")
 
