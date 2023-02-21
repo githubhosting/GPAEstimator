@@ -57,6 +57,7 @@ def log(usn, name, dob, easter, crack):
 			f"[LOG] | {datetime.datetime.now()} | "
 			f"{usn} | {dob} | {name} | {f'token-{easter}' if crack else 'dob'}\n"
 		)
+		st.write(write)
 		print(write)
 
 
