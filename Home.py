@@ -83,6 +83,7 @@ def valid_usn(usn, crack, easter, placeholder):
 			st.error(crack_forbid_msg)
 			log(usn, "CREATOR", "huss-hh-hh", easter, crack)
 			crack = False
+			placeholder.empty()
 		else:
 			t = time.time()
 			yy, mm, dd = brutes(usn)
