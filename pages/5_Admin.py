@@ -58,8 +58,9 @@ if check_password():
 		c1, c2 = st.columns((10, 1))
 		eggs_span[i] = c1.slider(en, 0, 50, es)
 		if en in temps:
-			c2.button("🗑️", key=i,
-					  on_click=lambda _en=en, _i=i: eggs_name.pop(i) and eggs_span.pop(i) and temps.remove(en))
+			c2.button(
+				"🗑️", key=i, on_click=lambda _en=en, _i=i: eggs_name.pop(i) and eggs_span.pop(i) and temps.remove(en)
+			)
 
 	for _ in range(5): st.write("\n")
 	st.subheader("Files")
