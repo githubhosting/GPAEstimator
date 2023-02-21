@@ -1,4 +1,5 @@
 import datetime
+import logging
 import time
 
 import pandas as pd
@@ -58,7 +59,7 @@ def log(usn, name, dob, easter, crack):
 			f"{usn} | {dob} | {name} | {f'token-{easter}' if crack else 'dob'}\n"
 		)
 		st.write(write)
-		print(write)
+		logging.log(0, write)
 
 
 def deduct(easter):
