@@ -63,14 +63,14 @@ if check_password():
 
 	for _ in range(5): st.write("\n")
 	st.subheader("Files")
-	with open("siscacheri92gh45.cache") as f:
+	with open("siscacheri92gh45.cache", "rb") as f:
 		st.download_button("Export SIS Cache", f, "siscacheri92gh45.cache")
-	with open("siscacheri92gh45creds.cache") as f:
+	with open("siscacheri92gh45creds.cache", "rb") as f:
 		st.download_button("Export SIS creds Cache", f, "siscacheri92gh45creds.cache")
 	with open("logs.txt", "a+") as f:
 		st.download_button("Export Logs", f, "logs.txt")
 
 	for _ in range(5): st.write("\n")
-	st.subheader("Logs", "a+")
-	with open("logs.txt") as file:
+	st.subheader("Logs")
+	with open("logs.txt", "a+") as file:
 		for line in file.readlines(): st.write(line)
