@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="added auto mutuable success message added time sleep and improved ui for stalking and organic searches">
+    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="made the changes waithing to resolve the blank page error on hosting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/siscacheri92gh45.cache" beforeDir="false" afterPath="$PROJECT_DIR$/siscacheri92gh45.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -366,7 +365,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676953547658</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="made the changes waithing to resolve the blank page error on hosting">
+      <created>1676960766385</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1676960766385</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -410,7 +416,8 @@
     <MESSAGE value="added footer and removed hamburger" />
     <MESSAGE value="added pages and made changes to table" />
     <MESSAGE value="added mutable success message and added wave hand animation" />
-    <option name="LAST_COMMIT_MESSAGE" value="added mutable success message and added wave hand animation" />
+    <MESSAGE value="made the changes waithing to resolve the blank page error on hosting" />
+    <option name="LAST_COMMIT_MESSAGE" value="made the changes waithing to resolve the blank page error on hosting" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
