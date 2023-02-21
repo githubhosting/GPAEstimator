@@ -1,6 +1,6 @@
 # GPA Calculator
 
-This tool is co-created by **Shravan** and **Amith** designed to help students easily calculate and Predict their SGPA
+Project co-created by Shravan and Amith. This tool is designed to help students easily calculate and Predict their SGPA
 with
 respect to Sem End Exam Score.
 
