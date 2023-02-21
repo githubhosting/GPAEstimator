@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit.components.v1 import html
 
 from common import *
 from src.RIRScraping.sis import CACHE_NAME
@@ -36,6 +37,11 @@ def check_password():
 		return True
 
 
+@st.cache_data
+def get_stats(_usns, _stat):
+	return f"{_usns} | {_stat}"
+
+
 if check_password():
 	st.header("Admin Panel")
 
@@ -69,9 +75,20 @@ if check_password():
 		st.download_button("Export SIS Cache", f, f"{CACHE_NAME}.cache")
 	with open(f"data/{CACHE_NAME}creds.cache", "rb") as f:
 		st.download_button("Export SIS creds Cache", f, f"{CACHE_NAME}creds.cache")
+	st.download_button("Export Stats", get_stats(st.secrets.stats.usns, st.secrets.stats.stat), f"stats.txt")
 	with open("data/logs.log" if st.secrets["cloud"] else "logs.txt", "r") as f:
 		st.download_button("Export Logs", f, "logs.txt")
 		for _ in range(5): st.write("\n")
 		st.subheader("Logs")
 		f.seek(0)
-		for line in f.readlines(): st.write(line)
+		lines = f.read().replace("\n", "<br/><br/>")
+		html(f"<p style='color: #b5afaf'>{lines}<p/>", height=400, scrolling=True)
+
+	for _ in range(5): st.write("\n")
+	st.subheader("Stats")
+	usns = st.secrets.stats.usns
+	stat = st.secrets.stats.stat
+	st.write(f"Total Searches: {stat[0]}")
+	st.write(f"Unique Searches: {stat[1]}")
+	st.write(f"Creator Searches: {stat[2]}")
+	st.write(usns)

@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="added auto mutuable success message added time sleep and improved ui for stalking and organic searches">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/siscacheri92gh45.cache" beforeDir="false" afterPath="$PROJECT_DIR$/siscacheri92gh45.cache" afterDir="false" />
-    </list>
+    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="logs bug fixed" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,10 +20,13 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="smain" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="41dea80e-b5ea-4a24-9d22-c59c8615e0c0" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -65,6 +64,7 @@
       <recent name="C:\Users\Amith\PycharmProjects\GPAEstimator\src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Amith\PycharmProjects\GPAEstimator\data" />
       <recent name="C:\Users\Amith\PycharmProjects\GPAEstimator\src" />
       <recent name="C:\Users\Amith\PycharmProjects\GPAEstimator\src\RIRScraping" />
       <recent name="C:\Users\Amith\PycharmProjects\RITScrapping\src" />
@@ -366,7 +366,35 @@
       <option name="project" value="LOCAL" />
       <updated>1676953547658</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary=".">
+      <created>1676972872979</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1676972872979</updated>
+    </task>
+    <task id="LOCAL-00021" summary=".">
+      <created>1676973224605</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1676973224605</updated>
+    </task>
+    <task id="LOCAL-00022" summary="logs bug fixed">
+      <created>1676976063142</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1676976063142</updated>
+    </task>
+    <task id="LOCAL-00023" summary="logs bug fixed">
+      <created>1676976389298</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1676976389298</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -383,7 +411,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="smain" />
+                        <option value="deployment" />
                       </list>
                     </value>
                   </entry>
@@ -399,7 +427,6 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="stable" />
     <MESSAGE value="re-structured, added fast sis" />
-    <MESSAGE value="." />
     <MESSAGE value="added marks support, cache optimization and bug fix" />
     <MESSAGE value="hasher separated" />
     <MESSAGE value="added future todos, made year int, organized changed files" />
@@ -410,20 +437,22 @@
     <MESSAGE value="added footer and removed hamburger" />
     <MESSAGE value="added pages and made changes to table" />
     <MESSAGE value="added mutable success message and added wave hand animation" />
-    <option name="LAST_COMMIT_MESSAGE" value="added mutable success message and added wave hand animation" />
+    <MESSAGE value="." />
+    <MESSAGE value="logs bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="logs bug fixed" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/RITScrapping$main.coverage" NAME="main Coverage Results" MODIFIED="1676730994275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/GPAEstimator$test.coverage" NAME="test Coverage Results" MODIFIED="1676905087490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$down_img.coverage" NAME="down_img Coverage Results" MODIFIED="1670143545984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$sis.coverage" NAME="sis Coverage Results" MODIFIED="1675137405827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$exam_class.coverage" NAME="exam_class Coverage Results" MODIFIED="1670141440557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/GPAEstimator$sis.coverage" NAME="sis Coverage Results" MODIFIED="1676904754249" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RITScrapping$exam.coverage" NAME="exam Coverage Results" MODIFIED="1675137623795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$exam__1_.coverage" NAME="exam Coverage Results" MODIFIED="1676752433629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RITScrapping$sis_fast.coverage" NAME="sis_fast Coverage Results" MODIFIED="1670054377842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GPAEstimator$sis.coverage" NAME="sis Coverage Results" MODIFIED="1676904754249" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$main.coverage" NAME="main Coverage Results" MODIFIED="1676730994275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$down_img.coverage" NAME="down_img Coverage Results" MODIFIED="1670143545984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$exam_class.coverage" NAME="exam_class Coverage Results" MODIFIED="1670141440557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GPAEstimator$test.coverage" NAME="test Coverage Results" MODIFIED="1676905087490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$exam__1_.coverage" NAME="exam Coverage Results" MODIFIED="1676752433629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$sis.coverage" NAME="sis Coverage Results" MODIFIED="1675137405827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -58,11 +58,18 @@ def log(usn, name, dob, easter, crack):
 			f"{usn} | {dob} | {name} | {f'token-{easter}' if crack else 'dob'}\n"
 		)
 		print(write)
+		usns = st.secrets.stats.usns
+		stat = st.secrets.stats.stat
+		if "prev_usn" not in st.session_state: st.session_state.prev_usn = ""
+		if x := (a := f"{usn} {dob}") not in usns: usns.append(a)
+		stat[0] = stat[0] + int(usn != st.session_state.prev_usn)
+		stat[1] += int(x)
+		stat[2] += int(name == 'CREATOR' and usn != st.session_state.prev_usn)
 
 
 def deduct(easter):
-	eggs_name = st.secrets["easters"]["easter_eggs"]
-	eggs_span = st.secrets["easters"]["easter_eggs_counter"]
+	eggs_name = st.secrets.easters["easter_eggs"]
+	eggs_span = st.secrets.easters["easter_eggs_counter"]
 	eggs_span[eggs_name.index(easter)] -= 1
 
 
@@ -114,6 +121,7 @@ def valid_usn(usn, crack, easter, placeholder):
 				log(usn, "CREATOR", "huss-hh-hh", easter, crack)
 			else:
 				log(usn, meta["name"], dob, easter, crack)
+			st.session_state.prev_usn = usn
 
 			st.markdown(
 				f"""
@@ -129,40 +137,34 @@ def valid_usn(usn, crack, easter, placeholder):
 			)
 			st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 			total_cie_marks = sum(sub_marks)
-			st.write("\n")
 			st.markdown(
 				f"""
-				<h2 align="center">Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h2>
-				""", unsafe_allow_html=True)
-			st.markdown(""" ##### Attendance for this semester """)
+				<h3>Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h3>
+				""", unsafe_allow_html=True
+			)
 
+			st.markdown(""" ##### Attendance for this semester """)
 			short_attendance = []
 			for j in sub_attds:
 				if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
 			attendance = [str(j) + "%" for j in sub_attds]
-
 			table = pd.DataFrame(
 				{"Subject": sub_names, "Percentage": attendance},
 				index=[k for k in range(1, len(sub_marks) + 1)]
 			)
 			st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
+
 			if short_attendance:
 				st.write("")
-				st.write("You have short attendance in the following subjects")
+				st.write("Following Subjects have shortage of attendance")
 				for key in short_attendance:
 					remove = str(key).replace("{'", "").replace("'}", "")
 					st.warning(remove)
 
-				for _ in range(5): st.write("\n")
-				st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
-
-				st.subheader("The following are Semester SGPA's")
-				table = pd.DataFrame({
-					"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
-					"SGPA": [f"{s:.2f}" for s in sgpas]
-				})
-				st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
-			st.subheader("The following are your sem sgpa's")
+			for _ in range(5): st.write("\n")
+			st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
+			for _ in range(5): st.write("\n")
+			st.subheader("The following are the SGPA's")
 			table = pd.DataFrame({
 				"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
 				"SGPA": [f"{s:.2f}" for s in sgpas]
@@ -217,11 +219,11 @@ def tab_2(year, dept, i, temp, dob):
 				sub_marks, sub_names,
 				**{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
 			)
-			table = pd.DataFrame(
-				{"Subject": sub_names, "Marks": sub_marks, **grade_lists},
-				index=[i for i in range(1, len(sub_marks) + 1)]
-			).fillna(" ")
-			st.table(table)
+			st.write("<hr/>", unsafe_allow_html=True)
+			for i, sn in enumerate(sub_names):
+				with st.container():
+					table = pd.DataFrame({k: [v[i]] for k, v in grade_lists.items()})
+					st.write(sn, table.style.hide(axis="index").to_html(), "<hr/>", unsafe_allow_html=True)
 	else:
 		st.warning("Enter your USN and DOB first", icon="⚠️")
 	return sub_names, sub_codes, sub_creds
