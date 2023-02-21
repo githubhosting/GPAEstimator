@@ -74,7 +74,7 @@ def hash_it(kwargs, ignore):
 
 def get_cache(name) -> dict[str, str]:
 	try:
-		with open(f'{name}.cache', 'rb') as file:
+		with open(f'data/{name}.cache', 'rb') as file:
 			return pickle.load(file)
 	except FileNotFoundError:
 		return {}
@@ -82,7 +82,7 @@ def get_cache(name) -> dict[str, str]:
 
 def set_cache(name, func):
 	assert hasattr(func, "cache")
-	with open(f'{name}.cache', 'wb') as file:
+	with open(f'data/{name}.cache', 'wb') as file:
 		pickle.dump(func.cache, file)
 
 

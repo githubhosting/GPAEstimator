@@ -1,6 +1,7 @@
 import streamlit as st
 
 from common import *
+from src.RIRScraping.sis import CACHE_NAME
 
 local_css("styles.css")
 local_html("index.html")
@@ -64,14 +65,13 @@ if check_password():
 
 	for _ in range(5): st.write("\n")
 	st.subheader("Files")
-	with open("siscacheri92gh45.cache", "rb") as f:
-		st.download_button("Export SIS Cache", f, "siscacheri92gh45.cache")
-	with open("siscacheri92gh45creds.cache", "rb") as f:
-		st.download_button("Export SIS creds Cache", f, "siscacheri92gh45creds.cache")
-	with open("logs.txt", "a+") as f:
+	with open(f"data/{CACHE_NAME}.cache", "rb") as f:
+		st.download_button("Export SIS Cache", f, f"{CACHE_NAME}.cache")
+	with open(f"data/{CACHE_NAME}creds.cache", "rb") as f:
+		st.download_button("Export SIS creds Cache", f, f"{CACHE_NAME}creds.cache")
+	with open("data/logs.log" if st.secrets["cloud"] else "logs.txt", "r") as f:
 		st.download_button("Export Logs", f, "logs.txt")
-
-	for _ in range(5): st.write("\n")
-	st.subheader("Logs")
-	with open("logs.txt", "a+") as file:
-		for line in file.readlines(): st.write(line)
+		for _ in range(5): st.write("\n")
+		st.subheader("Logs")
+		f.seek(0)
+		for line in f.readlines(): st.write(line)

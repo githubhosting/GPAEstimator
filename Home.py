@@ -1,5 +1,4 @@
 import datetime
-import logging
 import time
 
 import pandas as pd
@@ -52,14 +51,13 @@ def brutes(usn):
 
 
 def log(usn, name, dob, easter, crack):
-	with open("logs.txt", "a+") as file:
+	with open("data/logs.log" if st.secrets["cloud"] else "logs.txt", "a") as file:
 		file.write(
 			write :=
 			f"[LOG] | {datetime.datetime.now()} | "
 			f"{usn} | {dob} | {name} | {f'token-{easter}' if crack else 'dob'}\n"
 		)
-		st.write(write)
-		logging.log(0, write)
+		print(write)
 
 
 def deduct(easter):
