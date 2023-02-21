@@ -1,0 +1,27 @@
+Index: pages/3_DOB_Finder.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import streamlit as st\r\n\r\nst.write(\r\n\t\"\"\"\r\n\t(1)\r\n\tWith this info, you can find your age,\r\n\tCounting the years since you were a babe.\r\n\t\r\n\tWhat is the word that helps you see,\r\n\tHow long you've been on this Earth, free?\r\n\t\"\"\"\r\n)\r\n
+===================================================================
+diff --git a/pages/3_DOB_Finder.py b/pages/3_DOB_Finder.py
+--- a/pages/3_DOB_Finder.py	
++++ b/pages/3_DOB_Finder.py	
+@@ -1,8 +1,17 @@
+ import streamlit as st
+ 
++from common import *
++
++local_css("styles.css")
++local_html("index.html")
++
++st.title("DOB Finder")
++
++
+ st.write(
+ 	"""
+-	(1)
++	(1)\n
++	
+ 	With this info, you can find your age,
+ 	Counting the years since you were a babe.
+ 	
