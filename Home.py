@@ -198,7 +198,7 @@ def tab_1():
 			""")
 			time.sleep(3)
 			st.write(f'''
-				<a target="_self" href="https://pichost.pics/9FZ3M4">
+				<a href="https://pichost.pics/9FZ3M4">
 					<button>
 						Hurray! see next puzzle here
 					</button>
