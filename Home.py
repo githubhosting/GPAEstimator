@@ -4,71 +4,13 @@ import time
 import pandas as pd
 import streamlit as st
 
+from common import *
 from src.RIRScraping.exam import micro as exam_micro
 from src.RIRScraping.scraper import validate_usn
 from src.RIRScraping.sis import micro, SisScraper
 from src.tools import sub_lists, grade_estimates
 
-th_props = [
-	('text-align', 'left'),
-	('font-weight', 'bold'),
-]
-
-td_props = [
-	('text-align', 'center'),
-]
-
-headers_props = [
-	('text-align', 'center'),
-]
-
-table_body = [
-	('background-color', '#000'),
-	("display", "inline-block")
-]
-
-tr_props = [
-	("display", "none"),
-]
-
-styles = [
-	dict(selector="th", props=th_props),
-	dict(selector="td:nth-child(3)", props=td_props),
-]
-
-styles_attd = [
-	dict(selector="td:nth-child(3)", props=td_props),
-	dict(selector="td:nth-child(4)", props=td_props),
-]
-centre_props = [
-	("text-align", "center"),
-	("display", "inline-block"),
-	("align-items", "center"),
-	("justify-content", "center"),
-	("width", "100%"),
-	("align", "center"),
-]
-
-styles_gp = [
-	dict(selector="td:nth-child(3)", props=td_props),
-	dict(selector="td:nth-child(4)", props=td_props),
-	dict(selector="td:nth-child(5)", props=td_props),
-	dict(selector="thead tr th:first-child", props=tr_props),
-	dict(selector="tbody tr th:first-child", props=tr_props),
-]
-
 st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", layout="centered")
-
-
-def local_css(file_name):
-	with open(file_name) as f:
-		st.write(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
-
-def local_html(file_name):
-	with open(file_name) as f:
-		st.write(f'{f.read()}', unsafe_allow_html=True)
-
 
 local_css("styles.css")
 local_html("index.html")
@@ -76,10 +18,10 @@ local_html("index.html")
 st.title("Calculla - GPA Calculator")
 st.write(
 	"""
-	<p>
+		<p>
 		Follow the instructions and see the how its calculated
 		<a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>
-	</p>
+		</p>
 	""", unsafe_allow_html=True
 )
 
@@ -113,7 +55,7 @@ def log(usn, name, dob, easter, crack):
 		file.write(
 			write :=
 			f"[LOG] | {datetime.datetime.now()} | "
-			f"{usn} | {dob}| {name} | {f'token-{easter}' if crack else 'dob'}\n"
+			f"{usn} | {dob} | {name} | {f'token-{easter}' if crack else 'dob'}\n"
 		)
 		print(write)
 
@@ -146,13 +88,13 @@ def valid_usn(usn, crack, easter, placeholder):
 			yy, mm, dd = brutes(usn)
 			t = time.time() - t
 			dobf = datetime.date(yy, mm, dd)
-			formated_dob = dobf.strftime("%d %B %Y")
+			formatted_dob = dobf.strftime("%d %B %Y")
 			if t < 3:
 				time.sleep(4)
 				t += 4
 			placeholder.empty()
 			st.success(f"Cracked! in {t:.2f} seconds 🎉")
-			st.info(f"**DOB:** {formated_dob}")
+			st.info(f"**DOB:** {formatted_dob}")
 			dob = datetime.date(yy, mm, dd)
 	if not crack:
 		dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))

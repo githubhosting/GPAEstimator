@@ -1,51 +1,27 @@
 import pandas as pd
 import streamlit as st
 
+from common import *
 
-def local_html(file_name):
-	with open(file_name) as f:
-		st.markdown(f'{f.read()}', unsafe_allow_html=True)
-
-
+local_css("styles.css")
 local_html("index.html")
 
-th_props = [
-	('text-align', 'left'),
-	('font-weight', 'bold'),
-]
-
-td_props = [
-	('text-align', 'center'),
-]
-
-headers_props = [
-	('text-align', 'center'),
-]
 table_body = [
 	('border', '1.5px solid white'),
 	('border-radius', '20px'),
 ]
-styles = [
-	dict(selector="th", props=th_props),
-	dict(selector="td", props=td_props),
-]
+
 hide_table_row_index = """
-            <style>
-            thead tr th:first-child {display:none}
-            tbody th {display:none}
-            </style>
-            """
+<style>
+	thead tr th:first-child {display:none}
+	tbody th {display:none}
+</style>
+"""
+
 st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
+st.title("Instruction and Working")
 
-def local_css(file_name):
-	with open(file_name) as f:
-		st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
-
-local_css("styles.css")
-
-st.write("# Instruction and Working")
 tab1, tab2 = st.tabs(["Instructions", "How its Calculated"])
 
 with tab1:
