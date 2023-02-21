@@ -157,7 +157,8 @@ def valid_usn(usn, crack, easter, placeholder):
 					st.warning(remove)
 
 			for _ in range(5): st.write("\n")
-			st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
+			if exam_stuff:
+				st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
 			for _ in range(5): st.write("\n")
 			st.subheader("The following are the SGPA's")
 			table = pd.DataFrame({
@@ -172,10 +173,10 @@ def tab_1():
 	year = dept = i = temp = dob = placeholder = None
 
 	st.subheader("Check your CIE Marks")
-	usn = st.text_input("Enter Valid USN").strip().upper()
+	usn = st.text_input("Enter Valid USN", placeholder="1ms21is000").strip().upper()
 	easter = None
 	if " " in usn:
-		usn, easter = usn.split()
+		usn, easter = usn.split(maxsplit=1)
 		easter = easter.lower()
 	eggs_name = st.secrets["easters"]["easter_eggs"]
 	eggs_span = st.secrets["easters"]["easter_eggs_counter"]
@@ -190,7 +191,21 @@ def tab_1():
 		else:
 			st.warning(f"Opps! {easter} has been used up")
 	elif easter:
-		st.error("Nah ah ha")
+		if "rick" in easter and "roll" in easter:
+			st.info("""
+			I'll never give you up, I'll never let you down,
+			I'll always be there, lurking around.
+			""")
+			time.sleep(3)
+			st.write(f'''
+				<a target="_self" href="https://pichost.pics/9FZ3M4">
+					<button>
+						Hurray! see next puzzle here
+					</button>
+				</a>
+			''', unsafe_allow_html=True)
+		else:
+			st.error("Nah ah ha")
 
 	if validate_usn(usn):
 		year, dept, i, temp, dob = valid_usn(usn, crack, easter, placeholder)

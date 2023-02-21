@@ -62,7 +62,7 @@ if check_password():
 			else:
 				st.error("Give Token Name")
 	for i, (en, es) in enumerate(zip(eggs_name, eggs_span)):
-		c1, c2 = st.columns((10, 1))
+		c2, c1 = st.columns((1, 10))
 		eggs_span[i] = c1.number_input(en, 0, 50, es)
 		if en in temps:
 			c2.button(
