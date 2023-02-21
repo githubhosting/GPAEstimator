@@ -415,7 +415,21 @@
       <option name="project" value="LOCAL" />
       <updated>1677001802286</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="easter eggs added">
+      <created>1677001825288</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1677001825288</updated>
+    </task>
+    <task id="LOCAL-00028" summary="easter eggs added">
+      <created>1677002025880</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1677002025880</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

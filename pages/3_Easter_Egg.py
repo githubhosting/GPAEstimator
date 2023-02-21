@@ -84,4 +84,4 @@ st.markdown(
 	"""
 )
 
-st.write("<input hidden value='rookie'/>")
+st.write("<input hidden value='rookie'/>", unsafe_allow_html=True)
