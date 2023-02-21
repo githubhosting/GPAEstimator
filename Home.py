@@ -28,12 +28,7 @@ st.write(
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
 tab1, tab2, tab3 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA"])
 crack_forbid_msg = """
-**Whoa, hold your horses! What do you think you're doing?
-Do you really think you can crack the creators password with THEIR OWN fancy tool?
-Let's face it, if the creators password was a piñata,
-you wouldn't even be able to hit it with a baseball bat.
-But don't worry, we won't judge you for trying.
-Just don't blame us if you end up with a headache!**
+**💨 Whoa, hold your horses! 🐴 What do you think you're doing? 🧐 Do you really think you can crack the creators' password with THEIR OWN fancy tool? Let's face it, if the creators' password was a piñata, you wouldn't even be able to hit it with a baseball bat 😎. But don't worry, we won't judge you for trying. 🫡"**
 """
 
 
@@ -177,7 +172,7 @@ def tab_1():
 	year = dept = i = temp = dob = placeholder = None
 
 	st.subheader("Check your CIE Marks")
-	usn = st.text_input("Enter your USN").strip().upper()
+	usn = st.text_input("Enter Valid USN").strip().upper()
 	easter = None
 	if " " in usn:
 		usn, easter = usn.split()

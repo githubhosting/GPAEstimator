@@ -52,7 +52,7 @@ if check_password():
 	temps = st.secrets.easters.temps
 	with st.form("Add Token", True):
 		name = st.text_input("Token Name")
-		span = st.slider("Token Span", 1, 50, 10)
+		span = st.number_input("Token Span", 1, 50, 10)
 		if st.form_submit_button("Add Token"):
 			if name:
 				st.success(f"token-{name} Added")
@@ -63,7 +63,7 @@ if check_password():
 				st.error("Give Token Name")
 	for i, (en, es) in enumerate(zip(eggs_name, eggs_span)):
 		c1, c2 = st.columns((10, 1))
-		eggs_span[i] = c1.slider(en, 0, 50, es)
+		eggs_span[i] = c1.number_input(en, 0, 50, es)
 		if en in temps:
 			c2.button(
 				"🗑️", key=i, on_click=lambda _en=en, _i=i: eggs_name.pop(i) and eggs_span.pop(i) and temps.remove(en)
