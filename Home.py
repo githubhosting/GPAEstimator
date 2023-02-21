@@ -113,59 +113,60 @@ def valid_usn(usn, crack, easter, placeholder):
 				log(usn, "CREATOR", "huss-hh-hh", easter, crack)
 			else:
 				log(usn, meta["name"], dob, easter, crack)
-				st.markdown(
-					f"""
-					<h3 align="left">{welcome} {meta['name']} ! {symbol} <h3> 
-					""", unsafe_allow_html=True
-				)
-				st.write(f"#### CIE Marks for Semester {meta['sem']}", unsafe_allow_html=True)
-				sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
 
-				table = pd.DataFrame(
-					{"Subject": sub_names, "Marks": sub_marks},
-					index=[j for j in range(1, len(sub_marks) + 1)]
-				)
-				st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
-				total_cie_marks = sum(sub_marks)
-				st.write("\n")
-				st.markdown(
-					f"""
-				    <h2 align="center">Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h2>
-				    """, unsafe_allow_html=True)
-				st.markdown(""" ##### Attendance for this semester """)
+			st.markdown(
+				f"""
+				<h3 align="left">{welcome} {meta['name']} ! {symbol} <h3> 
+				""", unsafe_allow_html=True
+			)
+			st.write(f"#### CIE Marks for Semester {meta['sem']}", unsafe_allow_html=True)
+			sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
 
-				short_attendance = []
-				for j in sub_attds:
-					if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
-				attendance = [str(j) + "%" for j in sub_attds]
+			table = pd.DataFrame(
+				{"Subject": sub_names, "Marks": sub_marks},
+				index=[j for j in range(1, len(sub_marks) + 1)]
+			)
+			st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
+			total_cie_marks = sum(sub_marks)
+			st.write("\n")
+			st.markdown(
+				f"""
+				<h2 align="center">Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h2>
+				""", unsafe_allow_html=True)
+			st.markdown(""" ##### Attendance for this semester """)
 
-				table = pd.DataFrame(
-					{"Subject": sub_names, "Percentage": attendance},
-					index=[k for k in range(1, len(sub_marks) + 1)]
-				)
-				st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
-				if short_attendance:
-					st.write("")
-					st.write("You have short attendance in the following subjects")
-					for key in short_attendance:
-						remove = str(key).replace("{'", "").replace("'}", "")
-						st.warning(remove)
+			short_attendance = []
+			for j in sub_attds:
+				if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
+			attendance = [str(j) + "%" for j in sub_attds]
 
-					for _ in range(5): st.write("\n")
-					st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
+			table = pd.DataFrame(
+				{"Subject": sub_names, "Percentage": attendance},
+				index=[k for k in range(1, len(sub_marks) + 1)]
+			)
+			st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
+			if short_attendance:
+				st.write("")
+				st.write("You have short attendance in the following subjects")
+				for key in short_attendance:
+					remove = str(key).replace("{'", "").replace("'}", "")
+					st.warning(remove)
 
-					st.subheader("The following are Semester SGPA's")
-					table = pd.DataFrame({
-						"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
-						"SGPA": [f"{s:.2f}" for s in sgpas]
-					})
-					st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
-				st.subheader("The following are your sem sgpa's")
+				for _ in range(5): st.write("\n")
+				st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
+
+				st.subheader("The following are Semester SGPA's")
 				table = pd.DataFrame({
 					"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
 					"SGPA": [f"{s:.2f}" for s in sgpas]
 				})
 				st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
+			st.subheader("The following are your sem sgpa's")
+			table = pd.DataFrame({
+				"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
+				"SGPA": [f"{s:.2f}" for s in sgpas]
+			})
+			st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
 	return year, dept, i, temp, dob
 
 
