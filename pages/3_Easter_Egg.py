@@ -8,7 +8,9 @@ local_css("styles.css")
 local_html("index.html")
 
 st.title("Riddles and Easter Egg")
-st.write("The answer to these easy riddles are designed to be key to unlock the magical powers of this app.")
+st.write(
+	f"The answer to these easy riddles are designed to be key to unlock the magical powers of this app. <a class='name' href='{st.secrets['link']}'>Click here</a> to read those special powers.",
+	unsafe_allow_html=True)
 st.write("After Finding the answer to the riddle just append it to any USN by giving space.")
 st.caption("Example: '1ms21is000 <answer>' in the USN field")
 
