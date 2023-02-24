@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="finally all set to launch">
+    <list default="true" id="ea0ad3ae-9617-4f31-8617-9c5ebb15768a" name="Changes" comment="added link to about page as well">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/3_Easter_Egg.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/3_Easter_Egg.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,7 +233,8 @@
       <workItem from="1676888971854" duration="3120000" />
       <workItem from="1677065518163" duration="4219000" />
       <workItem from="1677137344318" duration="2532000" />
-      <workItem from="1677207939344" duration="11366000" />
+      <workItem from="1677207939344" duration="11422000" />
+      <workItem from="1677251781299" duration="1305000" />
     </task>
     <task id="LOCAL-00001" summary="stable">
       <created>1670054196084</created>
@@ -382,7 +383,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677250406890</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="added link to about page as well">
+      <created>1677251071318</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1677251071318</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -428,7 +436,8 @@
     <MESSAGE value="added mutable success message and added wave hand animation" />
     <MESSAGE value="made the changes waithing to resolve the blank page error on hosting" />
     <MESSAGE value="finally all set to launch" />
-    <option name="LAST_COMMIT_MESSAGE" value="finally all set to launch" />
+    <MESSAGE value="added link to about page as well" />
+    <option name="LAST_COMMIT_MESSAGE" value="added link to about page as well" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />

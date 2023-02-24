@@ -26,7 +26,7 @@ st.write(
 )
 
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
-tab1, tab2, tab3 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA"])
+tab1, tab2, tab3, tab4 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA", "Simple - Calculator"])
 crack_forbid_msg = """
 **💨 Whoa, hold your horses! 🐴 What do you think you're doing? 🧐 Do you really think you can crack the creators' password with THEIR OWN fancy tool? Let's face it, if the creators' password was a piñata, you wouldn't even be able to hit it with a baseball bat 😎. But don't worry, we won't judge you for trying. 🫡"**
 """
@@ -247,7 +247,7 @@ def tab_2(year, dept, i, temp, dob):
 					table = pd.DataFrame({k: [v[i]] for k, v in grade_lists.items()})
 					st.write(f" **{sn}** : {sub_marks[i]}", table.style.hide(axis="index").to_html(), "<hr/>",
 					         unsafe_allow_html=True)
-			st.write("Note down the expected grades from above and enter them in the next tab")
+			st.info("Note down the expected grades from above and enter them in the next tab")
 	else:
 		st.warning("Enter your USN and DOB first", icon="⚠️")
 	return sub_names, sub_codes, sub_creds
@@ -288,6 +288,22 @@ def home():
 		subject_name_, subject_code_, creds_ = tab_2(year_, dept_, i_, temp_, dob_)
 	with tab3:
 		tab_3(subject_name_, dob_, creds_)
+	with tab4:
+		st.subheader("How much is average CIE marks for 50?")
+		avg = st.slider("Average CIE marks", 0, 50, step=1)
+		to_score = (90 - avg) * 2
+		st.write("Following is the minimum marks you need to score in SEE to get respective grades")
+		grades = [to_score, to_score - 20, to_score - 40, to_score - 60, to_score - 80, to_score - 100]
+		for i in range(len(grades)):
+			if grades[i] > 100:
+				grades[i] = " "
+		grade_letter = ["O", "A+", "A", "B+", "B", "C"]
+		table_1 = pd.DataFrame({"Grade": grade_letter, "Marks": grades})
+		st.write(table_1.style.hide(axis="index").set_table_styles(styles).to_html(), unsafe_allow_html=True)
+		st.write("")
+		st.write("Here is how its calculated :")
+		st.write(
+			f"You scored {avg}, then you need {to_score} in SEE to get O Grade. Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} and that is minimum to get O Grade")
 
 
 if __name__ == '__main__':
