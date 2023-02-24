@@ -40,3 +40,11 @@ td {
     border: 1px solid #666;
     padding: 5px;
 }
+
+.pt {
+    padding-top: 10px;
+}
+
+.mt {
+    margin-top: 10px;
+}

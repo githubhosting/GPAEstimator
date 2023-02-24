@@ -3,6 +3,7 @@ import streamlit as st
 
 from common import *
 
+st.set_page_config(page_title="Calculla - Instruction & Working", page_icon="📊", layout="centered")
 local_css("styles.css")
 local_html("index.html")
 
@@ -26,10 +27,11 @@ tab1, tab2 = st.tabs(["Instructions", "How its Calculated"])
 
 with tab1:
 	st.write("1. Enter your USN and DOB")
-	st.write("2. Your CIE and Attendance will be displayed")
-	st.write("3. Switch to the Grades-Score tab")
+	st.write("2. Your CIE Marks and Attendance will be displayed")
+	st.write(
+		"3. Switch to the Grades-Score tab, Here you can see the minimum marks to score in SEE to get respective grades.")
 	st.write("4. Note down the expected grades for each subject")
-	st.write("5. Switch to the Credit-CGPA tab and select the grades")
+	st.write("5. Switch to the Credit-CGPA tab and select the grades based on the previous tab")
 	st.write("6. Your SGPA will be displayed")
 	st.write(
 		"""

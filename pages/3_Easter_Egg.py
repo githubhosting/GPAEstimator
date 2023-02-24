@@ -2,20 +2,29 @@ import streamlit as st
 
 from common import *
 
+st.set_page_config(page_title="Riddles and Easter Egg", page_icon="🥚", layout="centered")
+
 local_css("styles.css")
 local_html("index.html")
 
-st.subheader("After Finding the Easter Egg just append it to any usn, eg '1ms21is000 easter egg' in the marks finder")
+st.title("Riddles and Easter Egg")
+st.write("The answer to these easy riddles are designed to be key to unlock the magical powers of this app.")
+st.write("After Finding the answer to the riddle just append it to any USN by giving space.")
+st.caption("Example: '1ms21is000 <answer>' in the USN field")
 
 st.write("<hr/>", unsafe_allow_html=True)
 
 st.markdown(
 	"""
-	With this info, you can find your age,
-	Counting the years since you were a babe.
-	
-	What is the word that helps you see,
-	How long you've been on this Earth, free?
+	My tune is catchy, and my lyrics are fine,
+	But to hear them, you must take the time.
+	Click a link, play a game,
+	But don't be fooled, it's all the same.
+
+	A prank that's old, but still alive,
+	A classic joke, that won't be denied.
+	You think you're safe, you think you're sound,
+	But with a single click, I'll turn you around.
 	"""
 )
 
@@ -72,15 +81,11 @@ st.write("<hr/>", unsafe_allow_html=True)
 
 st.markdown(
 	"""
-	My tune is catchy, and my lyrics are fine,
-	But to hear them, you must take the time.
-	Click a link, play a game,
-	But don't be fooled, it's all the same.
-	
-	A prank that's old, but still alive,
-	A classic joke, that won't be denied.
-	You think you're safe, you think you're sound,
-	But with a single click, I'll turn you around.
+	With this info, you can find your age,
+	Counting the years since you were a babe.
+
+	What is the word that helps you see,
+	How long you've been on this Earth, free?
 	"""
 )
 

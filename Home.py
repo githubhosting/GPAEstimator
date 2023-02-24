@@ -93,11 +93,12 @@ def valid_usn(usn, crack, easter, placeholder):
 			dobf = datetime.date(yy, mm, dd)
 			formatted_dob = dobf.strftime("%d %B %Y")
 			if t < 3:
-				time.sleep(4)
+				# time.sleep(4)
 				t += 4
 			placeholder.empty()
 			st.success(f"Cracked! in {t:.2f} seconds 🎉")
-			st.info(f"**DOB:** {formatted_dob}")
+			st.info(f"DOB: **{formatted_dob}**")
+			st.caption("Please use this tool with caution. We are not responsible for any misuse of this tool.")
 			dob = datetime.date(yy, mm, dd)
 	if not crack:
 		dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))
@@ -120,10 +121,11 @@ def valid_usn(usn, crack, easter, placeholder):
 
 			st.markdown(
 				f"""
+				&nbsp;
 				<h3 align="left">{welcome} {meta['name']} ! {symbol} <h3> 
 				""", unsafe_allow_html=True
 			)
-			st.write(f"#### CIE Marks for Semester {meta['sem']}", unsafe_allow_html=True)
+			st.write(f"##### CIE Marks for Semester {meta['sem']}", unsafe_allow_html=True)
 			sub_codes, sub_names, sub_attds, sub_marks, sub_creds = sub_lists(marks)
 
 			table = pd.DataFrame(
@@ -132,13 +134,13 @@ def valid_usn(usn, crack, easter, placeholder):
 			)
 			st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 			total_cie_marks = sum(sub_marks)
-			st.markdown(
+			st.write(
 				f"""
-				<h3>Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h3>
+				<h3 class="mt">Total CIE Marks: {total_cie_marks}/{len(sub_marks) * 50}<h3>
 				""", unsafe_allow_html=True
 			)
 
-			st.markdown(""" ##### Attendance for this semester """)
+			st.markdown(""" ###### Attendance for this semester """)
 			short_attendance = []
 			for j in sub_attds:
 				if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
@@ -159,20 +161,21 @@ def valid_usn(usn, crack, easter, placeholder):
 			for _ in range(5): st.write("\n")
 			if exam_stuff:
 				st.image(exam_stuff["photo"], exam_stuff["name"], use_column_width=True)
-			for _ in range(5): st.write("\n")
+			for _ in range(2): st.write("\n")
 			st.subheader("The following are the SGPA's")
 			table = pd.DataFrame({
 				"SEM": [f"SEM {s}" for s in range(1, len(sgpas) + 1)],
 				"SGPA": [f"{s:.2f}" for s in sgpas]
 			})
 			st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
+
 	return year, dept, i, temp, dob
 
 
 def tab_1():
 	year = dept = i = temp = dob = placeholder = None
 
-	st.subheader("Check your CIE Marks")
+	st.subheader("Check Internal Marks")
 	usn = st.text_input("Enter Valid USN", placeholder="1ms21is000").strip().upper()
 	easter = None
 	if " " in usn:
@@ -189,12 +192,18 @@ def tab_1():
 				st.info("Have a coffee while we try cracking the DOB")
 			crack = True
 		else:
-			st.warning(f"Opps! {easter} has been used up")
+			st.success(f"Yay! **{easter}** is correct ! 🎉")
+			st.warning(
+				f"But unfortunately, the creator has temporarily suspended this token that cracks the DOB. How about trying another token?")
+			st.info("Please contact the **Admin** or try again later")
+			st.markdown(
+				"Contact the creator <a class='name' href='https://wa.me/919945332995?text=Hey whats the working token?'>here 🚀</a> and get new token 😉",
+				unsafe_allow_html=True)
 	elif easter:
 		if "rick" in easter and "roll" in easter:
 			st.info("""
 			I'll never give you up, I'll never let you down,
-			I'll always be there, lurking around.
+			I'll always be there, lurking around. 😁
 			""")
 			time.sleep(3)
 			st.write(f'''
@@ -205,7 +214,8 @@ def tab_1():
 				</a>
 			''', unsafe_allow_html=True)
 		else:
-			st.error("Nah ah ha")
+			st.error("Nah ah ha ha")
+			st.warning("You didn't get the magic word!")
 
 	if validate_usn(usn):
 		year, dept, i, temp, dob = valid_usn(usn, crack, easter, placeholder)
@@ -217,7 +227,9 @@ def tab_1():
 
 def tab_2(year, dept, i, temp, dob):
 	st.title("Each Subject Scoring Criteria")
-	st.write("You have to score the following marks in SEE to get the respective grade")
+	st.write("You will need to score the following minimum marks in SEE to get respective grades")
+	st.caption(
+		"Example: If you scored 46 in Internals then you need 88 in SEE to get O Grade. Coz half of SEE is added to internals. Now 46 + 44 = 90 which is minimum to get O grade")
 	sub_codes = sub_names = sub_attds = sub_marks = sub_creds = None
 	if dob:
 		meta, exam_stuff, marks, sgpas = get_meta_and_marks(year, dept, i, temp, dob=dob)
@@ -233,7 +245,9 @@ def tab_2(year, dept, i, temp, dob):
 			for i, sn in enumerate(sub_names):
 				with st.container():
 					table = pd.DataFrame({k: [v[i]] for k, v in grade_lists.items()})
-					st.write(sn, table.style.hide(axis="index").to_html(), "<hr/>", unsafe_allow_html=True)
+					st.write(f" **{sn}** : {sub_marks[i]}", table.style.hide(axis="index").to_html(), "<hr/>",
+					         unsafe_allow_html=True)
+			st.write("Note down the expected grades from above and enter them in the next tab")
 	else:
 		st.warning("Enter your USN and DOB first", icon="⚠️")
 	return sub_names, sub_codes, sub_creds
@@ -242,17 +256,18 @@ def tab_2(year, dept, i, temp, dob):
 def tab_3(sub_names, dob, sub_creds):
 	if dob and sub_creds:
 		st.subheader("Enter your Predicted Grade for each subjects")
-
+		st.caption(
+			"Mark the expected grades according to the previous tab and click on calculate to get your final credits and SGPA")
 		grade_in_each = []
 		with st.form("Find GPA"):
 			for name in sub_names:
 				grade_in_each.append(st.radio(name, ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
-			if st.form_submit_button("Calc"):
+			if st.form_submit_button("Calculate"):
 				grade_point = [grade_to_gp[g] for g in grade_in_each]
 				weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
 				total_credits_final = sum(weighted_gp)
 				st.write("")
-				st.write("Based on the above grades, this will be your final credits and CGPA")
+				st.write("Based on the above grades, this will be your final credits and SGPA")
 				table = pd.DataFrame({
 					"Subject": sub_names, "Grade": grade_in_each, "Credits": sub_creds,
 					"Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
@@ -261,7 +276,7 @@ def tab_3(sub_names, dob, sub_creds):
 
 				cgpa = total_credits_final / sum(sub_creds)
 				cgpa = round(cgpa, 3)
-				st.subheader(f"Your CGPA is:\t " f"{cgpa}")
+				st.write(f"<h2 class='mt'>Your SGPA is: {cgpa}</h2>", unsafe_allow_html=True)
 	else:
 		st.error("Enter USN and DOB first", icon="🚨")
 

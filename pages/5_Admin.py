@@ -4,6 +4,8 @@ from streamlit.components.v1 import html
 from common import *
 from src.RIRScraping.sis import CACHE_NAME
 
+st.set_page_config(page_title="Admin Panel", page_icon="👨‍💻", layout="centered")
+
 local_css("styles.css")
 local_html("index.html")
 
