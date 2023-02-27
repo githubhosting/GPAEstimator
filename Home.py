@@ -93,7 +93,7 @@ def valid_usn(usn, crack, easter, placeholder):
 			dobf = datetime.date(yy, mm, dd)
 			formatted_dob = dobf.strftime("%d %B %Y")
 			if t < 3:
-				# time.sleep(4)
+				time.sleep(4)
 				t += 4
 			placeholder.empty()
 			st.success(f"Cracked! in {t:.2f} seconds 🎉")
