@@ -25,6 +25,7 @@ st.write(
 		</p>
 	""", unsafe_allow_html=True
 )
+st.write(f'Total Searches: {st.secrets.stats.stat[0]} | Unique Searches: {st.secrets.stats.stat[1]}')
 
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
 tab1, tab2, tab3, tab4 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - GPA", "Simple - Calculator"])
