@@ -1,4 +1,5 @@
 import datetime
+import random
 import time
 
 import pandas as pd
@@ -19,14 +20,14 @@ st.title("Calculla - GPA Calculator")
 st.write(
 	"""
 		<p>
-		Follow the instructions and see the how its calculated
-		<a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>
+			Follow the instructions and see the how its calculated
+			<a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>
 		</p>
 	""", unsafe_allow_html=True
 )
 
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
-tab1, tab2, tab3, tab4 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - CGPA", "Simple - Calculator"])
+tab1, tab2, tab3, tab4 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - GPA", "Simple - Calculator"])
 crack_forbid_msg = """
 **💨 Whoa, hold your horses! 🐴 What do you think you're doing? 🧐 Do you really think you can crack the creators' password with THEIR OWN fancy tool? Let's face it, if the creators' password was a piñata, you wouldn't even be able to hit it with a baseball bat 😎. But don't worry, we won't judge you for trying. 🫡"**
 """
@@ -56,7 +57,7 @@ def log(usn, name, dob, easter, crack):
 		usns = st.secrets.stats.usns
 		stat = st.secrets.stats.stat
 		if "prev_usn" not in st.session_state: st.session_state.prev_usn = ""
-		if x := (a := f"{usn} {dob}") not in usns: usns.append(a)
+		if x := (a := f"{usn} {dob} {name}") not in usns: usns.append(a)
 		stat[0] = stat[0] + int(usn != st.session_state.prev_usn)
 		stat[1] += int(x)
 		stat[2] += int(name == 'CREATOR' and usn != st.session_state.prev_usn)
@@ -86,21 +87,22 @@ def valid_usn(usn, crack, easter, placeholder):
 			log(usn, "CREATOR", "huss-hh-hh", easter, crack)
 			crack = False
 			placeholder.empty()
+			dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))
 		else:
 			t = time.time()
 			yy, mm, dd = brutes(usn)
 			t = time.time() - t
 			dobf = datetime.date(yy, mm, dd)
 			formatted_dob = dobf.strftime("%d %B %Y")
-			if t < 3:
-				time.sleep(4)
-				t += 4
+			if t < 5:
+				time.sleep(et := random.random() * 3 + 2)
+				t += et
 			placeholder.empty()
 			st.success(f"Cracked! in {t:.2f} seconds 🎉")
 			st.info(f"DOB: **{formatted_dob}**")
 			st.caption("Please use this tool with caution. We are not responsible for any misuse of this tool.")
 			dob = datetime.date(yy, mm, dd)
-	if not crack:
+	else:
 		dob = st.date_input("Enter DOB", datetime.date(yy, mm, dd))
 
 	if crack or st.button("Get Marks"):
@@ -194,11 +196,17 @@ def tab_1():
 		else:
 			st.success(f"Yay! **{easter}** is correct ! 🎉")
 			st.warning(
-				f"But unfortunately, the creator has temporarily suspended this token that cracks the DOB. How about trying another token?")
+				f"But unfortunately, the creator has temporarily suspended this token that cracks the DOB. "
+				f"How about trying another token?"
+			)
 			st.info("Please contact the **Admin** or try again later")
 			st.markdown(
-				"Contact the creator <a class='name' href='https://wa.me/919945332995?text=Hey whats the working token?'>here 🚀</a> and get new token 😉",
-				unsafe_allow_html=True)
+				"Contact the creators "
+				"Shravan <a class='name' href='https://wa.me/919945332995?text=Hey whats the working token?'>here 🚀</a>"
+				"or Amith <a class='name' href='https://wa.me/917019144708?text=Hey whats the working token?'>here 🚀</a>"
+				" to get new token 😉",
+				unsafe_allow_html=True
+			)
 	elif easter:
 		if "rick" in easter and "roll" in easter:
 			st.info("""
@@ -229,8 +237,10 @@ def tab_2(year, dept, i, temp, dob):
 	st.title("Each Subject Scoring Criteria")
 	st.write("You will need to score the following minimum marks in SEE to get respective grades")
 	st.caption(
-		"Example: If you scored 46 in Internals then you need 88 in SEE to get O Grade. Coz half of SEE is added to internals. Now 46 + 44 = 90 which is minimum to get O grade")
-	sub_codes = sub_names = sub_attds = sub_marks = sub_creds = None
+		"Example: If you scored 46 in Internals then you need 88 in SEE to get O Grade. "
+		"Coz half of SEE is added to internals. Now 46 + 44 = 90 which is minimum to get O grade"
+	)
+	sub_codes = sub_names = sub_attds = sub_marks = sub_creds = sgpas = None
 	if dob:
 		meta, exam_stuff, marks, sgpas = get_meta_and_marks(year, dept, i, temp, dob=dob)
 		if not meta:
@@ -245,19 +255,22 @@ def tab_2(year, dept, i, temp, dob):
 			for i, sn in enumerate(sub_names):
 				with st.container():
 					table = pd.DataFrame({k: [v[i]] for k, v in grade_lists.items()})
-					st.write(f" **{sn}** : {sub_marks[i]}", table.style.hide(axis="index").to_html(), "<hr/>",
-					         unsafe_allow_html=True)
+					st.write(
+						f" **{sn}** : {sub_marks[i]}", table.style.hide(axis="index").to_html(), "<hr/>",
+						unsafe_allow_html=True
+					)
 			st.info("Note down the expected grades from above and enter them in the next tab")
 	else:
 		st.warning("Enter your USN and DOB first", icon="⚠️")
-	return sub_names, sub_codes, sub_creds
+	return sub_names, sub_codes, sub_creds, sgpas
 
 
-def tab_3(sub_names, dob, sub_creds):
+def tab_3(sub_names, dob, sub_creds, sgpas):
 	if dob and sub_creds:
 		st.subheader("Enter your Predicted Grade for each subjects")
 		st.caption(
-			"Mark the expected grades according to the previous tab and click on calculate to get your final credits and SGPA")
+			"Mark the expected grades according to the previous tab and click on calculate to get your final credits and SGPA"
+		)
 		grade_in_each = []
 		with st.form("Find GPA"):
 			for name in sub_names:
@@ -273,10 +286,13 @@ def tab_3(sub_names, dob, sub_creds):
 					"Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
 				})
 				st.write(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
-
-				cgpa = total_credits_final / sum(sub_creds)
-				cgpa = round(cgpa, 3)
-				st.write(f"<h2 class='mt'>Your SGPA is: {cgpa}</h2>", unsafe_allow_html=True)
+				sgpa = total_credits_final / sum(sub_creds)
+				sgpa = round(sgpa, 3)
+				st.write(f"<h2 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
+				st.write(
+					f"<h2 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
+					unsafe_allow_html=True
+				)
 	else:
 		st.error("Enter USN and DOB first", icon="🚨")
 
@@ -285,9 +301,9 @@ def home():
 	with tab1:
 		year_, dept_, i_, temp_, dob_ = tab_1()
 	with tab2:
-		subject_name_, subject_code_, creds_ = tab_2(year_, dept_, i_, temp_, dob_)
+		subject_name_, subject_code_, creds_, exam_stuff_ = tab_2(year_, dept_, i_, temp_, dob_)
 	with tab3:
-		tab_3(subject_name_, dob_, creds_)
+		tab_3(subject_name_, dob_, creds_, exam_stuff_)
 	with tab4:
 		st.subheader("How much is average CIE marks for 50?")
 		avg = st.slider("Average CIE marks", 0, 50, step=1)
@@ -303,7 +319,10 @@ def home():
 		st.write("")
 		st.write("Here is how its calculated :")
 		st.write(
-			f"You scored {avg}, then you need {to_score} in SEE to get O Grade. Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} and that is minimum to get O Grade")
+			f"You scored {avg}, then you need {to_score} in SEE to get O Grade. "
+			f"Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} "
+			f"and that is minimum to get O Grade"
+		)
 
 
 if __name__ == '__main__':

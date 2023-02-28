@@ -39,7 +39,6 @@ def check_password():
 		return True
 
 
-@st.cache_data
 def get_stats(_usns, _stat):
 	return f"{_usns} | {_stat}"
 
@@ -79,7 +78,7 @@ if check_password():
 		st.download_button("Export SIS creds Cache", f, f"{CACHE_NAME}creds.cache")
 	st.download_button("Export Stats", get_stats(st.secrets.stats.usns, st.secrets.stats.stat), f"stats.txt")
 	with open("data/logs.log" if st.secrets["cloud"] else "logs.txt", "r") as f:
-		st.download_button("Export Logs", f, "logs.txt")
+		st.download_button("Export Logs", f, "logs.log")
 		for _ in range(5): st.write("\n")
 		st.subheader("Logs")
 		f.seek(0)
