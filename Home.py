@@ -21,7 +21,14 @@ st.write(
 	"""
 		<p>
 			Follow the instructions and see the how its calculated
-			<a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>
+			<a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>.
+			And to check the terms <a class="name" target="_self" href="/Terms_and_Disclaimer">Click Here</a>
+		</p>
+		<p>
+			Check our blogs 
+			<a class="name" href="https://amithm3.hashnode.dev/calculla-the-over-engineered-gpa-calculator">Here</a> and 
+			<a class="name" href="https://shravanrevanna.hashnode.dev/calculla-the-next-level-gpa-calculator">Here</a> 
+			to know more about the tool.
 		</p>
 	""", unsafe_allow_html=True
 )
