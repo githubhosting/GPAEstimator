@@ -78,6 +78,6 @@ def macro(year: int, dept: str, temp=False, even=False, file=None, dry: bool = F
 def micro(usn: str, even=False):
     async def __micro():
         async with ExamScraper(even) as EXAM:
-            return await (EXAM.get_stats(usn))[0]
+            return (await EXAM.get_stats(usn))[0]
 
     return asyncio.run(__micro())
