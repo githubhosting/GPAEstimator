@@ -134,8 +134,7 @@ def valid_usn_state(usn, crack, easter, placeholder):
                 """, unsafe_allow_html=True
             )
             st.write(f"##### CIE Marks for Semester {sis_stats['sem']}", unsafe_allow_html=True)
-            st.write(sis_stats["marks"])
-            sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks, sub_creds = sub_lists(sis_stats["marks"])
+            sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
 
             table = pd.DataFrame(
                 {"Subject": sub_names, "Marks": sub_marks},
