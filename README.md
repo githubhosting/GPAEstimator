@@ -9,3 +9,7 @@ Well, now you can! Introducing *Calculla*, the website that takes your college C
 minimum you need to score to reach your desired grade. You're welcome 😉
 
 ### [Link 🔗](https://calculla.streamlit.app/) to the website.
+
+## local setup
+
+- `pip install -r requirements.txt -r RITScraping2.0/requirements.txt`
