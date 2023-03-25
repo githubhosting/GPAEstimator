@@ -5,7 +5,7 @@ from RIRScraping import exam_macro, exam_micro, sis_macro, sis_micro
 
 if __name__ == '__main__':
     YEAR = 2021
-    DEPT = "IS"
+    DEPT = "CY"
     TEMP = False
     ODD = True
     EVEN = ODD

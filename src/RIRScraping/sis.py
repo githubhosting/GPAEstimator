@@ -5,10 +5,10 @@ import re
 from typing import Union
 
 from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob
-from ..private.dob_cracker import DobCracker
+from private.dob_cracker import DobCracker
 
 
-class SisScraper(Scraper, DobCracker):
+class SisScraper(DobCracker, Scraper):
     DEPTS = ["AD", "AI", "AT", "BT", "CH", "CI", "CS", "CV", "CY", "EC", "EE", "ET", "IS", "ME"]
     encoding = "Windows-1252"
     BASE_URL = "https://parents.msrit.edu/"
@@ -35,9 +35,9 @@ class SisScraper(Scraper, DobCracker):
     def body_validator(soup):
         return soup.find(id="username") is None
 
-    def get_dob(self, usn: str) -> str:
+    async def get_dob(self, usn: str) -> str:
         if hasattr(self, "brute_year"):
-            return self.brute_dob(usn)
+            return await self.brute_dob(usn)
 
     def __init__(self, odd=False):
         super(SisScraper, self).__init__()
