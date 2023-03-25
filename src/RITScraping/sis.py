@@ -209,6 +209,6 @@ def micro(usn: str, dob: str = None, odd=False):
     async def main():
         async with SisScraper(odd=odd) as SIS:
             if not dob: _dob = await SIS.get_dob(usn)
-            return await SIS.login_and_stats([usn], [dob or _dob])
+            return await SIS.login_and_stats([usn], [dob or _dob])[0]
 
     return asyncio.run(main())
