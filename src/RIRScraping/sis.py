@@ -5,7 +5,12 @@ import re
 from typing import Union
 
 from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob
-from private.dob_cracker import DobCracker
+
+try:
+    from private.dob_cracker import DobCracker
+except ImportError:
+    class DobCracker:
+        pass
 
 
 class SisScraper(DobCracker, Scraper):
