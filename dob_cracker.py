@@ -1,12 +1,11 @@
 from typing import Union
 from abc import ABCMeta, abstractmethod
 
-from .scraper import Scraper, AsyncCache, gen_dob, validate_usn
+from RIRScraping.scraper import Scraper, AsyncCache, gen_dob, validate_usn
 
 
 class DobCracker(Scraper, metaclass=ABCMeta):
     URL: str
-    CACHE_NAME: str
 
     @staticmethod
     @abstractmethod
@@ -37,5 +36,6 @@ class DobCracker(Scraper, metaclass=ABCMeta):
         assert validate_usn(usn)
         join_year = int("20" + usn[3:5])
         for year in [y := join_year - 18, y - 1, y + 1, y - 2, y - 3]:
-            print(f"{usn=}, {year=}")
-            if dob := await self.brute_year(usn=usn, year=year): return dob
+            if dob := await self.brute_year(usn=usn, year=year):
+                print(f"{usn=}, {dob=}")
+                return dob
