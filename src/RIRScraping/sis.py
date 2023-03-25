@@ -4,8 +4,13 @@ import os
 import re
 from typing import Union
 
-from private.dob_cracker import DobCracker
 from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob
+
+try:
+    from private.dob_cracker import DobCracker
+except ImportError:
+    class DobCracker:
+        pass
 
 
 class SisScraper(DobCracker, Scraper):
@@ -36,7 +41,7 @@ class SisScraper(DobCracker, Scraper):
         return soup.find(id="username") is None
 
     async def get_dob(self, usn: str) -> str:
-        if hasattr(self, "brute_dob"):
+        if hasattr(self, "brute_year"):
             return await self.brute_dob(usn)
 
     def __init__(self, odd=False):
@@ -120,7 +125,7 @@ class SisScraper(DobCracker, Scraper):
         if not self.body_validator(soup): raise ValueError("Not logged in")
         return [float(s.text.replace("SGPA:", "")) for s in soup.find_all("span", {"class": "cn-bgcolor1"})]
 
-    # fixme: website landing page changed
+    # fixme: website changed
     # def get_metas(self, soups):
     #     metas = []
     #     for soup in soups:
