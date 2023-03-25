@@ -1,7 +1,6 @@
+import asyncio
 import csv
 import os
-import asyncio
-import tempfile
 
 from .scraper import Scraper, gen_usn, validate_usn
 
