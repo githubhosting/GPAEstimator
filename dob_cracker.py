@@ -1,7 +1,7 @@
 from typing import Union
 from abc import ABCMeta, abstractmethod
 
-from RIRScraping.scraper import Scraper, AsyncCache, gen_dob, validate_usn
+from RITScraping.scraper import Scraper, AsyncCache, gen_dob, validate_usn
 
 
 class DobCracker(Scraper, metaclass=ABCMeta):
