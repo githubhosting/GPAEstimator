@@ -6,7 +6,7 @@ import time
 import pandas as pd
 import streamlit as st
 
-from RIRScraping import SisScraper, exam_micro, sis_micro, validate_usn
+from RITScraping import SisScraper, exam_micro, sis_micro, validate_usn
 from common import *
 from tools import sub_lists, grade_estimates
 
