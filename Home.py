@@ -1,11 +1,13 @@
 import asyncio
 import datetime
 import random
+import sys
 import time
 
 import pandas as pd
 import streamlit as st
 
+sys.path.append("RITScraping2.0/src")
 from RITScraping import SisScraper, exam_micro, sis_micro, validate_usn
 from common import *
 from tools import sub_lists, grade_estimates
@@ -42,8 +44,8 @@ crack_forbid_msg = """
 
 @st.cache_data(ttl=60 * 60 * 12)  # 12 hours
 def get_stats(usn, dob):
-	sis_stats = sis_micro(usn, dob, st.secrets.ODD)
-	exam_stats = exam_micro(usn, st.secrets.EVEN)
+	sis_stats, = sis_micro(usn, dob, st.secrets.ODD)
+	exam_stats, = exam_micro(usn, st.secrets.EVEN)
 	return sis_stats, exam_stats
 
 
@@ -93,10 +95,10 @@ def valid_usn_state(usn, crack, easter, placeholder):
 			dob = st.date_input("Enter DOB", datetime.date(yyyy, mm, dd))
 		else:
 			t = time.time()
-			yyyy, mm, dd = brutes(usn)
+			yyyy, mm, dd = map(int, brutes(usn))
 			t = time.time() - t
-			dob_formatted = datetime.date(yyyy, mm, dd)
-			formatted_dob = dob_formatted.strftime("%d %B %Y")
+			dob = datetime.date(yyyy, mm, dd)
+			formatted_dob = dob.strftime("%d %B %Y")
 			if t < 5:
 				time.sleep(et := random.random() * 3 + 2)
 				t += et
@@ -104,7 +106,6 @@ def valid_usn_state(usn, crack, easter, placeholder):
 			st.success(f"Cracked! in {t:.2f} seconds 🎉")
 			st.info(f"DOB: **{formatted_dob}**")
 			st.caption("Please use this tool with caution. We are not responsible for any misuse of this tool.")
-			dob = datetime.date(yyyy, mm, dd)
 	else:
 		dob = st.date_input("Enter DOB", datetime.date(yyyy, mm, dd))
 
@@ -115,6 +116,7 @@ def valid_usn_state(usn, crack, easter, placeholder):
 		if crack:
 			welcome = "Stalking"
 			symbol = "🕵️"
+		dob = f"{yyyy}-{mm:02d}-{dd:02d}"
 		sis_stats, exam_stats = get_stats(usn, dob)
 		if not sis_stats:
 			st.warning("Invalid USN or DOB", icon="🚨")
@@ -132,6 +134,7 @@ def valid_usn_state(usn, crack, easter, placeholder):
                 """, unsafe_allow_html=True
 			)
 			st.write(f"##### CIE Marks for Semester {sis_stats['sem']}", unsafe_allow_html=True)
+			st.write(sis_stats["marks"])
 			sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks, sub_creds = sub_lists(sis_stats["marks"])
 
 			table = pd.DataFrame(
@@ -186,7 +189,6 @@ def tab_1():
 	easter = None
 	if " " in usn:
 		usn, easter = usn.split(maxsplit=1)
-		usn = usn.capitalize()
 		easter = easter.lower()
 	eggs_name = st.secrets["easters"]["easter_eggs"]
 	eggs_span = st.secrets["easters"]["easter_eggs_counter"]
@@ -305,29 +307,31 @@ def tab_3(sub_names, dob, sub_creds, sgpas):
 def home():
 	with tab1:
 		usn_, dob_ = tab_1()
-	with tab2:
-		subject_name_, subject_code_, creds_, exam_stuff_ = tab_2(usn_, dob_)
-	with tab3:
-		tab_3(subject_name_, dob_, creds_, exam_stuff_)
-	with tab4:
-		st.subheader("How much is average CIE marks for 50?")
-		avg = st.slider("Average CIE marks", 0, 50, step=1)
-		to_score = (90 - avg) * 2
-		st.write("Following is the minimum marks you need to score in SEE to get respective grades")
-		grades = [to_score, to_score - 20, to_score - 40, to_score - 60, to_score - 80, to_score - 100]
-		for i in range(len(grades)):
-			if grades[i] > 100:
-				grades[i] = " "
-		grade_letter = ["O", "A+", "A", "B+", "B", "C"]
-		table_1 = pd.DataFrame({"Grade": grade_letter, "Marks": grades})
-		st.write(table_1.style.hide(axis="index").set_table_styles(styles).to_html(), unsafe_allow_html=True)
-		st.write("")
-		st.write("Here is how its calculated :")
-		st.write(
-			f"You scored {avg}, then you need {to_score} in SEE to get O Grade. "
-			f"Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} "
-			f"and that is minimum to get O Grade"
-		)
+
+
+# with tab2:
+# 	subject_name_, subject_code_, creds_, exam_stuff_ = tab_2(usn_, dob_)
+# with tab3:
+# 	tab_3(subject_name_, dob_, creds_, exam_stuff_)
+# with tab4:
+# 	st.subheader("How much is average CIE marks for 50?")
+# 	avg = st.slider("Average CIE marks", 0, 50, step=1)
+# 	to_score = (90 - avg) * 2
+# 	st.write("Following is the minimum marks you need to score in SEE to get respective grades")
+# 	grades = [to_score, to_score - 20, to_score - 40, to_score - 60, to_score - 80, to_score - 100]
+# 	for i in range(len(grades)):
+# 		if grades[i] > 100:
+# 			grades[i] = " "
+# 	grade_letter = ["O", "A+", "A", "B+", "B", "C"]
+# 	table_1 = pd.DataFrame({"Grade": grade_letter, "Marks": grades})
+# 	st.write(table_1.style.hide(axis="index").set_table_styles(styles).to_html(), unsafe_allow_html=True)
+# 	st.write("")
+# 	st.write("Here is how its calculated :")
+# 	st.write(
+# 		f"You scored {avg}, then you need {to_score} in SEE to get O Grade. "
+# 		f"Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} "
+# 		f"and that is minimum to get O Grade"
+# 	)
 
 
 if __name__ == '__main__':
