@@ -5,6 +5,7 @@ import os
 import pickle
 import re
 from functools import wraps
+from pathlib import Path
 from typing import Literal, Union
 
 import aiohttp
@@ -84,7 +85,7 @@ class Scraper:
 
 
 class AsyncCache:
-    cache_location = "__async_cache__"
+    cache_location = Path(__file__).parent.parent.parent / "__async_cache__"
 
     @classmethod
     def load_cache(cls, name) -> dict[str, str]:
