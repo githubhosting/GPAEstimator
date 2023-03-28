@@ -325,7 +325,7 @@ def home():
         tab_3(subject_name_, dob_, creds_, exam_stuff_)
     with tab4:
         st.subheader("How much is average CIE marks for 50?")
-        avg = st.slider("Average CIE marks", 0, 50, step=1)
+        avg = st.slider("Average CIE marks", 0, 50, value=35, step=1)
         to_score = (90 - avg) * 2
         st.write("Following is the minimum marks you need to score in SEE to get respective grades")
         grades = [to_score, to_score - 20, to_score - 40, to_score - 60, to_score - 80, to_score - 100]
