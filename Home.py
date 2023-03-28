@@ -134,18 +134,16 @@ def valid_usn_state(usn, crack, easter, placeholder):
                 """, unsafe_allow_html=True
             )
             st.write(f"##### CIE Marks for Semester {sis_stats['sem']}", unsafe_allow_html=True)
-            st.write(sis_stats["marks"])
-            sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks, sub_creds = sub_lists(sis_stats["marks"])
+            sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
 
             table = pd.DataFrame(
                 {"Subject": sub_names, "Marks": sub_marks},
                 index=[j for j in range(1, len(sub_marks) + 1)]
             )
             st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
-            total_cie_marks = sum(sub_marks)
             st.write(
                 f"""
-                <h3 class="mt">Total CIE Marks: {total_cie_marks}/{sum(sub_max_marks)}<h3>
+                <h3 class="mt">Total CIE Marks: {sum(sub_marks)}/{sum(sub_max_marks)}<h3>
                 """, unsafe_allow_html=True
             )
 
@@ -253,7 +251,7 @@ def tab_2(usn, dob):
         if not sis_stats:
             st.error("Invalid USN or DOB", icon="🚨")
         else:
-            sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
+            sub_codes, sub_names, sub_attds, sub_marks, _ = sub_lists(sis_stats["marks"])
             sub_creds = sis_stats["creds"]
             grade_lists = grade_estimates(
                 sub_marks, sub_names,
