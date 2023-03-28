@@ -253,6 +253,19 @@ def tab_2(usn, dob):
         else:
             sub_codes, sub_names, sub_attds, sub_marks, _ = sub_lists(sis_stats["marks"])
             sub_creds = sis_stats["creds"]
+            zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, sub_attds),
+                              key=lambda k: (k[1], 100 - k[0]))
+            sub_marks, sub_creds, sub_codes, sub_names, sub_attds = zip(*zip_list)
+            # adding priority score column to the table
+            table = pd.DataFrame({
+                "Subject": sub_names,
+                "Internal Marks": sub_marks,
+            }, index=(i for i in range(1, len(sub_marks) + 1)))
+            st.write("<hr/>", unsafe_allow_html=True)
+            st.caption("You should Prioritize the subjects in the same order below to get the best grades")
+            st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
+            st.write("<hr/>", unsafe_allow_html=True)
+
             grade_lists = grade_estimates(
                 sub_marks, sub_names,
                 **{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
@@ -308,27 +321,27 @@ def home():
         usn_, dob_ = tab_1()
     with tab2:
         subject_name_, subject_code_, creds_, exam_stuff_ = tab_2(usn_, dob_)
-    # with tab3:
-    # 	tab_3(subject_name_, dob_, creds_, exam_stuff_)
-    # with tab4:
-    # 	st.subheader("How much is average CIE marks for 50?")
-    # 	avg = st.slider("Average CIE marks", 0, 50, step=1)
-    # 	to_score = (90 - avg) * 2
-    # 	st.write("Following is the minimum marks you need to score in SEE to get respective grades")
-    # 	grades = [to_score, to_score - 20, to_score - 40, to_score - 60, to_score - 80, to_score - 100]
-    # 	for i in range(len(grades)):
-    # 		if grades[i] > 100:
-    # 			grades[i] = " "
-    # 	grade_letter = ["O", "A+", "A", "B+", "B", "C"]
-    # 	table_1 = pd.DataFrame({"Grade": grade_letter, "Marks": grades})
-    # 	st.write(table_1.style.hide(axis="index").set_table_styles(styles).to_html(), unsafe_allow_html=True)
-    # 	st.write("")
-    # 	st.write("Here is how its calculated :")
-    # 	st.write(
-    # 		f"You scored {avg}, then you need {to_score} in SEE to get O Grade. "
-    # 		f"Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} "
-    # 		f"and that is minimum to get O Grade"
-    # 	)
+    with tab3:
+        tab_3(subject_name_, dob_, creds_, exam_stuff_)
+    with tab4:
+        st.subheader("How much is average CIE marks for 50?")
+        avg = st.slider("Average CIE marks", 0, 50, step=1)
+        to_score = (90 - avg) * 2
+        st.write("Following is the minimum marks you need to score in SEE to get respective grades")
+        grades = [to_score, to_score - 20, to_score - 40, to_score - 60, to_score - 80, to_score - 100]
+        for i in range(len(grades)):
+            if grades[i] > 100:
+                grades[i] = " "
+        grade_letter = ["O", "A+", "A", "B+", "B", "C"]
+        table_1 = pd.DataFrame({"Grade": grade_letter, "Marks": grades})
+        st.write(table_1.style.hide(axis="index").set_table_styles(styles).to_html(), unsafe_allow_html=True)
+        st.write("")
+        st.write("Here is how its calculated :")
+        st.write(
+            f"You scored {avg}, then you need {to_score} in SEE to get O Grade. "
+            f"Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} "
+            f"and that is minimum to get O Grade"
+        )
 
 
 if __name__ == '__main__':
