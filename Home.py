@@ -109,6 +109,7 @@ def valid_usn_state(usn, crack, easter, placeholder):
     else:
         dob = st.date_input("Enter DOB", datetime.date(yyyy, mm, dd))
 
+    dob = str(dob)
     if crack or st.button("Get Marks"):
         welcome = "Hey"
         symbol = '<img width="30" vertical-align:sub ' \
@@ -116,7 +117,6 @@ def valid_usn_state(usn, crack, easter, placeholder):
         if crack:
             welcome = "Stalking"
             symbol = "🕵️"
-        dob = f"{yyyy}-{mm:02d}-{dd:02d}"
         sis_stats, exam_stats = get_stats(usn, dob)
         if not sis_stats:
             st.warning("Invalid USN or DOB", icon="🚨")
