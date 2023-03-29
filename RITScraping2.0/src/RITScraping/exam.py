@@ -42,7 +42,7 @@ class ExamScraper(Scraper):
             "sgpa": soup.find_all("p")[3].text,
             "sem": soup.find("p").text.split(",")[-1].strip(),
             "photo": self.BASE_URL + soup.find_all("img")[1]['src'],
-        } for soup in soups if body_validator(soup)]
+        } if body_validator(soup) else {} for soup in soups]
 
     async def stats_dept(self, year: int, dept: str, temp: bool = False, start: int = 1, stop: int = 150):
         assert 1 <= start <= stop
