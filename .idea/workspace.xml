@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="bugs fixed">
-      <change afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="test changes">
+      <change afterPath="$PROJECT_DIR$/RITScraping2.0" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/convert.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/logs.log" beforeDir="false" afterPath="$PROJECT_DIR$/data/logs.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +18,7 @@
       <map>
         <entry key="$PROJECT_DIR$" value="dev" />
         <entry key="$PROJECT_DIR$/RITScraping2.0" value="master" />
-        <entry key="$PROJECT_DIR$/RITScraping2.0/src/private" value="442f5c8947a0af31fe0989dec7080fd7dcca16be" />
+        <entry key="$PROJECT_DIR$/RITScraping2.0/src/private" value="39d282b1e3c8370e669ef49b1023cd8b89b44e34" />
       </map>
     </option>
     <option name="ROOT_SYNC" value="DONT_SYNC" />
@@ -159,6 +157,8 @@
       <workItem from="1679988786840" duration="808000" />
       <workItem from="1680080679927" duration="2199000" />
       <workItem from="1680100129066" duration="1741000" />
+      <workItem from="1680102421897" duration="1592000" />
+      <workItem from="1680104390197" duration="341000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -174,7 +174,21 @@
       <option name="project" value="LOCAL" />
       <updated>1680082434486</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="test changes">
+      <created>1680102635834</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1680102635834</updated>
+    </task>
+    <task id="LOCAL-00014" summary="test changes">
+      <created>1680102650759</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1680102650759</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -197,7 +211,8 @@
     <MESSAGE value="." />
     <MESSAGE value="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'" />
     <MESSAGE value="bugs fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="bugs fixed" />
+    <MESSAGE value="test changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="test changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
