@@ -128,50 +128,70 @@ def valid_usn_state(usn, crack, easter, placeholder):
             st.session_state.prev_usn = usn
 
             st.markdown(
-                f"""
-                &nbsp;
-                <h3 align="left">{welcome} {sis_stats['name']} ! {symbol} <h3> 
+                f"""<br>
+                <h3 style='text-align: center;'>{welcome} {sis_stats['name']} ! {symbol} <h3> 
                 """, unsafe_allow_html=True
             )
-            st.write(f"##### CIE Marks for Semester {sis_stats['sem']}", unsafe_allow_html=True)
+            st.write(f"<h5 style='text-align: center;'>CIE Marks for Semester {sis_stats['sem']}</h5>",
+                     unsafe_allow_html=True)
             sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
 
-            table = pd.DataFrame(
-                {"Subject": sub_names, "Marks": sub_marks},
-                index=[j for j in range(1, len(sub_marks) + 1)]
-            )
-            st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
+            # table = pd.DataFrame(
+            #     {"Subject": sub_names, "Marks": sub_marks},
+            #     index=[j for j in range(1, len(sub_marks) + 1)]
+            # )
+            # st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
+
+            st.write("<hr/>", unsafe_allow_html=True)
+            marks = sis_stats["marks"]
+            for code, m in marks.items():
+                name = m["sub"]
+                cies, ces = m["cies"], m["ces"]
+
+                with st.container():
+                    m_dick = {f"C-{i + 1}": [v[0]] for i, v in enumerate(cies)}
+                    m_dick.update({f"A-{i + 1}": [v[0]] for i, v in enumerate(ces)})
+                    m_dick["Total"] = m['tot'][0]
+                    table = pd.DataFrame(m_dick)
+                    st.write(
+                        f"<p class='submarks'>{name} - {code}</p>",
+                        table.style.hide(axis="index").to_html(), "<hr/>",
+                        unsafe_allow_html=True
+                    )
             st.write(
                 f"""
                 <h3 class="mt">Total CIE Marks: {sum(sub_marks)}/{sum(sub_max_marks)}<h3>
                 """, unsafe_allow_html=True
             )
+            with st.expander("Show Attendance"):
+                st.markdown("""<h5 style='text-align: center;'>Attendance for this semester</h5> """,
+                            unsafe_allow_html=True)
+                short_attendance = []
+                for j in sub_attds:
+                    if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
+                attendance = [str(j) + "%" for j in sub_attds]
+                table = pd.DataFrame(
+                    {"Subject": sub_names, "Percentage": attendance},
+                    index=[k for k in range(1, len(sub_marks) + 1)]
+                )
+                st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
 
-            st.markdown(""" ###### Attendance for this semester """)
-            short_attendance = []
-            for j in sub_attds:
-                if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
-            attendance = [str(j) + "%" for j in sub_attds]
-            table = pd.DataFrame(
-                {"Subject": sub_names, "Percentage": attendance},
-                index=[k for k in range(1, len(sub_marks) + 1)]
-            )
-            st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
+                if short_attendance:
+                    st.write("")
+                    st.write("Following Subjects have shortage of attendance")
+                    for key in short_attendance:
+                        remove = str(key).replace("{'", "").replace("'}", "")
+                        st.warning(remove)
+                for _ in range(2): st.write("\n")
 
-            if short_attendance:
-                st.write("")
-                st.write("Following Subjects have shortage of attendance")
-                for key in short_attendance:
-                    remove = str(key).replace("{'", "").replace("'}", "")
-                    st.warning(remove)
-
-            for _ in range(5): st.write("\n")
+            for _ in range(3): st.write("\n")
             if exam_stats:
                 st.image(exam_stats["photo"], exam_stats["name"], use_column_width=True)
             for _ in range(2): st.write("\n")
-            st.subheader("The following are the SGPA's")
+            st.markdown("""<h5 style='text-align: center;'>The following are the SGPA's</h5> """,
+                        unsafe_allow_html=True)
             table = pd.DataFrame({
-                "SEM": [f"SEM {s}" for s in range(1, len(sis_stats["sgpas"]) + 1)],
+                "SEM": [f"Semester {s}" for s in range(1, len(sis_stats["sgpas"]) + 1)],
                 "SGPA": [f"{s:.2f}" for s in sis_stats["sgpas"]]
             })
             st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
@@ -181,7 +201,6 @@ def valid_usn_state(usn, crack, easter, placeholder):
 
 def tab_1():
     dob = placeholder = None
-
     st.subheader("Check Internal Marks")
     usn = st.text_input("Enter Valid USN", placeholder="1ms21is000").strip().upper()
     easter = None
@@ -239,32 +258,54 @@ def tab_1():
 
 
 def tab_2(usn, dob):
-    st.title("Each Subject Scoring Criteria")
-    st.write("You will need to score the following minimum marks in SEE to get respective grades")
-    st.caption(
-        "Example: If you scored 46 in Internals then you need 88 in SEE to get O Grade. "
-        "Coz half of SEE is added to internals. Now 46 + 44 = 90 which is minimum to get O grade"
-    )
+    st.subheader("Each Subject Scoring / Prioritizing  Criteria")
+    # st.caption(
+    #     "Example: If you scored 46 in Internals then you need 88 in SEE to get O Grade. "
+    #     "Coz half of SEE is added to internals. Now 46 + 44 = 90 which is minimum to get O grade"
+    # )
     sub_codes = sub_names = sub_creds = sgpas = None
     if dob:
         sis_stats, exam_stats = get_stats(usn, dob)
         if not sis_stats:
             st.error("Invalid USN or DOB", icon="🚨")
         else:
-            sub_codes, sub_names, sub_attds, sub_marks, _ = sub_lists(sis_stats["marks"])
+            sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
+            all_marks = sis_stats["marks"]
             sub_creds = sis_stats["creds"]
-            zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, sub_attds),
-                              key=lambda k: (k[1], 100 - k[0]))
-            sub_marks, sub_creds, sub_codes, sub_names, sub_attds = zip(*zip_list)
-            # adding priority score column to the table
+            sub_cred_val = list(sub_creds.values())
+            tot_avg = []
+            for code, m in all_marks.items():
+                cies, ces = m["cies"], m["ces"]
+                cie_avg = sum([v[2] for v in cies]) / len(cies)
+                ce = sum([v[2] for v in ces])
+                tot_avg.append(cie_avg + ce)
+
+            priority = []
+            for i in range(len(sub_marks)):
+                score = ((sub_cred_val[i] * (sub_max_marks[i] - sub_marks[i])) + (tot_avg[i] - sub_marks[i]) + (
+                        sub_marks[i] * 0.5) + (sub_cred_val[i] * 2))
+                priority.append(score)
+
+            zip_list = sorted(zip(sub_marks, sub_cred_val, sub_codes, sub_names, sub_attds, priority),
+                              key=lambda k: (k[5]), reverse=True)
+
+            sub_marks, sub_creds, sub_codes, sub_names, sub_attds, priority = zip(*zip_list)
+            priority_score = [f"{m:.1f}" for m in priority]
             table = pd.DataFrame({
                 "Subject": sub_names,
                 "Internal Marks": sub_marks,
-            }, index=(i for i in range(1, len(sub_marks) + 1)))
-            st.write("<hr/>", unsafe_allow_html=True)
-            st.caption("You should Prioritize the subjects in the same order below to get the best grades")
+                "Priority Score": priority_score,
+            }, index=[i for i in range(1, len(sub_marks) + 1)])
+
+            st.caption(
+                "We suggest **prioritizing** your subjects in the following order to get the grades",
+                unsafe_allow_html=False)
             st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
+
             st.write("<hr/>", unsafe_allow_html=True)
+            st.write(
+                "<p class='submarks'>You will need to score the following minimum marks in SEE to get respective grades</p>",
+                unsafe_allow_html=True)
 
             grade_lists = grade_estimates(
                 sub_marks, sub_names,
@@ -275,10 +316,13 @@ def tab_2(usn, dob):
                 with st.container():
                     table = pd.DataFrame({k: [v[i]] for k, v in grade_lists.items()})
                     st.write(
-                        f" **{sn}** : {sub_marks[i]}", table.style.hide(axis="index").to_html(), "<hr/>",
+                        f"<p class='submarks'>{sn} - {sub_marks[i]}</p>",
+                        table.style.hide(axis="index").to_html(), "<hr/>",
                         unsafe_allow_html=True
                     )
-            st.info("Note down the expected grades from above and enter them in the next tab")
+            st.info("Note down the expected grades from above and enter them in the next tab to calculate SGPA")
+            st.info(
+                "The priority score is calculated based on a weighted average of multiple factors, including your CIE scores, the credit of the subject, and the relative score of the student's score compared to the class average. In essence, this formula enables us to determine the degree of difficulty of a each subject, and it allows us to calculate priority score of each subject and sort em accordingly.")
     else:
         st.warning("Enter your USN and DOB first", icon="⚠️")
     return sub_names, sub_codes, sub_creds, sgpas

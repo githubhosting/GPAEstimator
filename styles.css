@@ -31,9 +31,10 @@ footer {
 
 table {
     border-collapse: collapse;
-    border-radius: 15px;
+    border-radius: 10px;
     border-style: hidden;
     box-shadow: 0 0 0 2px #666;
+    margin: 0 auto;
 }
 
 td {
@@ -47,4 +48,16 @@ td {
 
 .mt {
     margin-top: 10px;
+    text-align: center;
+}
+.submarks{
+    font-weight: 600;
+    text-align: center;
+}
+
+.block-container{
+    padding: 0rem 1rem 10rem;
+}
+img{
+    border-radius: 15px !important;
 }

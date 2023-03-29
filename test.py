@@ -2,10 +2,8 @@ from RITScraping import sis_micro, exam_micro
 
 
 def main():
-	sis_stats = sis_micro("1MS21CS001", odd=True)
-	exam_stats = exam_micro("1MS21CS001", even=True)
-	print(sis_stats)
-	print(exam_stats)
+	sis_stats = sis_micro("1MS21CI049", odd=True)
+	print(sis_stats["marks"])
 
 
 if __name__ == '__main__':
