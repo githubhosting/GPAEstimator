@@ -258,7 +258,7 @@ def tab_1():
 
 
 def tab_2(usn, dob):
-    st.subheader("Each Subject Scoring / Prioritizing  Criteria")
+    st.subheader("Scoring & Prioritizing  Criteria for All Subjects")
     # st.caption(
     #     "Example: If you scored 46 in Internals then you need 88 in SEE to get O Grade. "
     #     "Coz half of SEE is added to internals. Now 46 + 44 = 90 which is minimum to get O grade"
@@ -292,13 +292,13 @@ def tab_2(usn, dob):
             sub_marks, sub_creds, sub_codes, sub_names, sub_attds, priority = zip(*zip_list)
             priority_score = [f"{m:.1f}" for m in priority]
             table = pd.DataFrame({
-                "Subject": sub_names,
-                "Internal Marks": sub_marks,
+                "Subjects": sub_names,
+                "Internals": sub_marks,
                 "Priority Score": priority_score,
             }, index=[i for i in range(1, len(sub_marks) + 1)])
 
             st.caption(
-                "We suggest **prioritizing** your subjects in the following order to get the grades",
+                "Prioritize subjects in the following order to get the best grades. Scroll down to the bottom to see how the priority score is calculated.",
                 unsafe_allow_html=False)
             st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 
@@ -306,7 +306,6 @@ def tab_2(usn, dob):
             st.write(
                 "<p class='submarks'>You will need to score the following minimum marks in SEE to get respective grades</p>",
                 unsafe_allow_html=True)
-
             grade_lists = grade_estimates(
                 sub_marks, sub_names,
                 **{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
@@ -322,7 +321,7 @@ def tab_2(usn, dob):
                     )
             st.info("Note down the expected grades from above and enter them in the next tab to calculate SGPA")
             st.info(
-                "The priority score is calculated based on a weighted average of multiple factors, including your CIE scores, the credit of the subject, and the relative score of the student's score compared to the class average. In essence, this formula enables us to determine the degree of difficulty of a each subject, and it allows us to calculate priority score of each subject and sort em accordingly.")
+                "The **priority score** is calculated based on a weighted average of multiple factors, including your CIE scores, the credit of the subject, and the relative score of the student's score compared to the class average. We have a formula that enables us to determine the degree of difficulty of a each subject based on the above factors. This allows us to calculate and sort subjects accordingly")
     else:
         st.warning("Enter your USN and DOB first", icon="⚠️")
     return sub_names, sub_codes, sub_creds, sgpas
