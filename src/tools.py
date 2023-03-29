@@ -5,11 +5,11 @@ def sub_lists(marks: dict):
 		sub_names = [m["sub"] for m in marks.values()]
 		sub_attds = [m["attd"] for m in marks.values()]
 		sub_marks = [m["tot"][0] for m in marks.values()]
-		sub_creds = [m["cred"] for m in marks.values()]
+		sub_max_marks = [m["tot"][1] for m in marks.values()]
 	except KeyError:
 		print("Invalid Marks dict")
 		return
-	return sub_codes, sub_names, sub_attds, sub_marks, sub_creds
+	return sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks
 
 
 def grade_estimates(sub_marks, sub_names, max_marks=100, **kwargs: int):

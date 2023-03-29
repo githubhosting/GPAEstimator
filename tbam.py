@@ -1,7 +1,6 @@
 import time
 
-from RIRScraping import exam_macro, exam_micro, sis_macro, sis_micro
-
+from RITScraping import exam_macro, sis_macro
 
 if __name__ == '__main__':
     YEAR = 2021
