@@ -20,7 +20,7 @@ local_html("index.html")
 
 st.title("Calculla - GPA Calculator")
 st.write(
-    """
+    f"""
         <p>
             Follow the instructions and see the how its calculated
             <a class="name" target="_self" href="/Instructions_and_Working">Click Here</a>.
@@ -32,6 +32,11 @@ st.write(
             <a class="name" href="https://shravanrevanna.hashnode.dev/calculla-the-next-level-gpa-calculator">Here</a> 
             to know more about the tool.
         </p>
+        <p>
+            Repo Link: <a class="name" href={st.secrets.github_link}>Github</a>
+            <br/>
+            <a class="name" href={st.secrets.beta_link}>Join</a> as a beta tester
+        </p
     """, unsafe_allow_html=True
 )
 st.write(f'Total Searches: {st.secrets.stats.stat[0]} | Unique Searches: {st.secrets.stats.stat[1]}')
