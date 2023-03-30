@@ -1,7 +1,7 @@
 from typing import Union
 from abc import ABCMeta, abstractmethod
 
-from RITScraping.scraper import Scraper, AsyncCache, gen_dob, validate_usn
+from RITScraping.scraper import Scraper, AsyncCache, gen_dob, validate_usn, CACHE_NAME
 
 
 class DobCracker(Scraper, metaclass=ABCMeta):
@@ -26,7 +26,7 @@ class DobCracker(Scraper, metaclass=ABCMeta):
         result = tuple(map(self.body_validator, await worker))
         return result.index(True) + 1 if True in result else None
 
-    @AsyncCache("siscacheri956kh45")
+    @AsyncCache(CACHE_NAME)
     async def brute_year(self, *, usn: str, year: int) -> Union[str, None]:
         assert validate_usn(usn)
         for month in range(1, 13):
