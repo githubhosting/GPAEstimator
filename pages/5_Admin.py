@@ -4,12 +4,16 @@ import pandas as pd
 import streamlit as st
 from streamlit.components.v1 import html
 
+from RITScraping import CACHE_NAME
+
 from common import *
 
 st.set_page_config(page_title="Admin Panel", page_icon="👨‍💻", layout="centered")
 
 local_css("styles.css")
 local_html("index.html")
+
+st.write("<br/>", unsafe_allow_html=True)
 
 
 def check_password():
@@ -74,10 +78,10 @@ if check_password():
 
     for _ in range(5): st.write("\n")
     st.subheader("Files")
-    # with open(f"data/{CACHE_NAME}.cache", "rb") as f:
-    # 	st.download_button("Export SIS Cache", f, f"{CACHE_NAME}.cache")
-    # with open(f"data/{CACHE_NAME}creds.cache", "rb") as f:
-    # 	st.download_button("Export SIS creds Cache", f, f"{CACHE_NAME}creds.cache")
+    with open(f"RITScraping2.0/__async_cache__/{CACHE_NAME}.cache", "rb") as f:
+        st.download_button("Export Cache", f, f"{CACHE_NAME}.cache")
+    with open(f"RITScraping2.0/__async_cache__/{CACHE_NAME}.creds.cache", "rb") as f:
+        st.download_button("Export Creds Cache", f, f"{CACHE_NAME}.creds.cache")
     st.download_button("Export Stats", get_stats(st.secrets.stats.usns, st.secrets.stats.stat), f"stats.txt")
     with open("data/logs.log" if st.secrets["cloud"] else "logs.txt", "r") as f:
         st.download_button("Export Logs", f, "logs.log")

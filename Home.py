@@ -8,6 +8,7 @@ import pandas as pd
 import streamlit as st
 
 sys.path.append("RITScraping2.0/src")
+
 from RITScraping import SisScraper, exam_micro, sis_micro, validate_usn
 from common import *
 from tools import sub_lists, grade_estimates
@@ -38,7 +39,10 @@ st.write(f'Total Searches: {st.secrets.stats.stat[0]} | Unique Searches: {st.sec
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
 tab1, tab2, tab3, tab4 = st.tabs(["Check CIE Marks", "Grades - Score", "Credit - GPA", "Simple - Calculator"])
 crack_forbid_msg = """
-**💨 Whoa, hold your horses! 🐴 What do you think you're doing? 🧐 Do you really think you can crack the creators' password with THEIR OWN fancy tool? Let's face it, if the creators' password was a piñata, you wouldn't even be able to hit it with a baseball bat 😎. But don't worry, we won't judge you for trying. 🫡"**
+**💨 Whoa, hold your horses! 🐴 What do you think you're doing? 
+🧐 Do you really think you can crack the creators' password with THEIR OWN fancy tool? 
+Let's face it, if the creators' password was a piñata, you wouldn't even be able to hit it with a baseball bat 😎. 
+But don't worry, we won't judge you for trying. 🫡"**
 """
 
 
@@ -270,6 +274,7 @@ def tab_2(usn, dob):
             st.error("Invalid USN or DOB", icon="🚨")
         else:
             sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
+            sgpas = sis_stats["sgpas"]
             all_marks = sis_stats["marks"]
             sub_creds = sis_stats["creds"]
             sub_cred_val = list(sub_creds.values())
@@ -298,13 +303,16 @@ def tab_2(usn, dob):
             }, index=[i for i in range(1, len(sub_marks) + 1)])
 
             st.caption(
-                "Prioritize subjects in the following order to get the best grades. Scroll down to the bottom to see how the priority score is calculated.",
+                "Prioritize subjects in the following order to get the best grades. "
+                "Scroll down to the bottom to see how the priority score is calculated.",
                 unsafe_allow_html=False)
             st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 
             st.write("<hr/>", unsafe_allow_html=True)
             st.write(
-                "<p class='submarks'>You will need to score the following minimum marks in SEE to get respective grades</p>",
+                "<p class='submarks'>"
+                "You will need to score the following minimum marks in SEE to get respective grades"
+                "</p>",
                 unsafe_allow_html=True)
             grade_lists = grade_estimates(
                 sub_marks, sub_names,
@@ -321,7 +329,11 @@ def tab_2(usn, dob):
                     )
             st.info("Note down the expected grades from above and enter them in the next tab to calculate SGPA")
             st.info(
-                "The **priority score** is calculated based on a weighted average of multiple factors, including your CIE scores, the credit of the subject, and the relative score of the student's score compared to the class average. We have a formula that enables us to determine the degree of difficulty of a each subject based on the above factors. This allows us to calculate and sort subjects accordingly")
+                "The **priority score** is calculated based on a weighted average of multiple factors, "
+                "including your CIE scores, the credit of the subject, "
+                "and the relative score of the student's score compared to the class average. "
+                "We have a formula that enables us to determine the degree of difficulty of a each subject, "
+                "based on the above factors. This allows us to calculate and sort subjects accordingly")
     else:
         st.warning("Enter your USN and DOB first", icon="⚠️")
     return sub_names, sub_codes, sub_creds, sgpas
@@ -331,7 +343,8 @@ def tab_3(sub_names, dob, sub_creds, sgpas):
     if dob and sub_creds:
         st.subheader("Enter your Predicted Grade for each subjects")
         st.caption(
-            "Mark the expected grades according to the previous tab and click on calculate to get your final credits and SGPA"
+            "Mark the expected grades according to the previous tab and "
+            "click on calculate to get your final credits and SGPA"
         )
         grade_in_each = []
         with st.form("Find GPA"):
@@ -342,7 +355,8 @@ def tab_3(sub_names, dob, sub_creds, sgpas):
                 weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
                 total_credits_final = sum(weighted_gp)
                 st.write("")
-                st.write("Based on the above grades, this will be your final credits and SGPA")
+                st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
+                         unsafe_allow_html=True)
                 table = pd.DataFrame({
                     "Subject": sub_names, "Grade": grade_in_each, "Credits": sub_creds,
                     "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
@@ -350,9 +364,9 @@ def tab_3(sub_names, dob, sub_creds, sgpas):
                 st.write(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
                 sgpa = total_credits_final / sum(sub_creds)
                 sgpa = round(sgpa, 3)
-                st.write(f"<h2 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
+                st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
                 st.write(
-                    f"<h2 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
+                    f"<h3 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
                     unsafe_allow_html=True
                 )
     else:
@@ -363,9 +377,9 @@ def home():
     with tab1:
         usn_, dob_ = tab_1()
     with tab2:
-        subject_name_, subject_code_, creds_, exam_stuff_ = tab_2(usn_, dob_)
+        sub_names, sub_codes, sub_creds, sgpas = tab_2(usn_, dob_)
     with tab3:
-        tab_3(subject_name_, dob_, creds_, exam_stuff_)
+        tab_3(sub_names, sub_codes, sub_creds, sgpas)
     with tab4:
         st.subheader("How much is average CIE marks for 50?")
         avg = st.slider("Average CIE marks", 0, 50, value=35, step=1)
