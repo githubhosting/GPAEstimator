@@ -12,6 +12,9 @@ import aiohttp
 from bs4 import BeautifulSoup
 
 
+CACHE_NAME = "cacheri956kh45"
+
+
 class Scraper:
     HEADERS = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "

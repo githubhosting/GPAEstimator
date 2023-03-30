@@ -4,7 +4,7 @@ import os
 import re
 from typing import Union
 
-from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob
+from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob, CACHE_NAME
 
 try:
     from private.dob_cracker import DobCracker
@@ -101,7 +101,7 @@ class SisScraper(DobCracker, Scraper):
             "tot": tuple(map(int, mark[7])),
         }
 
-    @AsyncCache("siscacheri956kh45.creds", ignore=("curl",))
+    @AsyncCache(f"{CACHE_NAME}.creds", ignore=("curl",))
     async def __cred_worker(self, *, curl, code) -> Union[tuple[str, int], None]:
         soup, = await self.get_soups(self.URL + curl)
         if not self.body_validator(soup): raise ValueError("Not logged in")
