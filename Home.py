@@ -285,9 +285,13 @@ def tab_2(usn, dob):
             tot_avg = []
             for code, m in all_marks.items():
                 cies, ces = m["cies"], m["ces"]
-                cie_avg = sum([v[2] for v in cies]) / len(cies)
                 ce = sum([v[2] for v in ces])
-                tot_avg.append(cie_avg + ce)
+                if len(cies) != 0:
+                    cie_avg = sum([v[2] for v in cies]) / len(cies)
+                    tot = cie_avg + ce
+                else:
+                    tot = ce
+                tot_avg.append(tot)
 
             priority = []
             for i in range(len(sub_marks)):
