@@ -281,22 +281,25 @@ def tab_2(usn, dob):
             sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
             sgpas = sis_stats["sgpas"]
             all_marks = sis_stats["marks"]
-            sub_creds = sis_stats["creds"]
-            sub_cred_val = list(sub_creds.values())
+            sub_creds = [sis_stats["creds"][k] for k in sub_codes]
             tot_avg = []
             for code, m in all_marks.items():
                 cies, ces = m["cies"], m["ces"]
-                cie_avg = sum([v[2] for v in cies]) / len(cies)
                 ce = sum([v[2] for v in ces])
-                tot_avg.append(cie_avg + ce)
+                if len(cies) != 0:
+                    cie_avg = sum([v[2] for v in cies]) / len(cies)
+                    tot = cie_avg + ce
+                else:
+                    tot = ce
+                tot_avg.append(tot)
 
             priority = []
             for i in range(len(sub_marks)):
-                score = ((sub_cred_val[i] * (sub_max_marks[i] - sub_marks[i])) + (tot_avg[i] - sub_marks[i]) + (
-                        sub_marks[i] * 0.5) + (sub_cred_val[i] * 2))
+                score = ((sub_creds[i] * (sub_max_marks[i] - sub_marks[i])) + (tot_avg[i] - sub_marks[i]) + (
+                        sub_marks[i] * 0.5) + (sub_creds[i] * 2))
                 priority.append(score)
 
-            zip_list = sorted(zip(sub_marks, sub_cred_val, sub_codes, sub_names, sub_attds, priority),
+            zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, sub_attds, priority),
                               key=lambda k: (k[5]), reverse=True)
 
             sub_marks, sub_creds, sub_codes, sub_names, sub_attds, priority = zip(*zip_list)

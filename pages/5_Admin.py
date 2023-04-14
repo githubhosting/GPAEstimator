@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 
 import pandas as pd
 import streamlit as st
@@ -90,11 +91,17 @@ if check_password():
         f.seek(0)
         lines = f.read().replace("\n", "<br/><br/>")
         html(f"<p style='color: #b5afaf'>{lines}<p/>", height=400, scrolling=True)
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    time_diff = datetime.strptime(f"5:29:53.000000", '%H:%M:%S.%f')
     time_frame = []
     all_usns = []
     tokens = []
+    names = []
+    formated_times = []
+    actual_times = []
 
     with open("data/logs.log", 'r') as f:
+        for _ in range(5): st.write("\n")
         for _ in range(5): st.write("\n")
         line = f.readline()
         for line in f:
@@ -103,19 +110,43 @@ if check_password():
                 time_line = line[1]
                 usn = line[2]
                 token = line[5]
+                name = line[4]
+                names.append(name)
                 tokens.append(token)
                 all_usns.append(usn)
                 time_line = time_line.strip()
                 time_ = datetime.strptime(time_line, '%Y-%m-%d %H:%M:%S.%f')
+                new_time = time_ + timedelta(hours=5, minutes=29, seconds=53)
+                actual_times.append(new_time)
+                formated_time = new_time.strftime("%d %B %I:%M %p")
+                formated_times.append(formated_time)
                 time_frame.append(time_)
-        total_views = list(range(1, len(time_frame) + 1))
+        time_data = {"Actual Time": formated_times, "Name": names, "USN": all_usns, "Token": tokens}
+        df = pd.DataFrame(time_data)
+        Data_frame = df.iloc[::-1]
+        st.dataframe(Data_frame, use_container_width=True)
+        unique_token = list(set(tokens))
+        search = st.radio("Select type of search", ["Search by Name", "Search by USN", "By Token"], horizontal=True)
+        if search == "Search by Name":
+            search_name = st.text_input("Search by Name").upper()
+            if search_name:
+                st.dataframe(Data_frame[Data_frame["Name"].str.contains(search_name)], use_container_width=True)
+        if search == "Search by USN":
+            search_usn = st.text_input("Search by USN").upper()
+            if search_usn:
+                st.dataframe(Data_frame[Data_frame["USN"].str.contains(search_usn)], use_container_width=True)
+        if search == "By Token":
+            search_token = st.multiselect("Search by Token", unique_token)
+            if search_token:
+                st.dataframe(Data_frame[Data_frame["Token"].isin(search_token)], use_container_width=True)
 
+        total_views = list(range(1, len(time_frame) + 1))
         dept = []
         dept_ = []
         unique_usn = list(set(all_usns))
         st.write("Total number of Requests ", len(all_usns))
         st.write("Total number of unique USNs: ", len(unique_usn))
-        graph = st.radio("Select type of graph", ("request vs time", "time vs request"))
+        graph = st.radio("Select type of graph", ["request vs time", "time vs request"], horizontal=True)
         if graph == "request vs time":
             df = pd.DataFrame({'Number of Requests': total_views}, index=time_frame)
             y = "Number of Requests"
@@ -143,6 +174,10 @@ if check_password():
         st.write(dept_counts)
         st.subheader("Token wise count")
         st.write(pd.DataFrame({"Token": tokens}).value_counts())
+        st.subheader("USN wise count")
+        df_usn = pd.DataFrame({"USN": all_usns, "Name": names}).value_counts()
+        df_usn_most = df_usn.iloc[::1]
+        st.write(df_usn_most)
 
     for _ in range(5): st.write("\n")
     st.subheader("Stats")
