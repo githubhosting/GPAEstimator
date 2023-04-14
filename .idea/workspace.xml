@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="dynamic cache name">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,7 +13,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="dev" />
         <entry key="$PROJECT_DIR$/RITScraping2.0" value="87f62cc6b18a7bdffd75d0deb9e244ad24fcfb62" />
         <entry key="$PROJECT_DIR$/RITScraping2.0/src/private" value="b591d34be55e3cfe1c2b000b965f13bd9fe41e2c" />
       </map>
@@ -249,7 +246,21 @@
       <option name="project" value="LOCAL" />
       <updated>1680150645116</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary=".">
+      <created>1681483199418</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1681483199418</updated>
+    </task>
+    <task id="LOCAL-00024" summary=".">
+      <created>1681483205742</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1681483205742</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -272,12 +283,12 @@
     <MESSAGE value="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'" />
     <MESSAGE value="bugs fixed" />
     <MESSAGE value="test changes" />
-    <MESSAGE value="." />
     <MESSAGE value="clean up" />
     <MESSAGE value="Changed styles.css and added priority table" />
     <MESSAGE value="bug fixed" />
     <MESSAGE value="dynamic cache name" />
-    <option name="LAST_COMMIT_MESSAGE" value="dynamic cache name" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
