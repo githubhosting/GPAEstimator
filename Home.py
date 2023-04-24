@@ -6,6 +6,7 @@ import time
 
 import pandas as pd
 import streamlit as st
+import extra_streamlit_components as stx
 
 sys.path.append("RITScraping2.0/src")
 
@@ -89,14 +90,31 @@ def deduct(easter):
     eggs_span[eggs_name.index(easter)] -= 1
 
 
+def get_manager():
+    return stx.CookieManager()
+
+
+cookie_manager = get_manager()
+cookies = cookie_manager.get_all()
+
+
 def valid_usn_state(usn, crack, easter, placeholder):
+    usn_in_cookies = False
+    cookie_usn = usn
+    cookie_dob = cookie_manager.get(cookie=cookie_usn)
+    st.write(cookies)
+    if cookie_usn in cookies:
+        usn_in_cookies = True
+
     year = int(usn[3:5]) + 2000
     yyyy, mm, dd = year - 18, 1, 1
+    if usn_in_cookies and cookie_dob:
+        yyyy, mm, dd = map(int, cookie_dob.split("-"))
     if crack:
         if "easter_usn" not in st.session_state or st.session_state.easter_usn != usn:
             st.session_state.easter_usn = usn
             deduct(easter)
-        if usn in ["1MS21IS017", "1MS21CI049"]:
+        if usn in ["1MS21IS017", "1MS21CI049", "1MS21CI035"]:
             st.error(crack_forbid_msg)
             log(usn, "CREATOR", "huss-hh-hh", easter, crack)
             crack = False
@@ -119,7 +137,10 @@ def valid_usn_state(usn, crack, easter, placeholder):
         dob = st.date_input("Enter DOB", datetime.date(yyyy, mm, dd))
 
     dob = str(dob)
-    if crack or st.button("Get Marks"):
+    get = st.button("Get Marks")
+    if usn_in_cookies:
+        get = True
+    if crack or get:
         welcome = "Hey"
         symbol = '<img width="30" vertical-align:sub ' \
                  'src="https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true">'
@@ -134,6 +155,9 @@ def valid_usn_state(usn, crack, easter, placeholder):
                 log(usn, "CREATOR", "huss-hh-hh", easter, crack)
             else:
                 log(usn, sis_stats["name"], dob, easter, crack)
+            if not usn_in_cookies and not crack:
+                cookie_manager.set(cookie_usn, str(sis_stats["dob"]),
+                                   expires_at=datetime.datetime.now() + datetime.timedelta(days=40))
             st.session_state.prev_usn = usn
 
             st.markdown(

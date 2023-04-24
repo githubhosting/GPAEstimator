@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="dynamic cache name">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/scraper.py" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/scraper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/private" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/private" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/logs.log" beforeDir="false" afterPath="$PROJECT_DIR$/data/logs.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/stats.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/stats.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +26,7 @@
         <entry key="$PROJECT_DIR$/RITScraping2.0/src/private" value="b591d34be55e3cfe1c2b000b965f13bd9fe41e2c" />
       </map>
     </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -43,6 +49,8 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
@@ -163,6 +171,11 @@
       <workItem from="1680102421897" duration="1592000" />
       <workItem from="1680104390197" duration="948000" />
       <workItem from="1680108514378" duration="4977000" />
+      <workItem from="1682162960166" duration="986000" />
+      <workItem from="1682165453981" duration="101000" />
+      <workItem from="1682192951737" duration="65000" />
+      <workItem from="1682325821752" duration="2335000" />
+      <workItem from="1682331405124" duration="3620000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -283,11 +296,6 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/RITScraping2.0/src/RITScraping/sis.py</url>
-          <line>57</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/RITScraping2.0/src/RITScraping/sis.py</url>
           <line>89</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
@@ -295,16 +303,17 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/GPAEstimator2$test.coverage" NAME="test Coverage Results" MODIFIED="1679759033332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/GPAEstimator$exam.coverage" NAME="exam Coverage Results" MODIFIED="1679757163071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/RITScraping2.0/src/RITScraping" />
-    <SUITE FILE_PATH="coverage/RITScrapping$exam_class.coverage" NAME="exam_class Coverage Results" MODIFIED="1670141440557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$exam__1_.coverage" NAME="exam Coverage Results" MODIFIED="1676752433629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$sis_fast.coverage" NAME="sis_fast Coverage Results" MODIFIED="1670054377842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GPAEstimator$test.coverage" NAME="test Coverage Results" MODIFIED="1680110453255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RITScrapping$main.coverage" NAME="main Coverage Results" MODIFIED="1676730994275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$exam.coverage" NAME="exam Coverage Results" MODIFIED="1675137623795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/GPAEstimator$sis.coverage" NAME="sis Coverage Results" MODIFIED="1679758290428" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/RITScraping2.0/src/RITScraping" />
-    <SUITE FILE_PATH="coverage/GPAEstimator$test.coverage" NAME="test Coverage Results" MODIFIED="1680082273850" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RITScrapping$down_img.coverage" NAME="down_img Coverage Results" MODIFIED="1670143545984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GPAEstimator2$test.coverage" NAME="test Coverage Results" MODIFIED="1679759033332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RITScrapping$sis.coverage" NAME="sis Coverage Results" MODIFIED="1675137405827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$sis_fast.coverage" NAME="sis_fast Coverage Results" MODIFIED="1670054377842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$exam__1_.coverage" NAME="exam Coverage Results" MODIFIED="1676752433629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$exam.coverage" NAME="exam Coverage Results" MODIFIED="1675137623795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RITScrapping$exam_class.coverage" NAME="exam_class Coverage Results" MODIFIED="1670141440557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GPAEstimator$exam.coverage" NAME="exam Coverage Results" MODIFIED="1679757163071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/RITScraping2.0/src/RITScraping" />
+    <SUITE FILE_PATH="coverage/RITScrapping$down_img.coverage" NAME="down_img Coverage Results" MODIFIED="1670143545984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GPAEstimator$tbam.coverage" NAME="tbam Coverage Results" MODIFIED="1681299143820" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/RITScraping2.0" />
+    <SUITE FILE_PATH="coverage/GPAEstimator$sis.coverage" NAME="sis Coverage Results" MODIFIED="1680110437677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/RITScraping2.0/src/RITScraping" />
   </component>
 </project>
