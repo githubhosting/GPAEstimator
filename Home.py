@@ -69,15 +69,19 @@ def brutes(usn):
 
 def log(usn, name, dob, easter, crack):
     with open("data/logs.log" if st.secrets["cloud"] else "logs.txt", "a") as file:
-        file.write(
-            write :=
-            f"[LOG] | {datetime.datetime.now()} | "
-            f"{usn} | {dob} | {name} | {f'token-{easter}' if crack else 'dob'}\n"
-        )
-        print(write)
+        if "prev_usn" not in st.session_state:
+            st.session_state.prev_usn = ""
+            st.write("prev_usn not in session_state")
+
+        if usn != st.session_state.prev_usn:
+            file.write(
+                write :=
+                f"[LOG] | {datetime.datetime.now()} | "
+                f"{usn} | {dob} | {name} | {f'token-{easter}' if crack else 'dob'}\n"
+            )
+            print(write)
         usns = st.secrets.stats.usns
         stat = st.secrets.stats.stat
-        if "prev_usn" not in st.session_state: st.session_state.prev_usn = ""
         if x := (a := f"{usn} {dob} {name}") not in usns: usns.append(a)
         stat[0] = stat[0] + int(usn != st.session_state.prev_usn)
         stat[1] += int(x)
@@ -102,7 +106,7 @@ def valid_usn_state(usn, crack, easter, placeholder):
     usn_in_cookies = False
     cookie_usn = usn
     cookie_dob = cookie_manager.get(cookie=cookie_usn)
-    st.write(cookies)
+    # st.write(cookies)
     if cookie_usn in cookies:
         usn_in_cookies = True
 
