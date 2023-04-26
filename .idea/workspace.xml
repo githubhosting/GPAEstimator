@@ -4,29 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RITScraping2.0/src/private/dob_cracker.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages_/3_Easter_Egg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages_/5_Admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_04_23,_8_09_pm_[Changes]/RITScraping2.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webResources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webResources.xml" afterDir="false" />
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="refactored basics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/sis.py" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/sis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/private" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/2_Instructions_and_Working.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/2_Instructions_and_Working.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/3_Easter_Egg.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/3_Easter_Egg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/4_About.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/4_About.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/5_Admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/5_Admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/6_Terms_and_Disclaimer.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/6_Terms_and_Disclaimer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +181,7 @@
       <workItem from="1680108514378" duration="4977000" />
       <workItem from="1681580262491" duration="1428000" />
       <workItem from="1682514770385" duration="1202000" />
-      <workItem from="1682515992186" duration="14455000" />
+      <workItem from="1682515992186" duration="18306000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -286,7 +267,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680150645116</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="refactored basics">
+      <created>1682536124947</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1682536124947</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,7 +302,8 @@
     <MESSAGE value="Changed styles.css and added priority table" />
     <MESSAGE value="bug fixed" />
     <MESSAGE value="dynamic cache name" />
-    <option name="LAST_COMMIT_MESSAGE" value="dynamic cache name" />
+    <MESSAGE value="refactored basics" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored basics" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/GPAEstimator2$test.coverage" NAME="test Coverage Results" MODIFIED="1679759033332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

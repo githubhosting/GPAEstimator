@@ -4,6 +4,7 @@ import time
 from datetime import datetime, date
 from random import random
 
+import pandas as pd
 import streamlit as st
 
 from tools import sub_lists
@@ -135,6 +136,7 @@ def crack(usn, easter):
 def tab_1_valid(sis_stats, exam_stats, easter):
     if st.session_state.prev_usn != st.session_state.usn:
         log(st.session_state.usn, sis_stats["name"], sis_stats["dob"], easter)
+    sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
 
     welcome = "Hey"
     symbol = hand_wave_gif
@@ -149,16 +151,61 @@ def tab_1_valid(sis_stats, exam_stats, easter):
     )
     col2.image(exam_stats["photo"], width=200, use_column_width=True)
 
-    sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
-    st.write(f"<br/><h4 style='text-align: center'>CIE Marks for Semester {sis_stats['sem']}</h4>", unsafe_allow_html=True)
+    st.text("")
+    with st.expander(f"CIE Marks for Semester {sis_stats['sem'][-3:]} : {sum(sub_marks)}/{sum(sub_max_marks)}", expanded=True):
+        marks = sis_stats["marks"]
+        for i, (code, m) in enumerate(marks.items()):
+            name = m["sub"]
+            cies, ces = m["cies"], m["ces"]
+            with st.container():
+                m_dick = {f"C-{i + 1}": [v[0]] for i, v in enumerate(cies)}
+                m_dick.update({f"A-{i + 1}": [v[0]] for i, v in enumerate(ces)})
+                m_dick["Total"] = m['tot'][0]
+                table = pd.DataFrame(m_dick)
+                st.write(
+                    f"<p class='submarks'>{name} - {code}</p>",
+                    table.style.hide(axis="index").to_html(), "<hr/>" if i + 1 != len(marks) else "<br/>",
+                    unsafe_allow_html=True
+                )
+
+    st.text("")
+    with st.expander("Show Attendance"):
+        st.markdown("""<h5 style='text-align: center;'>Attendance for this semester</h5> """,
+                    unsafe_allow_html=True)
+        short_attendance = []
+        for j in sub_attds:
+            if j < 75: short_attendance.append({sub_names[sub_attds.index(j)]})
+        attendance = [str(j) + "%" for j in sub_attds]
+        table = pd.DataFrame(
+            {"Subject": sub_names, "Percentage": attendance},
+            index=[k for k in range(1, len(sub_marks) + 1)]
+        )
+        st.markdown(table.style.set_table_styles(styles_attd).to_html(), unsafe_allow_html=True)
+
+        if short_attendance:
+            st.write("")
+            st.write("Following Subjects have shortage of attendance")
+            for key in short_attendance:
+                remove = str(key).replace("{'", "").replace("'}", "")
+                st.warning(remove)
+        for _ in range(2): st.write("\n")
+
+    st.text("")
+    st.markdown("<h5 style='text-align: center;'>The following are the SGPA's</h5>", unsafe_allow_html=True)
+    table = pd.DataFrame({
+        "SEM": [f"Semester {s}" for s in range(1, len(sis_stats["sgpas"]) + 1)],
+        "SGPA": [f"{s:.2f}" for s in sis_stats["sgpas"]]
+    })
+    st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
 
 
 def tab_1():
     crack_msg_div = st.empty()
     easter = None
 
-    st.subheader("Check Internal Marks")
-    usn = st.text_input("Enter Valid USN", placeholder="1ms21is000").strip().upper()
+    st.subheader("Check Internals")
+    usn = st.text_input("Enter Valid USN", placeholder="1ms21is000",
+                        on_change=lambda: st.session_state.update(checked=False)).strip().upper()
     if " " in usn:
         usn, easter = usn.split(maxsplit=1)
         easter = easter.lower()
@@ -196,9 +243,11 @@ def tab_1():
         if easter:
             dob = crack(usn, easter)
         else:
-            dob = st.date_input("Enter DOB", date(yyyy, mm, dd)).strftime("%Y-%m-%d")
+            dob = st.date_input("Enter DOB", date(yyyy, mm, dd),
+                                on_change=lambda: st.session_state.update(checked=False)).strftime("%Y-%m-%d")
         crack_msg_div.empty()
-        if easter or st.button("Check"):
+        if easter or st.session_state.checked or \
+                st.button("Check", on_click=lambda: st.session_state.update(checked=True)):
             sis_stats, exam_stats = get_stats(usn, dob)
             if not sis_stats:
                 st.warning("Invalid USN or DOB", icon="🚨")
@@ -211,7 +260,9 @@ def tab_1():
 
 
 def tab_2():
-    pass
+    sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
+    if not sis_stats or not st.session_state.checked:
+        st.warning("First Check SIS", icon="🚨")
 
 
 def home():

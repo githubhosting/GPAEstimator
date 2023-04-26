@@ -11,6 +11,7 @@ footer {
 }
 
 [data-testid="stForm"] {border: 0}
+.streamlit-expanderHeader [data-testid="stMarkdownContainer"] p {font-size: 1.25em}
 
 .ftext {
     border-top: gray 1px solid;
