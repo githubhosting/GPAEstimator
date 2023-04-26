@@ -2,9 +2,12 @@ import asyncio
 import json
 import os
 import re
+import sys
 from typing import Union
 
 from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob, CACHE_NAME
+
+sys.path.append("RITScraping2.0/src")
 
 try:
     from private.dob_cracker import DobCracker
