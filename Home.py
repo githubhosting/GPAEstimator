@@ -71,11 +71,13 @@ rick_roll_msgs = [
     "I'll never give you up, I'll never let you down, I'll always be there, lurking around. 😁",
     "<a href='https://pichost.pics/9FZ3M4'><button>Hurray! see next puzzle here</button></a>"
 ]
-hand_wave_gif = "<img width='30' vertical-align:sub src='https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true'>"
+hand_wave_gif = "<img width='30' vertical-align:sub " \
+                "src='https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true'>"
 
 
 @st.cache_data(ttl=60 * 60 * 12)  # 12 hours
 def get_stats(usn, dob):
+    if dob is None: return {}, {}
     sis_stats = sis_micro(usn, dob, st.secrets.ODD)
     exam_stats = exam_micro(usn, st.secrets.EVEN)
     return sis_stats, exam_stats
@@ -152,7 +154,8 @@ def tab_1_valid(sis_stats, exam_stats, easter):
     col2.image(exam_stats["photo"], width=200, use_column_width=True)
 
     st.text("")
-    with st.expander(f"CIE Marks for Semester {sis_stats['sem'][-3:]} : {sum(sub_marks)}/{sum(sub_max_marks)}", expanded=True):
+    with st.expander(f"CIE Marks for Semester {sis_stats['sem'][-3:]} : {sum(sub_marks)}/{sum(sub_max_marks)}",
+                     expanded=True):
         marks = sis_stats["marks"]
         for i, (code, m) in enumerate(marks.items()):
             name = m["sub"]
@@ -236,9 +239,6 @@ def tab_1():
 
     if validate_usn(usn):
         st.session_state.usn = usn
-        if "prev_usn" not in st.session_state: st.session_state.prev_usn = None
-        if "prev_easter" not in st.session_state: st.session_state.prev_easter = None
-        if "dob" not in st.session_state: st.session_state.dob = None
         yyyy, mm, dd = int(usn[3:5]) - 18 + 2000, 1, 1
         if easter:
             dob = crack(usn, easter)
@@ -248,6 +248,7 @@ def tab_1():
         crack_msg_div.empty()
         if easter or st.session_state.checked or \
                 st.button("Check", on_click=lambda: st.session_state.update(checked=True)):
+            st.session_state.checked = True
             sis_stats, exam_stats = get_stats(usn, dob)
             if not sis_stats:
                 st.warning("Invalid USN or DOB", icon="🚨")
@@ -260,15 +261,30 @@ def tab_1():
 
 
 def tab_2():
-    sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
-    if not sis_stats or not st.session_state.checked:
+    if st.session_state.checked:
+        sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
+        if not sis_stats or not st.session_state.checked:
+            st.warning("Invalid USN or DOB", icon="🚨")
+            return
+        st.write(sis_stats)
+        st.subheader("Scoring & Prioritizing  Criteria for All Subjects")
+    else:
         st.warning("First Check SIS", icon="🚨")
 
 
 def home():
-    with tab1: tab_1()
-    with tab2: tab_2()
-    with tab3: pass
+    if "usn" not in st.session_state: st.session_state.usn = None
+    if "prev_usn" not in st.session_state: st.session_state.prev_usn = None
+    if "prev_easter" not in st.session_state: st.session_state.prev_easter = None
+    if "dob" not in st.session_state: st.session_state.dob = None
+    if "checked" not in st.session_state: st.session_state.checked = False
+
+    with tab1:
+        tab_1()
+    with tab2:
+        tab_2()
+    with tab3:
+        pass
 
 
 if __name__ == '__main__':

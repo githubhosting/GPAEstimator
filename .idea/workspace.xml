@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="refactored basics">
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="tab1 done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +180,7 @@
       <workItem from="1680108514378" duration="4977000" />
       <workItem from="1681580262491" duration="1428000" />
       <workItem from="1682514770385" duration="1202000" />
-      <workItem from="1682515992186" duration="18306000" />
+      <workItem from="1682515992186" duration="19067000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -274,7 +273,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682536124947</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="tab1 done">
+      <created>1682539838003</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1682539838003</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -303,7 +309,8 @@
     <MESSAGE value="bug fixed" />
     <MESSAGE value="dynamic cache name" />
     <MESSAGE value="refactored basics" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored basics" />
+    <MESSAGE value="tab1 done" />
+    <option name="LAST_COMMIT_MESSAGE" value="tab1 done" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/GPAEstimator2$test.coverage" NAME="test Coverage Results" MODIFIED="1679759033332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
