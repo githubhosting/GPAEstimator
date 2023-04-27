@@ -5,34 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment=".">
-      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.gitmodules" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/RITScraping2.0.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/webResources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.creds.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/siscacheri956kh45.creds.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/extract_attd.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/exam.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/scraper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/sis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/private/dob_cracker.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/tbam.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +25,7 @@
       <map>
         <entry key="$PROJECT_DIR$" value="master" />
         <entry key="$PROJECT_DIR$/RITScraping2.0" value="87f62cc6b18a7bdffd75d0deb9e244ad24fcfb62" />
-        <entry key="$PROJECT_DIR$/RITScraping2.0/src/private" value="b591d34be55e3cfe1c2b000b965f13bd9fe41e2c" />
+        <entry key="$PROJECT_DIR$/RITScraping2.0/src/private" value="31dcc341aa6d3eed359c3e908192811ad60a3134" />
       </map>
     </option>
     <option name="ROOT_SYNC" value="DONT_SYNC" />
@@ -211,6 +185,10 @@
       <workItem from="1682579368779" duration="443000" />
       <workItem from="1682579831544" duration="216000" />
       <workItem from="1682580064648" duration="103000" />
+      <workItem from="1682580185421" duration="95000" />
+      <workItem from="1682580295095" duration="49000" />
+      <workItem from="1682580360574" duration="477000" />
+      <workItem from="1682580854916" duration="382000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -366,7 +344,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682579882992</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary=".">
+      <created>1682580199840</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1682580199840</updated>
+    </task>
+    <task id="LOCAL-00034" summary=".">
+      <created>1682580242714</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1682580242714</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
