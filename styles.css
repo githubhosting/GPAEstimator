@@ -10,7 +10,10 @@ footer {
     padding-top: 2rem;
 }
 
-/*[data-testid="stForm"] {border: 0}*/
+[data-testid="stForm"] {border: 0}
+[role="radiogroup"] {justify-content: center}
+.stRadio label {justify-content: center}
+.stRadio label p {font-size: 1.25em; text-align: center}
 .streamlit-expanderHeader [data-testid="stMarkdownContainer"] p {font-size: 1.25em}
 
 .ftext {

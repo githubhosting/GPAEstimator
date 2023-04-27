@@ -294,14 +294,15 @@ def tab_2():
     sub_creds = [sis_stats["creds"][k] for k in sub_codes]
     difficulty, next_dist, c1, c2 = get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie)
     cr = st.slider("Select Criterion", 0., 1., 0.75, 0.01, key="criterion", format="%.2f")
-    priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in zip(sub_creds, c1, c2, next_dist)]
+    priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in
+                zip(sub_creds, c1, c2, next_dist)]
     zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, priority), key=lambda k: k[4], reverse=True)
     sub_marks, sub_creds, sub_codes, sub_names, priority = zip(*zip_list)
     priority_score = [f"{m:.1f}" for m in priority]
     table = pd.DataFrame({
         "Subjects": sub_names,
-        "Internals": sub_marks,
-        "Priority Score": priority_score,
+        "CIE": sub_marks,
+        "Priority": priority_score,
     }, index=[i for i in range(1, len(sub_marks) + 1)])
     st.caption(
         "Prioritize subjects in the following order to get the best grades. "
@@ -310,18 +311,39 @@ def tab_2():
     st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 
     st.write("<br/><br/>", unsafe_allow_html=True)
-    with st.form("Find GPA"):
+    with st.container():
+        sgpas = sis_stats["sgpas"]
+        grade_in_each = []
         estimates = grade_estimates(
             sub_marks, sub_names, sub_max_marks,
             **{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
         )
         for m, sn, e in zip(sub_marks, sub_names, estimates):
+            grade_in_each.append(st.radio(f"{sn} - {m}", ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
             table = pd.DataFrame(e, index=[sn])
             st.write(
-                f"<p class='submarks'>{sn} - {m}</p>",
                 table.style.hide(axis="index").to_html(), "<hr/>" if sn != sub_names[-1] else "<br/>",
                 unsafe_allow_html=True
             )
+        grade_point = [grade_to_gp[g] for g in grade_in_each]
+        weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
+        total_credits_final = sum(weighted_gp)
+        st.write("")
+        with st.expander("Show Grade Point Table"):
+            st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
+                     unsafe_allow_html=True)
+            table = pd.DataFrame({
+                "Subject": sub_names, "Credits": sub_creds,
+                "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
+            })
+            st.write(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
+        sgpa = total_credits_final / sum(sub_creds)
+        sgpa = round(sgpa, 3)
+        st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
+        st.write(
+            f"<h3 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
+            unsafe_allow_html=True
+        )
 
 
 def home():
