@@ -10,7 +10,7 @@ import streamlit as st
 
 sys.path.append("RITScraping2.0/src")
 
-from tools import sub_lists
+from tools import sub_lists, grade_estimates
 
 from RITScraping import sis_micro, exam_micro, SisScraper, validate_usn
 from common import *
@@ -309,8 +309,19 @@ def tab_2():
         unsafe_allow_html=False)
     st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 
+    st.write("<br/><br/>", unsafe_allow_html=True)
     with st.form("Find GPA"):
-        pass
+        estimates = grade_estimates(
+            sub_marks, sub_names, sub_max_marks,
+            **{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
+        )
+        for m, sn, e in zip(sub_marks, sub_names, estimates):
+            table = pd.DataFrame(e, index=[sn])
+            st.write(
+                f"<p class='submarks'>{sn} - {m}</p>",
+                table.style.hide(axis="index").to_html(), "<hr/>" if sn != sub_names[-1] else "<br/>",
+                unsafe_allow_html=True
+            )
 
 
 def home():
