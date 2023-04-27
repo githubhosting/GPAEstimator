@@ -1,4 +1,5 @@
 import asyncio
+import math
 import sys
 import time
 from datetime import datetime, date
@@ -7,9 +8,9 @@ from random import random
 import pandas as pd
 import streamlit as st
 
-from tools import sub_lists
-
 sys.path.append("RITScraping2.0/src")
+
+from tools import sub_lists
 
 from RITScraping import sis_micro, exam_micro, SisScraper, validate_usn
 from common import *
@@ -138,7 +139,7 @@ def crack(usn, easter):
 def tab_1_valid(sis_stats, exam_stats, easter):
     if st.session_state.prev_usn != st.session_state.usn:
         log(st.session_state.usn, sis_stats["name"], sis_stats["dob"], easter)
-    sub_codes, sub_names, sub_attds, sub_marks, sub_max_marks = sub_lists(sis_stats["marks"])
+    _, sub_names, sub_attds, sub_marks, sub_max_marks, _, _ = sub_lists(sis_stats["marks"])
 
     welcome = "Hey"
     symbol = hand_wave_gif
@@ -260,16 +261,56 @@ def tab_1():
         st.error('Invalid USN', icon="🚨")
 
 
+@st.cache_resource(ttl=60 * 60 * 12)  # 12 hours
+def get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
+    difficulty = []
+    next_dist = []
+    c1, c2 = [], []
+    for cred, mark, max_mark, avg in zip(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
+        frac_mark = mark / max_mark
+        dist_next = math.ceil(frac_mark) - frac_mark
+        avg_frac = avg / 30
+        diff = (1 - avg_frac) * 0.25 + (1 - frac_mark) * 0.75
+        difficulty.append(diff)
+        next_dist.append(dist_next)
+        c1.append(diff / frac_mark)
+        c2.append((1 - diff) / frac_mark)
+    return difficulty, next_dist, c1, c2
+
+
 def tab_2():
     if st.session_state.checked:
         sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
         if not sis_stats or not st.session_state.checked:
             st.warning("Invalid USN or DOB", icon="🚨")
             return
-        st.write(sis_stats)
-        st.subheader("Scoring & Prioritizing  Criteria for All Subjects")
     else:
         st.warning("First Check SIS", icon="🚨")
+        return
+
+    st.subheader("Scoring & Prioritizing Subjects")
+
+    sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
+    sub_creds = [sis_stats["creds"][k] for k in sub_codes]
+    difficulty, next_dist, c1, c2 = get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie)
+    cr = st.slider("Select Criterion", 0., 1., 0.75, 0.01, key="criterion", format="%.2f")
+    priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in zip(sub_creds, c1, c2, next_dist)]
+    zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, priority), key=lambda k: k[4], reverse=True)
+    sub_marks, sub_creds, sub_codes, sub_names, priority = zip(*zip_list)
+    priority_score = [f"{m:.1f}" for m in priority]
+    table = pd.DataFrame({
+        "Subjects": sub_names,
+        "Internals": sub_marks,
+        "Priority Score": priority_score,
+    }, index=[i for i in range(1, len(sub_marks) + 1)])
+    st.caption(
+        "Prioritize subjects in the following order to get the best grades. "
+        "Scroll down to the bottom to see how the priority score is calculated.",
+        unsafe_allow_html=False)
+    st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
+
+    with st.form("Find GPA"):
+        pass
 
 
 def home():
