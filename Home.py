@@ -71,8 +71,6 @@ def log(usn, name, dob, easter, crack):
     with open("data/logs.log" if st.secrets["cloud"] else "logs.txt", "a") as file:
         if "prev_usn" not in st.session_state:
             st.session_state.prev_usn = ""
-            st.write("prev_usn not in session_state")
-
         if usn != st.session_state.prev_usn:
             file.write(
                 write :=
@@ -263,8 +261,8 @@ def tab_1():
             st.info("Please contact the **Admin** or try again later")
             st.markdown(
                 "Contact the creators "
-                "Shravan <a class='name' href='https://wa.me/919945332995?text=what's the working token?'>here 🚀</a>"
-                "or Amith <a class='name' href='https://wa.me/917019144708?text=what's the working token?'>here 🚀</a>"
+                "Shravan <a class='name' href='https://wa.me/919945332995?text=Provide working token'>here 🚀</a>"
+                "or Amith <a class='name' href='https://wa.me/917019144708?text=Provide working token'>here 🚀</a>"
                 " to get new token 😉",
                 unsafe_allow_html=True
             )
@@ -372,10 +370,10 @@ def tab_2(usn, dob):
                 "based on the above factors. This allows us to calculate and sort subjects accordingly")
     else:
         st.warning("Enter your USN and DOB first", icon="⚠️")
-    return sub_names, sub_codes, sub_creds, sgpas
+    return sub_names, sub_codes, sub_creds, sgpas, grade_lists
 
 
-def tab_3(sub_names, dob, sub_creds, sgpas):
+def tab_3(sub_names, dob, sub_creds, sgpas, grade_lists):
     if dob and sub_creds:
         st.subheader("Enter your Predicted Grade for each subjects")
         st.caption(
@@ -383,28 +381,41 @@ def tab_3(sub_names, dob, sub_creds, sgpas):
             "click on calculate to get your final credits and SGPA"
         )
         grade_in_each = []
-        with st.form("Find GPA"):
-            for name in sub_names:
-                grade_in_each.append(st.radio(name, ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
-            if st.form_submit_button("Calculate"):
-                grade_point = [grade_to_gp[g] for g in grade_in_each]
-                weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
-                total_credits_final = sum(weighted_gp)
-                st.write("")
-                st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
-                         unsafe_allow_html=True)
-                table = pd.DataFrame({
-                    "Subject": sub_names, "Grade": grade_in_each, "Credits": sub_creds,
-                    "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
-                })
-                st.write(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
-                sgpa = total_credits_final / sum(sub_creds)
-                sgpa = round(sgpa, 3)
-                st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
-                st.write(
-                    f"<h3 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
-                    unsafe_allow_html=True
-                )
+        marks_grade = []
+        marks_in_each = []
+        for i, sn in enumerate(sub_names):
+            var = {k: v[i] for k, v in grade_lists.items()}
+            marks_in_each.append(var.values())
+        marks_in_each = [list(i) for i in marks_in_each]
+        # with st.form("Find GPA"):
+        for i, sn in enumerate(sub_names):
+            with st.container():
+                grade_in_each.append(st.radio(sn, ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
+                table = pd.DataFrame({k: [v[i]] for k, v in grade_lists.items()})
+
+        for name in sub_names:
+            marks_in_grade = marks_in_each[sub_names.index(name)]
+            # grade_in_each.append(st.radio(name, ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
+            marks_grade.append(st.radio(name, marks_in_grade, horizontal=True))
+        # if st.form_submit_button("Calculate"):
+        grade_point = [grade_to_gp[g] for g in grade_in_each]
+        weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
+        total_credits_final = sum(weighted_gp)
+        st.write("")
+        st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
+                 unsafe_allow_html=True)
+        table = pd.DataFrame({
+            "Subject": sub_names, "Grade": grade_in_each, "Credits": sub_creds,
+            "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
+        })
+        st.write(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
+        sgpa = total_credits_final / sum(sub_creds)
+        sgpa = round(sgpa, 3)
+        st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
+        st.write(
+            f"<h3 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
+            unsafe_allow_html=True
+        )
     else:
         st.error("Enter USN and DOB first", icon="🚨")
 
@@ -413,9 +424,9 @@ def home():
     with tab1:
         usn_, dob_ = tab_1()
     with tab2:
-        sub_names, sub_codes, sub_creds, sgpas = tab_2(usn_, dob_)
+        sub_names, sub_codes, sub_creds, sgpas, grade_list = tab_2(usn_, dob_)
     with tab3:
-        tab_3(sub_names, sub_codes, sub_creds, sgpas)
+        tab_3(sub_names, sub_codes, sub_creds, sgpas, grade_list)
     with tab4:
         st.subheader("How much is average CIE marks for 50?")
         avg = st.slider("Average CIE marks", 0, 50, value=35, step=1)

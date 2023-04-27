@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="dynamic cache name">
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="duplication removed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RITScraping2.0" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/siscacheri956kh45.creds.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/siscacheri956kh45.creds.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/scraper.py" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/scraper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/private" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/private" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/logs.log" beforeDir="false" afterPath="$PROJECT_DIR$/data/logs.log" afterDir="false" />
@@ -175,7 +176,12 @@
       <workItem from="1682165453981" duration="101000" />
       <workItem from="1682192951737" duration="65000" />
       <workItem from="1682325821752" duration="2335000" />
-      <workItem from="1682331405124" duration="3620000" />
+      <workItem from="1682331405124" duration="6503000" />
+      <workItem from="1682371604300" duration="6624000" />
+      <workItem from="1682431769554" duration="108000" />
+      <workItem from="1682513183668" duration="2032000" />
+      <workItem from="1682528827006" duration="4566000" />
+      <workItem from="1682572941837" duration="1864000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -261,7 +267,21 @@
       <option name="project" value="LOCAL" />
       <updated>1680150645116</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="cookies added">
+      <created>1682338165174</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1682338165174</updated>
+    </task>
+    <task id="LOCAL-00024" summary="duplication removed">
+      <created>1682414315672</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1682414315672</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -289,7 +309,9 @@
     <MESSAGE value="Changed styles.css and added priority table" />
     <MESSAGE value="bug fixed" />
     <MESSAGE value="dynamic cache name" />
-    <option name="LAST_COMMIT_MESSAGE" value="dynamic cache name" />
+    <MESSAGE value="cookies added" />
+    <MESSAGE value="duplication removed" />
+    <option name="LAST_COMMIT_MESSAGE" value="duplication removed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
