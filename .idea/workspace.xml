@@ -4,34 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="tab2 done, merging tab3 started">
-      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" />
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment=".">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.gitmodules" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/RITScraping2.0.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/.idea/webResources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.creds.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/siscacheri956kh45.creds.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/exam.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/scraper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/sis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/private/dob_cracker.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/tbam.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/private" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +181,8 @@
       <workItem from="1681580262491" duration="1428000" />
       <workItem from="1682514770385" duration="1202000" />
       <workItem from="1682515992186" duration="21478000" />
-      <workItem from="1682571105965" duration="7133000" />
+      <workItem from="1682571105965" duration="7529000" />
+      <workItem from="1682579368779" duration="363000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -320,7 +296,28 @@
       <option name="project" value="LOCAL" />
       <updated>1682575745449</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary=".">
+      <created>1682578974062</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1682578974062</updated>
+    </task>
+    <task id="LOCAL-00028" summary=".">
+      <created>1682579049815</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1682579049815</updated>
+    </task>
+    <task id="LOCAL-00029" summary=".">
+      <created>1682579194654</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1682579194654</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,7 +340,6 @@
     <MESSAGE value="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'" />
     <MESSAGE value="bugs fixed" />
     <MESSAGE value="test changes" />
-    <MESSAGE value="." />
     <MESSAGE value="clean up" />
     <MESSAGE value="Changed styles.css and added priority table" />
     <MESSAGE value="bug fixed" />
@@ -352,7 +348,8 @@
     <MESSAGE value="tab1 done" />
     <MESSAGE value="minor bug fix" />
     <MESSAGE value="tab2 done, merging tab3 started" />
-    <option name="LAST_COMMIT_MESSAGE" value="tab2 done, merging tab3 started" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/GPAEstimator2$test.coverage" NAME="test Coverage Results" MODIFIED="1679759033332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
