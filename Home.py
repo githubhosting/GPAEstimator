@@ -268,7 +268,7 @@ def get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
     c1, c2 = [], []
     for cred, mark, max_mark, avg in zip(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
         frac_mark = mark / max_mark
-        dist_next = math.ceil(frac_mark) - frac_mark
+        dist_next = math.ceil(frac_mark * 10) / 10 - frac_mark
         avg_frac = avg / 30
         diff = (1 - avg_frac) * 0.25 + (1 - frac_mark) * 0.75
         difficulty.append(diff)
