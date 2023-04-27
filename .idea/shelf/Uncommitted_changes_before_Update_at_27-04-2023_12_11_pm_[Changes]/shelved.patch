@@ -1,0 +1,48 @@
+Index: RITScraping2.0/src/RITScraping/scraper.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import asyncio\r\nimport base64\r\nimport hashlib\r\nimport os\r\nimport pickle\r\nimport re\r\nfrom functools import wraps\r\nfrom pathlib import Path\r\nfrom typing import Literal, Union\r\n\r\nimport aiohttp\r\nfrom bs4 import BeautifulSoup\r\n\r\n\r\nclass Scraper:\r\n    HEADERS = {\r\n        \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) \"\r\n                      \"AppleWebKit/537.36 (KHTML, like Gecko) \"\r\n                      \"Chrome/96.0.4664.45 Safari/537.36\",\r\n        \"X-Amzn-Trace-Id\": \"Root=1-61acac03-6279b8a6274777eb44d81aae\",\r\n        \"X-Client-Data\": \"CJW2yQEIpLbJAQjEtskBCKmdygEIuevKAQjr8ssBCOaEzAEItoXMAQjLicwBCKyOzAEI3I7MARiOnssB\"\r\n    }\r\n\r\n    Se: Union[\"aiohttp.ClientSession\", None]\r\n    encoding: str = None\r\n\r\n    def __init__(self):\r\n        self.Se = None\r\n\r\n    async def __aenter__(self):\r\n        self.Se = aiohttp.ClientSession()\r\n        await self.Se.__aenter__()\r\n        return self\r\n\r\n    async def __aexit__(self, exc_type, exc_val, exc_tb):\r\n        await self.Se.__aexit__(exc_type, exc_val, exc_tb)\r\n        self.Se = None\r\n\r\n    @staticmethod\r\n    async def img(encoded):\r\n        return base64.encodebytes(encoded)\r\n\r\n    async def get(self, session: \"aiohttp.ClientSession\", url: str):\r\n        async with session.get(url, headers=self.HEADERS) as response:\r\n            return await response.text(encoding=self.encoding)\r\n\r\n    async def post(self, session: \"aiohttp.ClientSession\", url: str, data: dict[str, str] = None):\r\n        async with session.post(url, data=data, headers=self.HEADERS) as response:\r\n            return await response.text(encoding=self.encoding)\r\n\r\n    @staticmethod\r\n    async def gen_soup(response):\r\n        return BeautifulSoup(await response, \"html.parser\")\r\n\r\n    async def get_soups(self, *URLS, method: Literal[\"GET\", \"POST\"] = \"GET\",\r\n                        payload=None, async_worker=None) -> list[BeautifulSoup]:\r\n        if async_worker is None:\r\n            async def async_worker(soup):\r\n                return await soup\r\n        payload = payload or [None] * len(URLS)\r\n        if len(URLS) == 1: URLS = [URLS[0]] * len(payload)\r\n        assert len(URLS) == len(payload), \\\r\n            f\"{len(URLS)=} != {len(payload)=}\"\r\n        if method == \"GET\":\r\n            tasks = [self.gen_soup(self.get(self.Se, URL)) for URL in URLS]\r\n        elif method == \"POST\":\r\n            tasks = [self.gen_soup(self.post(self.Se, URL, data=data)) for URL, data in zip(URLS, payload)]\r\n        else:\r\n            raise ValueError(f\"invalid {method=}\")\r\n        tasks = (asyncio.ensure_future(async_worker(task)) for task in tasks)\r\n        return list(await asyncio.gather(*tasks))\r\n\r\n    async def get_img(self, *URLS, method: Literal[\"GET\", \"POST\"] = \"GET\", payload=None) -> list[bytes]:\r\n        payload = payload or [None] * len(URLS)\r\n        if len(URLS) == 1: URLS = [URLS[0]] * len(payload)\r\n        assert len(URLS) == len(payload)\r\n        if method == \"GET\":\r\n            tasks = [asyncio.ensure_future(self.img(self.get(self.Se, URL))) for URL in URLS]\r\n        elif method == \"POST\":\r\n            tasks = [asyncio.ensure_future(self.img(self.post(self.Se, URL, data=data))) for URL, data in\r\n                     zip(URLS, payload)]\r\n        else:\r\n            raise ValueError(f\"invalid {method=}\")\r\n        return list(await asyncio.gather(*tasks))\r\n\r\n\r\nclass AsyncCache:\r\n    cache_location = Path(__file__).parent.parent.parent / \"__async_cache__\"\r\n\r\n    @classmethod\r\n    def load_cache(cls, name) -> dict[str, str]:\r\n        try:\r\n            with open(f'{cls.cache_location}/{name}.cache', 'rb') as file:\r\n                return pickle.load(file)\r\n        except FileNotFoundError:\r\n            return {}\r\n\r\n    def __init__(self, name, ignore: tuple = None):\r\n        self._name = name\r\n        self._ignore = ignore or ()\r\n        self._cache = self.load_cache(name)\r\n\r\n    def __call__(self, func):\r\n        func.save_cache = self.save_cache\r\n\r\n        @wraps(func)\r\n        async def wrapper(_=None, **kwargs):\r\n            _hash = self.hash(kwargs)\r\n            if _ is not None: kwargs[\"self\"] = _\r\n            try:\r\n                r = self._cache[_hash]\r\n                return r\r\n            except KeyError:\r\n                result = await func(**kwargs)\r\n                self._cache[_hash] = result\r\n                return result\r\n\r\n        return wrapper\r\n\r\n    def hash(self, kwargs):\r\n        hasher = hashlib.md5()\r\n        for key in sorted(kwargs):\r\n            if key in self._ignore: continue\r\n            hasher.update(str(key).encode())\r\n            hasher.update(str(kwargs[key]).encode())\r\n        return hasher.hexdigest()\r\n\r\n    def save_cache(self):\r\n        if not os.path.exists(self.cache_location): os.mkdir(self.cache_location)\r\n        with open(f'{self.cache_location}/{self._name}.cache', 'wb') as file:\r\n            pickle.dump(self._cache, file)\r\n\r\n\r\ndef gen_usn(year: int, dept: str, i: int, temp=False) -> str:\r\n    assert year > 2000\r\n    return (f\"1MS{year - 2000}{dept}{i:03}\" + (\"-T\" if temp else \"\")).upper()\r\n\r\n\r\ndef gen_dob(day: int, month: int, year: int) -> str:\r\n    assert 1 <= day <= 31\r\n    assert 1 <= month <= 12\r\n    return f\"{year}-{month:02}-{day:02}\"\r\n\r\n\r\ndef validate_usn(usn):\r\n    return re.search(r\"^1MS\\d{2}[A-Z]{2}\\d{3}(-T)?$\", usn) is not None\r\n\r\n\r\ndef validate_dob(dob):\r\n    return re.search(r\"^\\d{4}-\\d{2}-\\d{2}$\", dob) is not None\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/RITScraping2.0/src/RITScraping/scraper.py b/RITScraping2.0/src/RITScraping/scraper.py
+--- a/RITScraping2.0/src/RITScraping/scraper.py	(revision fad06337bf9932e75dfd2ded8f9cb80bf7b12f35)
++++ b/RITScraping2.0/src/RITScraping/scraper.py	(date 1682148739012)
+@@ -12,6 +12,9 @@
+ from bs4 import BeautifulSoup
+ 
+ 
++CACHE_NAME = "cacheri956kh45"
++
++
+ class Scraper:
+     HEADERS = {
+         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+@@ -105,15 +108,16 @@
+ 
+         @wraps(func)
+         async def wrapper(_=None, **kwargs):
++            re_cache = kwargs.pop("re_cache", False)
+             _hash = self.hash(kwargs)
+             if _ is not None: kwargs["self"] = _
+-            try:
+-                r = self._cache[_hash]
+-                return r
+-            except KeyError:
++            if re_cache or _hash not in self._cache:
+                 result = await func(**kwargs)
+                 self._cache[_hash] = result
+                 return result
++            else:
++                r = self._cache[_hash]
++                return r
+ 
+         return wrapper
+ 
+@@ -147,4 +151,4 @@
+ 
+ 
+ def validate_dob(dob):
+-    return re.search(r"^\d{4}-\d{2}-\d{2}$", dob) is not None
++    return re.search(r"^\d{4}-\d{2}-\d{2}$", dob) is not None
+\ No newline at end of file
