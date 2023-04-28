@@ -16,16 +16,18 @@ from RITScraping import sis_micro, exam_micro, SisScraper, validate_usn
 from common import *
 
 st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", layout="centered")
-st.title("Calculla - GPA Calculator")
-st.caption("""
-Made with Passion by 
-<a class="name" href="https://github.com/Amith225" target="_blank">
-    Amith M
-</a> and
-<a class="name" href="https://myselfshravan.github.io/" target="_blank">
-    Shravan Revanna
-</a>
-""", unsafe_allow_html=True)
+# st.title("Calculla - GPA Calculator")
+# st.caption("""
+# Made with Passion by
+# <a class="name" href="https://github.com/Amith225" target="_blank">
+#     Amith M
+# </a> and
+# <a class="name" href="https://myselfshravan.github.io/" target="_blank">
+#     Shravan Revanna
+# </a>
+# """, unsafe_allow_html=True)
+st.caption("")
+local_html("header.html")
 local_css("styles.css")
 
 st.write(
@@ -63,7 +65,7 @@ How about trying another token?"
 creator_contact_msg = """
 Contact the creators
 Shravan <a class='name' href="https://wa.me/919945332995?text=what%is%the%working%token%for%calculla">here 🚀</a> or 
-Amith <a class='name' href="https://wa.me/917019144708?text=what%is%the%working%token%for%calculla">here 🚀</a>
+Amith <a class='name' href="https://wa.me/917019144708?text=what%20is%the%working%token%for%calculla">here 🚀</a>
 to get new token 😉
 """
 rick_roll_msgs = [
@@ -77,8 +79,8 @@ hand_wave_gif = "<img width='30' vertical-align:sub " \
 @st.cache_data(ttl=60 * 60 * 12)  # 12 hours
 def get_stats(usn, dob):
     if dob is None: return {}, {}
-    sis_stats = sis_micro(usn, dob, st.secrets.ODD)
-    exam_stats = exam_micro(usn, st.secrets.EVEN)
+    sis_stats = sis_micro(usn, dob, odd=False) or sis_micro(usn, dob, odd=True)
+    exam_stats = exam_micro(usn, even=False) or exam_micro(usn, even=True)
     return sis_stats, exam_stats
 
 
@@ -291,24 +293,29 @@ def tab_2():
     sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
     sub_creds = [sis_stats["creds"][k] for k in sub_codes]
     difficulty, next_dist, c1, c2 = get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie)
-    cr = st.slider("Select Criterion", 0., 1., 0.75, 0.01, key="criterion", format="%.2f")
+    cr = st.slider("Select Criterion [0 - Easier Next Grade Point, 1 - Difficult Next Grade Point]",
+                   0., 1., 0.75, 0.01, key="criterion", format="%.2f")
+    st.caption(
+        "Prioritize subjects in the following order to get the best grades. "
+        "See Priority Table how the priority score is calculated.",
+        unsafe_allow_html=False)
     priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in
                 zip(sub_creds, c1, c2, next_dist)]
     zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, priority), key=lambda k: k[4], reverse=True)
     sub_marks, sub_creds, sub_codes, sub_names, priority = zip(*zip_list)
-    priority_score = [f"{m:.1f}" for m in priority]
-    table = pd.DataFrame({
-        "Subjects": sub_names,
-        "CIE": sub_marks,
-        "Priority": priority_score,
-    }, index=[i for i in range(1, len(sub_marks) + 1)])
-    st.caption(
-        "Prioritize subjects in the following order to get the best grades. "
-        "Scroll down to the bottom to see how the priority score is calculated.",
-        unsafe_allow_html=False)
-    st.markdown(table.style.set_table_styles(styles).to_html(), unsafe_allow_html=True)
 
-    st.write("<br/><br/>", unsafe_allow_html=True)
+    with st.expander("Show Priority Table"):
+        priority_score = [f"{m:.1f}" for m in priority]
+        table = pd.DataFrame({
+            "Subject": sub_names,
+            "CIE": sub_marks,
+            "Priority": priority_score,
+        }, index=[i for i in range(1, len(sub_marks) + 1)])
+        st.write(table.style.hide(axis="index").set_table_styles(styles).to_html(), "<br/>",
+                 unsafe_allow_html=True)
+        st.markdown("how its calculated")
+
+    st.text("")
     with st.container():
         sgpas = sis_stats["sgpas"]
         grade_in_each = []
@@ -316,11 +323,12 @@ def tab_2():
             sub_marks, sub_names, sub_max_marks,
             **{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
         )
+        st.write("<hr/>", unsafe_allow_html=True)
         for m, sn, e in zip(sub_marks, sub_names, estimates):
             grade_in_each.append(st.radio(f"{sn} - {m}", ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
             table = pd.DataFrame(e, index=[sn])
             st.write(
-                table.style.hide(axis="index").to_html(), "<hr/>" if sn != sub_names[-1] else "<br/>",
+                table.style.hide(axis="index").to_html(), "<hr/>",
                 unsafe_allow_html=True
             )
         grade_point = [grade_to_gp[g] for g in grade_in_each]
@@ -334,7 +342,7 @@ def tab_2():
                 "Subject": sub_names, "Credits": sub_creds,
                 "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
             })
-            st.write(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
+            st.write(table.style.set_table_styles(styles_gp).to_html(), "<br/>", unsafe_allow_html=True)
         sgpa = total_credits_final / sum(sub_creds)
         sgpa = round(sgpa, 3)
         st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)

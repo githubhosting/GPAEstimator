@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment=".">
+      <change afterPath="$PROJECT_DIR$/header.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/2_Instructions_and_Working.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/2_Instructions_and_Working.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/3_Easter_Egg.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/3_Easter_Egg.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/4_About.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/4_About.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/6_Terms_and_Disclaimer.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/6_Terms_and_Disclaimer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +23,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -46,19 +53,20 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortByType" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -191,7 +199,7 @@
       <workItem from="1682580295095" duration="49000" />
       <workItem from="1682580360574" duration="477000" />
       <workItem from="1682580854916" duration="626000" />
-      <workItem from="1682581511307" duration="4242000" />
+      <workItem from="1682581511307" duration="9971000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -396,7 +404,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682585700976</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary=".">
+      <created>1682680495578</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1682680495578</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

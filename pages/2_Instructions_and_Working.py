@@ -5,7 +5,6 @@ from common import *
 
 st.set_page_config(page_title="Calculla - Instruction & Working", page_icon="📊", layout="centered")
 local_css("styles.css")
-local_html("footer.html")
 
 table_body = [
     ('border', '1.5px solid white'),

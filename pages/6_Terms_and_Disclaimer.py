@@ -4,7 +4,6 @@ from common import *
 
 st.set_page_config(page_title="Terms and Disclaimer", page_icon="👨‍💻", layout="centered")
 local_css("styles.css")
-local_html("footer.html")
 st.header("Terms and Disclaimer")
 
 st.write(
@@ -35,7 +34,7 @@ st.write(
     By using the app, you acknowledge and agree to these terms and conditions.
 
     If you have any questions or concerns about our caching policy, please contact the authors 
-    <a class='name' href='https://wa.me/919945332995?text=This is regarding Calculla...'>here</a> or 
-    <a class='name' href='https://wa.me/917019144708?text=This is regarding Calculla...'>here</a>
+    <a class='name' href='https://wa.me/919945332995?text=This%20is%20regarding%20Calculla...'>here</a> or 
+    <a class='name' href='https://wa.me/917019144708?text=This%20is%20regarding%20Calculla...'>here</a>
     """, unsafe_allow_html=True
 )

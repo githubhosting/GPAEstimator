@@ -6,15 +6,44 @@ footer {
     visibility: hidden;
 }
 
-.block-container{
-    padding-top: 2rem;
+.header {
+    text-align: center;
+    background-color: #1f1f1f55;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 2px 8px 8px rgba(0, 0, 0, 0.2);
+
+    position: fixed;
+    top: 25px;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    padding: .5rem;
 }
 
-[data-testid="stForm"] {border: 0}
-[role="radiogroup"] {justify-content: center}
-.stRadio label {justify-content: center}
-.stRadio label p {font-size: 1.25em; text-align: center}
-.streamlit-expanderHeader [data-testid="stMarkdownContainer"] p {font-size: 1.25em}
+.block-container {
+    padding-top: 7rem;
+}
+
+[data-testid="stForm"] {
+    border: 0
+}
+
+[role="radiogroup"] {
+    justify-content: center
+}
+
+.stRadio label {
+    justify-content: center
+}
+
+.stRadio label p {
+    font-size: 1.25em;
+    text-align: center
+}
+
+.streamlit-expanderHeader [data-testid="stMarkdownContainer"] p {
+    font-size: 1.25em
+}
 
 .ftext {
     border-top: gray 1px solid;
@@ -50,11 +79,11 @@ td {
     text-align: center;
 }
 
-.submarks{
+.submarks {
     font-weight: 600;
     text-align: center;
 }
 
-img{
+img {
     border-radius: 15px !important;
 }

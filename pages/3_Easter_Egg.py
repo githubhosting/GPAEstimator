@@ -5,11 +5,11 @@ from common import *
 st.set_page_config(page_title="Riddles and Easter Egg", page_icon="🥚", layout="centered")
 
 local_css("styles.css")
-local_html("footer.html")
 
 st.title("Riddles and Easter Egg")
 st.write(
-    f"The answer to these easy riddles are designed to be key to unlock the magical powers of this app. <a class='name' href='{st.secrets['link']}'>Click here</a> to read those special powers.",
+    f"The answer to these easy riddles are designed to be key to unlock the magical powers of this app."
+    f"<a class='name' href='{st.secrets.link3}'>Click here</a> to read those special powers.",
     unsafe_allow_html=True)
 st.write("After Finding the answer to the riddle just append it to any USN by giving space.")
 st.caption("Example: '1ms21is000 <answer>' in the USN field")
@@ -90,5 +90,7 @@ st.markdown(
     How long you've been on this Earth, free?
     """
 )
+
+st.write("<hr/>", unsafe_allow_html=True)
 
 st.write("<input hidden value='rookie'/>", unsafe_allow_html=True)
