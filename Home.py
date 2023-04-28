@@ -2,8 +2,9 @@ import asyncio
 import math
 import sys
 import time
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from random import random
+import extra_streamlit_components as stx
 
 import pandas as pd
 import streamlit as st
@@ -47,7 +48,7 @@ st.write(
     """, unsafe_allow_html=True
 )
 st.write(f'Total Searches: {st.secrets.stats.totals[0]} | Unique Searches: {len(st.secrets.stats.usns)}')
-tab1, tab2, tab3 = st.tabs(["Check SIS", "GPA - Estimator", "Simple - Calculator"])
+tab1, tab2, tab3, tab4 = st.tabs(["Check SIS", "GPA - Estimator", "Priority - Score", "Simple - Calculator"])
 
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
 forbidden_usns = ["1MS21IS017", "1MS21CI049"]
@@ -64,8 +65,8 @@ How about trying another token?"
 """
 creator_contact_msg = """
 Contact the creators
-Shravan <a class='name' href="https://wa.me/919945332995?text=what%is%the%working%token%for%calculla">here 🚀</a> or 
-Amith <a class='name' href="https://wa.me/917019144708?text=what%20is%the%working%token%for%calculla">here 🚀</a>
+Shravan <a class='name' href="https://wa.me/919945332995?text=what%20is%20the%20working%20token%20for%20calculla">here 🚀</a> or 
+Amith <a class='name' href="https://wa.me/917019144708?text=what%20is%20the%20working%20token%20for%20calculla">here 🚀</a>
 to get new token 😉
 """
 rick_roll_msgs = [
@@ -74,6 +75,14 @@ rick_roll_msgs = [
 ]
 hand_wave_gif = "<img width='30' vertical-align:sub " \
                 "src='https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true'>"
+
+
+@st.cache_resource(experimental_allow_widgets=True)
+def get_manager():
+    return stx.CookieManager()
+
+
+cookie_manager = get_manager()
 
 
 @st.cache_data(ttl=60 * 60 * 12)  # 12 hours
@@ -139,6 +148,8 @@ def crack(usn, easter):
 
 def tab_1_valid(sis_stats, exam_stats, easter):
     if st.session_state.prev_usn != st.session_state.usn:
+        if not easter: cookie_manager.set(sis_stats["usn"], sis_stats["dob"],
+                                          expires_at=datetime.now() + timedelta(days=7))
         log(st.session_state.usn, sis_stats["name"], sis_stats["dob"], easter)
     _, sub_names, sub_attds, sub_marks, sub_max_marks, _, _ = sub_lists(sis_stats["marks"])
 
@@ -243,6 +254,10 @@ def tab_1():
     if validate_usn(usn):
         st.session_state.usn = usn
         yyyy, mm, dd = int(usn[3:5]) - 18 + 2000, 1, 1
+        cookie_dob = cookie_manager.get(cookie=usn)
+        if cookie_dob is not None:
+            yyyy, mm, dd = map(int, cookie_dob.split("-"))
+            st.session_state.update(checked=True)
         if easter:
             dob = crack(usn, easter)
         else:
@@ -373,6 +388,25 @@ def home():
         tab_2()
     with tab3:
         pass
+    with tab4:
+        st.subheader("How much is average CIE marks for 50?")
+        avg = st.slider("Average CIE marks", 0, 50, value=35, step=1)
+        to_score = (90 - avg) * 2
+        st.write("Following is the minimum marks you need to score in SEE to get respective grades")
+        grades = [to_score, to_score - 20, to_score - 40, to_score - 60, to_score - 80, to_score - 100]
+        for i in range(len(grades)):
+            if grades[i] > 100:
+                grades[i] = " "
+        grade_letter = ["O", "A+", "A", "B+", "B", "C"]
+        table_1 = pd.DataFrame({"Grade": grade_letter, "Marks": grades})
+        st.write(table_1.style.hide(axis="index").set_table_styles(styles).to_html(), unsafe_allow_html=True)
+        st.write("")
+        st.write("Here is how its calculated :")
+        st.write(
+            f"You scored {avg}, then you need {to_score} in SEE to get O Grade. "
+            f"Because half of {to_score} which is {to_score / 2} is added to {avg} equals to {(to_score / 2) + avg} "
+            f"and that is minimum to get O Grade"
+        )
 
 
 if __name__ == '__main__':
