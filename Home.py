@@ -79,8 +79,9 @@ hand_wave_gif = "<img width='30' vertical-align:sub " \
 @st.cache_data(ttl=60 * 60 * 12)  # 12 hours
 def get_stats(usn, dob):
     if dob is None: return {}, {}
-    sis_stats = sis_micro(usn, dob, odd=False) or sis_micro(usn, dob, odd=True)
-    exam_stats = exam_micro(usn, even=False) or exam_micro(usn, even=True)
+    even_sis, odd_sis = sis_micro(usn, dob, odd=False), sis_micro(usn, dob, odd=True)
+    sis_stats = even_sis if even_sis["marks"] else odd_sis
+    exam_stats = exam_micro(usn, even=True) or exam_micro(usn, even=False)
     return sis_stats, exam_stats
 
 
