@@ -7,8 +7,6 @@
     <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment=".">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +191,7 @@
       <workItem from="1682580295095" duration="49000" />
       <workItem from="1682580360574" duration="477000" />
       <workItem from="1682580854916" duration="626000" />
-      <workItem from="1682581511307" duration="3149000" />
+      <workItem from="1682581511307" duration="4242000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -384,7 +382,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682581743904</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary=".">
+      <created>1682585687596</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1682585687596</updated>
+    </task>
+    <task id="LOCAL-00039" summary=".">
+      <created>1682585700976</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1682585700976</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -40,9 +40,7 @@ st.write(
             to know more about the tool.
         </p>
         <p>
-            Repo Link: <a class="name" href={st.secrets.github_link}>Github</a> 
-            | 
-            <a class="name" href={st.secrets.beta_link}>Join</a> as a beta tester
+            Repo Link: <a class="name" href={st.secrets.github_link}>Github</a>
         </p
     """, unsafe_allow_html=True
 )
@@ -148,11 +146,11 @@ def tab_1_valid(sis_stats, exam_stats, easter):
         symbol = "🕵️"
     st.text("")
     col1, col2 = st.columns(2)
-    col1.markdown(
+    col1.image(exam_stats["photo"], width=200, use_column_width=True)
+    col2.markdown(
         f"<br/><br/><h3 style='text-align: center; margin-block: auto;'>{welcome} {sis_stats['name']}! {symbol}<h3>",
         unsafe_allow_html=True
     )
-    col2.image(exam_stats["photo"], width=200, use_column_width=True)
 
     st.text("")
     with st.expander(f"CIE Marks for Semester {sis_stats['sem'][-3:]} : {sum(sub_marks)}/{sum(sub_max_marks)}",
