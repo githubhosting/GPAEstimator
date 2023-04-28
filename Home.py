@@ -162,10 +162,11 @@ def tab_1_valid(sis_stats, exam_stats, easter):
             name = m["sub"]
             cies, ces = m["cies"], m["ces"]
             with st.container():
-                m_dick = {f"C-{i + 1}": [v[0]] for i, v in enumerate(cies)}
+                m_dick = {"C-1": "-", "C-2": "-", "A-1": "-", "A-2": "-"}
+                m_dick.update({f"C-{i + 1}": [v[0]] for i, v in enumerate(cies)})
                 m_dick.update({f"A-{i + 1}": [v[0]] for i, v in enumerate(ces)})
                 m_dick["Total"] = m['tot'][0]
-                table = pd.DataFrame(m_dick)
+                table = pd.DataFrame(m_dick, index=[0])
                 st.write(
                     f"<p class='submarks'>{name} - {code}</p>",
                     table.style.hide(axis="index").to_html(), "<hr/>" if i + 1 != len(marks) else "<br/>",
@@ -267,6 +268,12 @@ def get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
     next_dist = []
     c1, c2 = [], []
     for cred, mark, max_mark, avg in zip(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
+        if max_mark == 0:
+            difficulty.append(0)
+            next_dist.append(0)
+            c1.append(0)
+            c2.append(0)
+            continue
         frac_mark = mark / max_mark
         dist_next = math.ceil(frac_mark * 10) / 10 - frac_mark
         avg_frac = avg / 30

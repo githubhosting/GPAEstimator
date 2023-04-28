@@ -4,15 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/header.html" afterDir="false" />
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="refactor done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/2_Instructions_and_Working.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/2_Instructions_and_Working.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/3_Easter_Egg.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/3_Easter_Egg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/4_About.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/4_About.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/6_Terms_and_Disclaimer.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/6_Terms_and_Disclaimer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.creds.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.creds.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/exam.py" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/RITScraping/exam.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,7 +197,7 @@
       <workItem from="1682580295095" duration="49000" />
       <workItem from="1682580360574" duration="477000" />
       <workItem from="1682580854916" duration="626000" />
-      <workItem from="1682581511307" duration="9971000" />
+      <workItem from="1682581511307" duration="12158000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -411,7 +409,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682680495578</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="refactor done">
+      <created>1682686501896</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1682686501896</updated>
+    </task>
+    <task id="LOCAL-00042" summary="refactor done">
+      <created>1682686506513</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1682686506513</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -443,7 +455,8 @@
     <MESSAGE value="minor bug fix" />
     <MESSAGE value="tab2 done, merging tab3 started" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="refactor done" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
