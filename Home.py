@@ -340,6 +340,9 @@ def tab_2():
 
     st.text("")
     with st.container():
+        check_sgpa = st.checkbox("Calculate SGPA")
+        if check_sgpa:
+            st.write("Select the grade you expect in each subject")
         sgpas = sis_stats["sgpas"]
         grade_in_each = []
         estimates = grade_estimates(
@@ -348,31 +351,34 @@ def tab_2():
         )
         st.write("<hr/>", unsafe_allow_html=True)
         for m, sn, e in zip(sub_marks, sub_names, estimates):
-            grade_in_each.append(st.radio(f"{sn} - {m}", ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
+            if check_sgpa:
+                grade_in_each.append(
+                    st.radio(f"{sn} - {m}", ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
             table = pd.DataFrame(e, index=[sn])
             st.write(
                 table.style.hide(axis="index").to_html(), "<hr/>",
                 unsafe_allow_html=True
             )
-        grade_point = [grade_to_gp[g] for g in grade_in_each]
-        weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
-        total_credits_final = sum(weighted_gp)
-        st.write("")
-        with st.expander("Show Grade Point Table"):
-            st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
-                     unsafe_allow_html=True)
-            table = pd.DataFrame({
-                "Subject": sub_names, "Credits": sub_creds,
-                "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
-            })
-            st.write(table.style.set_table_styles(styles_gp).to_html(), "<br/>", unsafe_allow_html=True)
-        sgpa = total_credits_final / sum(sub_creds)
-        sgpa = round(sgpa, 3)
-        st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
-        st.write(
-            f"<h3 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
-            unsafe_allow_html=True
-        )
+        if check_sgpa:
+            grade_point = [grade_to_gp[g] for g in grade_in_each]
+            weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
+            total_credits_final = sum(weighted_gp)
+            st.write("")
+            with st.expander("Show Grade Point Table"):
+                st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
+                         unsafe_allow_html=True)
+                table = pd.DataFrame({
+                    "Subject": sub_names, "Credits": sub_creds,
+                    "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
+                })
+                st.write(table.style.set_table_styles(styles_gp).to_html(), "<br/>", unsafe_allow_html=True)
+            sgpa = total_credits_final / sum(sub_creds)
+            sgpa = round(sgpa, 3)
+            st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
+            st.write(
+                f"<h3 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
+                unsafe_allow_html=True
+            )
 
 
 def home():
