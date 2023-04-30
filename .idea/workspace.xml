@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="admin panel added back">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.cache" afterDir="false" />
-    </list>
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -199,7 +195,7 @@
       <workItem from="1682581511307" duration="12563000" />
       <workItem from="1682689392008" duration="6340000" />
       <workItem from="1682827681589" duration="3258000" />
-      <workItem from="1682831666794" duration="1824000" />
+      <workItem from="1682831666794" duration="2126000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -453,7 +449,28 @@
       <option name="project" value="LOCAL" />
       <updated>1682829773512</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="minor adjustments">
+      <created>1682853717584</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1682853717584</updated>
+    </task>
+    <task id="LOCAL-00048" summary="minor adjustments">
+      <created>1682853735764</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1682853735764</updated>
+    </task>
+    <task id="LOCAL-00049" summary=".">
+      <created>1682853956120</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1682853956120</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -484,12 +501,13 @@
     <MESSAGE value="tab1 done" />
     <MESSAGE value="minor bug fix" />
     <MESSAGE value="tab2 done, merging tab3 started" />
-    <MESSAGE value="." />
     <MESSAGE value="refactor done" />
     <MESSAGE value="ensures latest sem now, fixed data:image bug in photo (exam scraper)" />
     <MESSAGE value="get_stats bug fixed" />
     <MESSAGE value="admin panel added back" />
-    <option name="LAST_COMMIT_MESSAGE" value="admin panel added back" />
+    <MESSAGE value="minor adjustments" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
