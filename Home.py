@@ -4,8 +4,8 @@ import sys
 import time
 from datetime import datetime, date, timedelta
 from random import random
-import extra_streamlit_components as stx
 
+import extra_streamlit_components as stx
 import pandas as pd
 import streamlit as st
 
@@ -27,9 +27,9 @@ st.set_page_config(page_title="Calculla - GPA Calculator", page_icon="📊", lay
 #     Shravan Revanna
 # </a>
 # """, unsafe_allow_html=True)
-st.caption("")
 local_html("header.html")
 local_css("styles.css")
+st.caption("---")
 
 st.write(
     f"""
@@ -278,6 +278,60 @@ def tab_1():
         st.error('Invalid USN', icon="🚨")
 
 
+def tab_2():
+    if st.session_state.checked:
+        sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
+        if not sis_stats or not st.session_state.checked:
+            st.warning("Invalid USN or DOB", icon="🚨")
+            return
+    else:
+        st.warning("First Check SIS", icon="🚨")
+        return
+
+    st.subheader("Grade & GPA Estimator")
+    sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
+    sub_creds = [sis_stats["creds"][k] for k in sub_codes]
+
+    with st.container():
+        sgpas = sis_stats["sgpas"]
+        grade_in_each = []
+        estimates = grade_estimates(
+            sub_marks, sub_names, sub_max_marks,
+            **{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
+        )
+        for m, mm, sn, e, c in zip(sub_marks, sub_max_marks, sub_names, estimates, sub_creds):
+            if c > 1:
+                for ee in e: e[ee] *= 2
+            def_gi = 0
+            if mm != 0: def_gi = 10 - math.ceil(m / mm * 10)
+            grade_in_each.append(st.radio(f"{sn} - {m}", ["O", "A+", "A", "B+", "B", "C", "P", "F"],
+                                          index=def_gi if def_gi >= 0 else 7, horizontal=True))
+            table = pd.DataFrame(e, index=[sn])
+            st.write(
+                table.style.hide(axis="index").to_html(), "<hr/>",
+                unsafe_allow_html=True
+            )
+        grade_point = [grade_to_gp[g] for g in grade_in_each]
+        weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
+        total_gp_final = sum(weighted_gp)
+        st.write("")
+        with st.expander("Show Grade Point Table"):
+            st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
+                     unsafe_allow_html=True)
+            table = pd.DataFrame({
+                "Subject": sub_names, "Credits": sub_creds,
+                "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
+            })
+            st.write(table.style.set_table_styles(styles_gp).to_html(), "<br/>", unsafe_allow_html=True)
+        sgpa = total_gp_final / sum(sub_creds)
+        sgpa = round(sgpa, 3)
+        st.write(f"<h3 class='mt'>Your Estimated SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
+        st.write(
+            f"<h3 class='mt'>Your Estimated CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
+            unsafe_allow_html=True
+        )
+
+
 @st.cache_resource(ttl=60 * 60 * 12)  # 12 hours
 def get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
     difficulty = []
@@ -297,82 +351,8 @@ def get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
         difficulty.append(diff)
         next_dist.append(dist_next)
         c1.append(diff / frac_mark)
-        c2.append((1 - diff) / frac_mark)
+        c2.append((1 - diff) * frac_mark)
     return difficulty, next_dist, c1, c2
-
-
-def tab_2():
-    if st.session_state.checked:
-        sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
-        if not sis_stats or not st.session_state.checked:
-            st.warning("Invalid USN or DOB", icon="🚨")
-            return
-    else:
-        st.warning("First Check SIS", icon="🚨")
-        return
-
-    st.subheader("Scoring & Prioritizing Subjects")
-
-    sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
-    sub_creds = [sis_stats["creds"][k] for k in sub_codes]
-    difficulty, next_dist, c1, c2 = get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie)
-    cr = st.slider("Select Criterion [0 - Easier Next Grade Point, 1 - Difficult Next Grade Point]",
-                   0., 1., 0.75, 0.01, key="criterion", format="%.2f")
-    st.caption(
-        "Prioritize subjects in the following order to get the best grades. "
-        "See Priority Table how the priority score is calculated.",
-        unsafe_allow_html=False)
-    priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in
-                zip(sub_creds, c1, c2, next_dist)]
-    zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, priority), key=lambda k: k[4], reverse=True)
-    sub_marks, sub_creds, sub_codes, sub_names, priority = zip(*zip_list)
-
-    with st.expander("Show Priority Table"):
-        priority_score = [f"{m:.1f}" for m in priority]
-        table = pd.DataFrame({
-            "Subject": sub_names,
-            "CIE": sub_marks,
-            "Priority": priority_score,
-        }, index=[i for i in range(1, len(sub_marks) + 1)])
-        st.write(table.style.hide(axis="index").set_table_styles(styles).to_html(), "<br/>",
-                 unsafe_allow_html=True)
-        st.markdown("how its calculated")
-
-    st.text("")
-    with st.container():
-        sgpas = sis_stats["sgpas"]
-        grade_in_each = []
-        estimates = grade_estimates(
-            sub_marks, sub_names, sub_max_marks,
-            **{"O": 90, "A+": 80, "A": 70, "B+": 60, "B": 55, "C": 50, "P": 40}
-        )
-        st.write("<hr/>", unsafe_allow_html=True)
-        for m, sn, e in zip(sub_marks, sub_names, estimates):
-            grade_in_each.append(st.radio(f"{sn} - {m}", ["O", "A+", "A", "B+", "B", "C", "P", "F"], horizontal=True))
-            table = pd.DataFrame(e, index=[sn])
-            st.write(
-                table.style.hide(axis="index").to_html(), "<hr/>",
-                unsafe_allow_html=True
-            )
-        grade_point = [grade_to_gp[g] for g in grade_in_each]
-        weighted_gp = [i * j for i, j in zip(grade_point, sub_creds)]
-        total_credits_final = sum(weighted_gp)
-        st.write("")
-        with st.expander("Show Grade Point Table"):
-            st.write("<p class='mt'>Based on the above grades, this will be your final credits and SGPA</p>",
-                     unsafe_allow_html=True)
-            table = pd.DataFrame({
-                "Subject": sub_names, "Credits": sub_creds,
-                "Grade Points": [f"{w}/{c * 10}" for w, c in zip(weighted_gp, sub_creds)]
-            })
-            st.write(table.style.set_table_styles(styles_gp).to_html(), "<br/>", unsafe_allow_html=True)
-        sgpa = total_credits_final / sum(sub_creds)
-        sgpa = round(sgpa, 3)
-        st.write(f"<h3 class='mt'>Your SGPA is: {sgpa:.3f}</h2>", unsafe_allow_html=True)
-        st.write(
-            f"<h3 class='mt'>Your CGPA is: {((sgpa + sum(sgpas)) / (1 + len(sgpas))):.3f}</h2>",
-            unsafe_allow_html=True
-        )
 
 
 def home():
@@ -387,7 +367,49 @@ def home():
     with tab2:
         tab_2()
     with tab3:
-        pass
+        if st.session_state.checked:
+            sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
+            if not sis_stats or not st.session_state.checked:
+                st.warning("Invalid USN or DOB", icon="🚨")
+                return
+        else:
+            st.warning("First Check SIS", icon="🚨")
+            return
+
+        st.subheader("Prioritize and Conquer")
+        sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
+        sub_creds = [sis_stats["creds"][k] for k in sub_codes]
+
+        difficulty, next_dist, c1, c2 = get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie)
+        st.caption(
+            "Lesser the criterion value, easier the ability to score without much effort. "
+            "Higher the value, requires some effort but still possible to score well. "
+            "Use optimal value close to 0.75 for best results.",
+            unsafe_allow_html=False)
+        cr = st.slider("Select Criterion [0 - Easy Next Grade, 1 - Difficult Next Grade]",
+                       0., 1., 0.75, 0.01, key="criterion", format="%.2f")
+        priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in
+                    zip(sub_creds, c1, c2, next_dist)]
+        zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, priority), key=lambda k: k[4], reverse=True)
+        sub_marks, sub_creds, sub_codes, sub_names, priority = zip(*zip_list)
+
+        priority_score = [f"{m:.1f}" for m in priority]
+        table = pd.DataFrame({
+            "Subject": sub_names,
+            "CIE": sub_marks,
+            "Priority": priority_score,
+        }, index=[i for i in range(1, len(sub_marks) + 1)])
+        st.write(table.style.hide(axis="index").set_table_styles(styles).to_html(), "<br/>",
+                 unsafe_allow_html=True)
+        with st.expander("How its Calculated"):
+            st.latex(r"Priority = \frac{Credits \times (C1 \times CR + C2 \times (1 - CR)) \times (1 - NextDist)}{100}")
+            st.markdown("where")
+            st.latex(rf"CR = Criterion = {cr}")
+            st.latex(r"C1 = Toughness = \frac{Difficulty}{MaxMarks}")
+            st.latex(r"C2 = Easiness = \frac{(1 - Difficulty))}{MaxMarks}")
+            st.latex(r"NextDist = NextGradePoint = \frac{MaxMarks - CIE}{MaxMarks}")
+            st.latex(r"Difficulty = \frac{(1 - \frac{AvgMarks}{MaxMarks}) \times 0.25 + (1 - \frac{CIEMarks}{MaxMarks}) \times 0.75}{MaxMarks}")
+
     with tab4:
         st.subheader("How much is average CIE marks for 50?")
         avg = st.slider("Average CIE marks", 0, 50, value=35, step=1)

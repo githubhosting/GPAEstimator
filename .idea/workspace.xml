@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="ensures latest sem now, fixed data:image bug in photo (exam scraper)">
+    <list default="true" id="78b5fd26-99a2-4649-a395-6c9893286d37" name="Changes" comment="get_stats bug fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.creds.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/__async_cache__/cacheri956kh45.creds.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/RITScraping2.0/src/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/5_Admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/5_Admin.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,7 +198,8 @@
       <workItem from="1682580360574" duration="477000" />
       <workItem from="1682580854916" duration="626000" />
       <workItem from="1682581511307" duration="12563000" />
-      <workItem from="1682689392008" duration="627000" />
+      <workItem from="1682689392008" duration="6340000" />
+      <workItem from="1682827681589" duration="1841000" />
     </task>
     <task id="LOCAL-00011" summary="Merge commit 'cdc60ebfc440d6c17edfefe475652f5a74a202e2' as 'RITScraping2.0'">
       <created>1679988804534</created>
@@ -428,7 +432,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682688565089</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="get_stats bug fixed">
+      <created>1682690063321</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1682690063321</updated>
+    </task>
+    <task id="LOCAL-00045" summary="get_stats bug fixed">
+      <created>1682690077457</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1682690077457</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -462,7 +480,8 @@
     <MESSAGE value="." />
     <MESSAGE value="refactor done" />
     <MESSAGE value="ensures latest sem now, fixed data:image bug in photo (exam scraper)" />
-    <option name="LAST_COMMIT_MESSAGE" value="ensures latest sem now, fixed data:image bug in photo (exam scraper)" />
+    <MESSAGE value="get_stats bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="get_stats bug fixed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
