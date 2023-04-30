@@ -94,7 +94,7 @@ def get_stats(usn, dob):
     return sis_stats, exam_stats
 
 
-def brutes(usn) -> str | None:
+def brutes(usn):
     async def brute():
         async with SisScraper() as scraper:
             return await scraper.brute_dob(usn)
