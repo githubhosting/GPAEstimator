@@ -289,6 +289,7 @@ def tab_2():
         return
 
     st.subheader("Grade & GPA Estimator")
+    st.caption("Mark your predicted/expected grades for each subject, and then scroll down to see the estimated GPA.")
     sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
     sub_creds = [sis_stats["creds"][k] for k in sub_codes]
 
