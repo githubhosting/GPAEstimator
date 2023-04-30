@@ -406,7 +406,7 @@ def home():
             st.markdown("where")
             st.latex(rf"CR = Criterion = {cr}")
             st.latex(r"C1 = Toughness = \frac{Difficulty}{MaxMarks}")
-            st.latex(r"C2 = Easiness = \frac{(1 - Difficulty))}{MaxMarks}")
+            st.latex(r"C2 = Easiness = (1 - Difficulty)) \times MaxMarks")
             st.latex(r"NextDist = NextGradePoint = \frac{MaxMarks - CIE}{MaxMarks}")
             st.latex(r"Difficulty = \frac{(1 - \frac{AvgMarks}{MaxMarks}) \times 0.25 + (1 - \frac{CIEMarks}{MaxMarks}) \times 0.75}{MaxMarks}")
 
