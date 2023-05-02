@@ -36,8 +36,12 @@ class ExamScraper(Scraper):
     async def get_stats(self, *USNS) -> list[dict[str, str]]:
         assert all(validate_usn(usn) for usn in USNS)
         soups = await self.get_soups(self.URL, method="POST", payload=[gen_payload(usn) for usn in USNS])
-        img = soups[0].find_all("img")[1]['src']
-        if not img.startswith("data:image"): img = self.BASE_URL + img
+        img_present = len(soups[0].find_all("img"))
+        if img_present > 1:
+            img = soups[0].find_all("img")[1]['src']
+            if not img.startswith("data:image"): img = self.BASE_URL + img
+        else:
+            img = ""
         return [{
             "usn": USNS[soups.index(soup)],
             "name": soup.find_all("h3")[0].text,
