@@ -160,7 +160,7 @@ def tab_1_valid(sis_stats, exam_stats, easter):
         symbol = "🕵️"
     st.text("")
     col1, col2 = st.columns(2)
-        if exam_stats:
+    if exam_stats:
         col1.image(exam_stats["photo"], width=200, use_column_width=True)
     else:
         col1.image(
