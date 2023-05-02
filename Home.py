@@ -160,7 +160,12 @@ def tab_1_valid(sis_stats, exam_stats, easter):
         symbol = "🕵️"
     st.text("")
     col1, col2 = st.columns(2)
-    col1.image(exam_stats["photo"], width=200, use_column_width=True)
+        if exam_stats:
+        col1.image(exam_stats["photo"], width=200, use_column_width=True)
+    else:
+        col1.image(
+            "https://user-images.githubusercontent.com/94772842/235647809-4e46fa84-2865-4bf2-b03f-eadec2083ddf.png",
+            width=200, use_column_width=True)
     col2.markdown(
         f"<br/><br/><h3 style='text-align: center; margin-block: auto;'>{welcome} {sis_stats['name']}! {symbol}<h3>",
         unsafe_allow_html=True
