@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+import math
 from typing import Union
 
 from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob, CACHE_NAME
@@ -108,7 +109,7 @@ class SisScraper(DobCracker, Scraper):
             "attd": int(mark.pop(-2)[0].removesuffix("%")),
             "cies": [(int(m["optainmarks"]), mm, int(m["col1"])) for m in data[0:4] if (mm := int(m["maxmarks"]))],
             "ces": [(int(m["optainmarks"]), mm, int(m["col1"])) for m in data[4:] if (mm := int(m["maxmarks"]))],
-            "tot": tuple(map(int, mark[7])),
+            "tot": tuple(map(lambda x: int(math.ceil(float(x))), mark[7])),
         }
 
     @AsyncCache(f"{CACHE_NAME}.creds", ignore=("curl",))
