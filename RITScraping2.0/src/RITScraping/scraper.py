@@ -31,7 +31,7 @@ class Scraper:
         self.Se = None
 
     async def __aenter__(self):
-        self.Se = aiohttp.ClientSession()
+        self.Se = aiohttp.TCPConnector(force_close=True, verify_ssl=False)
         await self.Se.__aenter__()
         return self
 
