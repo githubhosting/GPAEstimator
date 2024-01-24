@@ -50,7 +50,7 @@ class SisScraper(DobCracker, Scraper):
 
     def __init__(self, odd=False):
         super(SisScraper, self).__init__()
-        self.URL = self.BASE_URL + ("parentsodd/" if odd else "parentseven/")
+        self.URL = self.BASE_URL + ("parentsodd/" if odd else "")
         self.odd = odd
 
     def __aexit__(self, exc_type, exc_val, exc_tb):
