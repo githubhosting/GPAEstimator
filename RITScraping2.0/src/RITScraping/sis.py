@@ -116,18 +116,34 @@ class SisScraper(DobCracker, Scraper):
     async def __cred_worker(self, *, curl, code) -> Union[tuple[str, int], None]:
         soup, = await self.get_soups(self.URL + curl)
         if not self.body_validator(soup): raise ValueError("Not logged in")
-        sub_code, cred = soup.find_all("table")[2:4]
-        if sub_code.find_all("div")[1].text != code: raise ValueError("Invalid code and curl")
-        return code, int(float(cred.find("div").text))
+        # sub_code, cred = soup.find_all("table")[2:4]
+        tables = soup.find_all("table")
+        cred_table = tables[1]
+        sub_code = cred_table.find('div', class_='').text.strip()
+        cred = cred_table.select_one('.alignmiddle div').text.strip() if soup.select_one('.alignmiddle div') else None
+        # if sub_code != code: raise ValueError("Invalid code and curl", sub_code, code)
+        return code, int(float(cred))
 
     async def get_credits(self) -> dict[str, int]:
         soup, = await self.get_soups(self.URL + self.CREDS_CURL)
         if not self.body_validator(soup): raise ValueError("Not logged in")
         head = soup.find("div", {"id": "sims-container"})
-        subs = head.find_all("a")
+        if not head:
+            tbody = soup.find("tbody")
+            if tbody:
+                subs = tbody.find_all("a")
+            else:
+                subs = []
+        else:
+            subs = head.find_all("a")
         tasks = []
         for sub in subs:
-            k = sub.parent.parent.parent.find("tr").text.split()[0]
+            td_list = sub.parent.parent.find_all("td")
+            if len(td_list) >= 2:
+                k = td_list[1].text
+            else:
+                k = ""
+                print("Warning: Invalid subject code")
             tasks.append(asyncio.ensure_future(self.__cred_worker(curl=sub.get("href"), code=k)))
         return dict(await asyncio.gather(*tasks))
 
