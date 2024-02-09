@@ -42,13 +42,10 @@ st.write(
             <a class="name" href="https://shravanrevanna.hashnode.dev/calculla-the-next-level-gpa-calculator">Here</a>
             to know more about the tool.
         </p>
-        <p>
-            Repo Link: <a class="name" href={st.secrets.github_link}>Github</a>
-        </p
     """, unsafe_allow_html=True
 )
-st.write(f'Total Searches: {st.secrets.stats.totals[0]} | Unique Searches: {len(st.secrets.stats.usns)}')
-tab1, tab2, tab3, tab4 = st.tabs(["Check SIS", "GPA - Estimator", "Priority - Score", "Simple - Calculator"])
+st.write(f'Total Searches: 9k+ | Unique Searches: 2k+')
+tab1, tab2 = st.tabs(["Message", "Simple - Calculator"])
 
 grade_to_gp = {"O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "P": 4, "F": 0}
 forbidden_usns = ["1MS21IS017", "1MS21CI049"]
@@ -75,6 +72,49 @@ rick_roll_msgs = [
 ]
 hand_wave_gif = "<img width='30' vertical-align:sub " \
                 "src='https://github.com/1999AZZAR/1999AZZAR/blob/main/resources/img/waving.gif?raw=true'>"
+
+intro_message = """
+## Farewell to Calculla: A Tool That Made Grading a Breeze 😢💔🕯️
+
+It is with heavy hearts and teary eyes that we bid adieu to **Calculla** - our beloved calculator of champions, our estimator of excellence. Once a towering beacon of hope and clarity amidst the daunting academic fog, Calculla now takes its final bow. For years, it stood resilient, a source of solace and strength for students braving the storm of exams. Its mighty powers, which once demystified grades and infused our academic voyage with moments of joy, have now ebbed away into the silence of yesteryears. 🌧️💼📚
+
+## A Legacy Beyond Numbers
+Calculla was more than just a tool; it was a companion in our most stressful times, a beacon that not only illuminated our paths with clarity but also brought laughter to lighten our loads. Its departure leaves a void that echoes with the fond memories of the comfort and guidance it provided. 🕊️🌟✨
+
+**As we say our goodbyes, we hold close the legacy of Calculla. Its spirit, encapsulated in every calculation and every smile it brought forth, will forever remain a cherished part of our academic journeys. Farewell, Calculla, you will be deeply missed.** 😔👋🌹
+
+"""
+home_message = """
+# Though your circuits now rest silent, your memory lives on:
+
+### The Priority Score
+A weighted champion, **The Priority Score** guided students to the subjects pivotal for achieving their desired CGPA, acting as a beacon in their academic journey.
+
+### Riddles
+Far more than mere brain teasers, our **Riddles** unveiled hidden truths and nurtured a community bound by curiosity.
+
+### Funny Messages
+In the throes of exam preparation, **Funny Messages** served as a much-needed respite, proving that laughter truly is the best medicine.
+
+### Attention to Detail
+With an unwavering commitment to personal touches, from heartfelt welcome messages to acknowledging every individual, we ensured that each user felt recognized and valued.
+
+## Gratitude from the Heart
+To all who found solace and strategy in Calculla:
+
+- **Students**, who navigated their exams with newfound precision.
+- **Creators**, whose fervor and creativity were immortalized in every line of code.
+
+### A Legacy That Endures
+Though Calculla has bid us adieu, its legacy endures:
+
+- In the **GPAs** it helped elevate.
+- In the **motivation** it instilled in every student.
+- In the **wisdom** it imparted.
+- In the countless **smiles** it brought to our faces.
+
+
+"""
 
 
 @st.cache_resource(experimental_allow_widgets=True)
@@ -221,66 +261,76 @@ def tab_1_valid(sis_stats, exam_stats, easter):
     st.markdown(table.style.set_table_styles(styles_gp).to_html(), unsafe_allow_html=True)
 
 
+def stream_data():
+    for word in home_message.split():
+        yield word
+        time.sleep(0.01)
+
+
 def tab_1():
-    crack_msg_div = st.empty()
-    easter = None
+    st.success(intro_message)
+    st.markdown(home_message, unsafe_allow_html=True)
+    st.info("**Farewell, Calculla.** Thank you for everything - Amith & Shravan")
 
-    st.subheader("Check Internals")
-    usn = st.text_input("Enter Valid USN", placeholder="1ms21is000",
-                        on_change=lambda: st.session_state.update(checked=False)).strip().upper()
-    if " " in usn:
-        usn, easter = usn.split(maxsplit=1)
-        easter = easter.lower()
-
-    eggs_name = st.secrets.passwords["easter_eggs"]
-    eggs_span = st.secrets.passwords["easter_eggs_counter"]
-    if easter in eggs_name:
-        if eggs_span[eggs_name.index(easter)] > 0:
-            crack_msg_div = st.empty()
-            with crack_msg_div.container():
-                st.success(f"Yay! token-{easter} has been applied! 🎊")
-                st.info("Have a coffee while we try cracking the DOB")
-        else:
-            st.success(f"Yay! **{easter}** is correct ! 🎉")
-            st.warning(crack_expired_msg)
-            st.info("Please contact the **Admin** or try again later")
-            st.markdown(creator_contact_msg, unsafe_allow_html=True)
-            easter = None
-    elif easter:
-        if "rick" in easter or "roll" in easter:
-            st.info(rick_roll_msgs[0])
-            time.sleep(3)
-            st.write(rick_roll_msgs[1], unsafe_allow_html=True)
-        else:
-            st.error("Nah ah ha ha")
-            st.warning("You didn't get the magic word!")
-        easter = None
-
-    if validate_usn(usn):
-        st.session_state.usn = usn
-        yyyy, mm, dd = int(usn[3:5]) - 18 + 2000, 1, 1
-        cookie_dob = cookie_manager.get(cookie=usn)
-        if cookie_dob is not None:
-            yyyy, mm, dd = map(int, cookie_dob.split("-"))
-            st.session_state.update(checked=True)
-        if easter:
-            dob = crack(usn, easter)
-        else:
-            dob = st.date_input("Enter DOB", date(yyyy, mm, dd),
-                                on_change=lambda: st.session_state.update(checked=False)).strftime("%Y-%m-%d")
-        crack_msg_div.empty()
-        if easter or st.session_state.checked or \
-                st.button("Check", on_click=lambda: st.session_state.update(checked=True)):
-            st.session_state.checked = True
-            sis_stats, exam_stats = get_stats(usn, dob)
-            if not sis_stats:
-                st.warning("Invalid USN or DOB", icon="🚨")
-            else:
-                tab_1_valid(sis_stats, exam_stats, easter)
-                st.session_state.prev_usn = usn
-                st.session_state.dob = dob
-    elif usn:
-        st.error('Invalid USN', icon="🚨")
+    # crack_msg_div = st.empty()
+    # easter = None
+    #
+    # st.subheader("Check Internals")
+    # usn = st.text_input("Enter Valid USN", placeholder="1ms21is000",
+    #                     on_change=lambda: st.session_state.update(checked=False)).strip().upper()
+    # if " " in usn:
+    #     usn, easter = usn.split(maxsplit=1)
+    #     easter = easter.lower()
+    #
+    # eggs_name = st.secrets.passwords["easter_eggs"]
+    # eggs_span = st.secrets.passwords["easter_eggs_counter"]
+    # if easter in eggs_name:
+    #     if eggs_span[eggs_name.index(easter)] > 0:
+    #         crack_msg_div = st.empty()
+    #         with crack_msg_div.container():
+    #             st.success(f"Yay! token-{easter} has been applied! 🎊")
+    #             st.info("Have a coffee while we try cracking the DOB")
+    #     else:
+    #         st.success(f"Yay! **{easter}** is correct ! 🎉")
+    #         st.warning(crack_expired_msg)
+    #         st.info("Please contact the **Admin** or try again later")
+    #         st.markdown(creator_contact_msg, unsafe_allow_html=True)
+    #         easter = None
+    # elif easter:
+    #     if "rick" in easter or "roll" in easter:
+    #         st.info(rick_roll_msgs[0])
+    #         time.sleep(3)
+    #         st.write(rick_roll_msgs[1], unsafe_allow_html=True)
+    #     else:
+    #         st.error("Nah ah ha ha")
+    #         st.warning("You didn't get the magic word!")
+    #     easter = None
+    #
+    # if validate_usn(usn):
+    #     st.session_state.usn = usn
+    #     yyyy, mm, dd = int(usn[3:5]) - 18 + 2000, 1, 1
+    #     cookie_dob = cookie_manager.get(cookie=usn)
+    #     if cookie_dob is not None:
+    #         yyyy, mm, dd = map(int, cookie_dob.split("-"))
+    #         st.session_state.update(checked=True)
+    #     if easter:
+    #         dob = crack(usn, easter)
+    #     else:
+    #         dob = st.date_input("Enter DOB", date(yyyy, mm, dd),
+    #                             on_change=lambda: st.session_state.update(checked=False)).strftime("%Y-%m-%d")
+    #     crack_msg_div.empty()
+    #     if easter or st.session_state.checked or \
+    #             st.button("Check", on_click=lambda: st.session_state.update(checked=True)):
+    #         st.session_state.checked = True
+    #         sis_stats, exam_stats = get_stats(usn, dob)
+    #         if not sis_stats:
+    #             st.warning("Invalid USN or DOB", icon="🚨")
+    #         else:
+    #             tab_1_valid(sis_stats, exam_stats, easter)
+    #             st.session_state.prev_usn = usn
+    #             st.session_state.dob = dob
+    # elif usn:
+    #     st.error('Invalid USN', icon="🚨")
 
 
 def tab_2():
@@ -362,61 +412,62 @@ def get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie):
 
 
 def home():
-    if "usn" not in st.session_state: st.session_state.usn = None
-    if "prev_usn" not in st.session_state: st.session_state.prev_usn = None
-    if "prev_easter" not in st.session_state: st.session_state.prev_easter = None
-    if "dob" not in st.session_state: st.session_state.dob = None
-    if "checked" not in st.session_state: st.session_state.checked = False
+    # if "usn" not in st.session_state: st.session_state.usn = None
+    # if "prev_usn" not in st.session_state: st.session_state.prev_usn = None
+    # if "prev_easter" not in st.session_state: st.session_state.prev_easter = None
+    # if "dob" not in st.session_state: st.session_state.dob = None
+    # if "checked" not in st.session_state: st.session_state.checked = False
 
     with tab1:
         tab_1()
+    # with tab2:
+    #     tab_2()
+    # with tab3:
+    #     if st.session_state.checked:
+    #         sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
+    #         if not sis_stats or not st.session_state.checked:
+    #             st.warning("Invalid USN or DOB", icon="🚨")
+    #             return
+    #     else:
+    #         st.warning("First Check SIS", icon="🚨")
+    #         return
+    #
+    #     st.subheader("Prioritize and Conquer")
+    #     sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
+    #     sub_creds = [sis_stats["creds"][k] for k in sub_codes]
+    #
+    #     difficulty, next_dist, c1, c2 = get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie)
+    #     st.caption(
+    #         "Lesser the criterion value, easier the ability to score without much effort. "
+    #         "Higher the value, requires some effort but still possible to score well. "
+    #         "Use optimal value close to 0.75 for best results.",
+    #         unsafe_allow_html=False)
+    #     cr = st.slider("Select Criterion [0 - Easy Next Grade, 1 - Difficult Next Grade]",
+    #                    0., 1., 0.75, 0.01, key="criterion", format="%.2f")
+    #     priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in
+    #                 zip(sub_creds, c1, c2, next_dist)]
+    #     zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, priority), key=lambda k: k[4], reverse=True)
+    #     sub_marks, sub_creds, sub_codes, sub_names, priority = zip(*zip_list)
+    #
+    #     priority_score = [f"{m:.1f}" for m in priority]
+    #     table = pd.DataFrame({
+    #         "Subject": sub_names,
+    #         "CIE": sub_marks,
+    #         "Priority": priority_score,
+    #     }, index=[i for i in range(1, len(sub_marks) + 1)])
+    #     st.write(table.style.hide(axis="index").set_table_styles(styles).to_html(), "<br/>",
+    #              unsafe_allow_html=True)
+    #     with st.expander("How its Calculated"):
+    #         st.latex(r"Priority = \frac{Credits \times (C1 \times CR + C2 \times (1 - CR)) \times (1 - NextDist)}{100}")
+    #         st.markdown("where")
+    #         st.latex(rf"CR = Criterion = {cr}")
+    #         st.latex(r"C1 = Toughness = \frac{Difficulty}{MaxMarks}")
+    #         st.latex(r"C2 = Easiness = (1 - Difficulty)) \times MaxMarks")
+    #         st.latex(r"NextDist = NextGradePoint = \frac{MaxMarks - CIE}{MaxMarks}")
+    #         st.latex(
+    #             r"Difficulty = \frac{(1 - \frac{AvgMarks}{MaxMarks}) \times 0.25 + (1 - \frac{CIEMarks}{MaxMarks}) \times 0.75}{MaxMarks}")
+
     with tab2:
-        tab_2()
-    with tab3:
-        if st.session_state.checked:
-            sis_stats, exam_stats = get_stats(st.session_state.usn, st.session_state.dob)
-            if not sis_stats or not st.session_state.checked:
-                st.warning("Invalid USN or DOB", icon="🚨")
-                return
-        else:
-            st.warning("First Check SIS", icon="🚨")
-            return
-
-        st.subheader("Prioritize and Conquer")
-        sub_codes, sub_names, _, sub_marks, sub_max_marks, sub_avg_cie, _ = sub_lists(sis_stats["marks"])
-        sub_creds = [sis_stats["creds"][k] for k in sub_codes]
-
-        difficulty, next_dist, c1, c2 = get_priority_params(sub_creds, sub_marks, sub_max_marks, sub_avg_cie)
-        st.caption(
-            "Lesser the criterion value, easier the ability to score without much effort. "
-            "Higher the value, requires some effort but still possible to score well. "
-            "Use optimal value close to 0.75 for best results.",
-            unsafe_allow_html=False)
-        cr = st.slider("Select Criterion [0 - Easy Next Grade, 1 - Difficult Next Grade]",
-                       0., 1., 0.75, 0.01, key="criterion", format="%.2f")
-        priority = [cred * (c1i * cr + c2i * (1 - cr)) * (1 - nd) for cred, c1i, c2i, nd in
-                    zip(sub_creds, c1, c2, next_dist)]
-        zip_list = sorted(zip(sub_marks, sub_creds, sub_codes, sub_names, priority), key=lambda k: k[4], reverse=True)
-        sub_marks, sub_creds, sub_codes, sub_names, priority = zip(*zip_list)
-
-        priority_score = [f"{m:.1f}" for m in priority]
-        table = pd.DataFrame({
-            "Subject": sub_names,
-            "CIE": sub_marks,
-            "Priority": priority_score,
-        }, index=[i for i in range(1, len(sub_marks) + 1)])
-        st.write(table.style.hide(axis="index").set_table_styles(styles).to_html(), "<br/>",
-                 unsafe_allow_html=True)
-        with st.expander("How its Calculated"):
-            st.latex(r"Priority = \frac{Credits \times (C1 \times CR + C2 \times (1 - CR)) \times (1 - NextDist)}{100}")
-            st.markdown("where")
-            st.latex(rf"CR = Criterion = {cr}")
-            st.latex(r"C1 = Toughness = \frac{Difficulty}{MaxMarks}")
-            st.latex(r"C2 = Easiness = (1 - Difficulty)) \times MaxMarks")
-            st.latex(r"NextDist = NextGradePoint = \frac{MaxMarks - CIE}{MaxMarks}")
-            st.latex(r"Difficulty = \frac{(1 - \frac{AvgMarks}{MaxMarks}) \times 0.25 + (1 - \frac{CIEMarks}{MaxMarks}) \times 0.75}{MaxMarks}")
-
-    with tab4:
         st.subheader("How much is average CIE marks for 50?")
         avg = st.slider("Average CIE marks", 0, 50, value=35, step=1)
         to_score = (90 - avg) * 2
