@@ -4,6 +4,7 @@ import os
 import re
 import sys
 from typing import Union
+import logging
 
 from .scraper import Scraper, AsyncCache, gen_usn, validate_usn, validate_dob, CACHE_NAME
 
@@ -62,8 +63,14 @@ class SisScraper(DobCracker, Scraper):
             soup, = await self.get_soups(self.URL, method="POST", payload=[self.gen_payload(usn, dob)])
             stats = {}
             if self.body_validator(soup):
+                logging.debug(soup)
+                logging.info(soup)
+                logging.warning(soup)
                 print(soup)
                 course, sem, sec = soup.find_all("p")[6].text.split(",")
+                # check if the course , sem, sec are there in soup 
+                if not course or not sem or not sec:
+                    raise ValueError(soup)
                 creds = await self.get_credits()
                 sgpas = await self.get_sgpas()
                 marks = await self.get_marks()
