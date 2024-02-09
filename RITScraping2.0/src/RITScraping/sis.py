@@ -62,6 +62,7 @@ class SisScraper(DobCracker, Scraper):
             soup, = await self.get_soups(self.URL, method="POST", payload=[self.gen_payload(usn, dob)])
             stats = {}
             if self.body_validator(soup):
+                print(soup)
                 course, sem, sec = soup.find_all("p")[6].text.split(",")
                 creds = await self.get_credits()
                 sgpas = await self.get_sgpas()
