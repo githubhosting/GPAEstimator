@@ -76,13 +76,19 @@ hand_wave_gif = "<img width='30' vertical-align:sub " \
 intro_message = """
 ## Farewell to Calculla: A Tool That Made Grading a Breeze 😢💔🕯️
 
-It is with heavy hearts and teary eyes that we bid adieu to **Calculla** - our beloved calculator of champions, our estimator of excellence. Once a towering beacon of hope and clarity amidst the daunting academic fog, Calculla now takes its final bow. For years, it stood resilient, a source of solace and strength for students braving the storm of exams. Its mighty powers, which once demystified grades and infused our academic voyage with moments of joy, have now ebbed away into the silence of yesteryears. 🌧️💼📚
+It is with a heavy heart that we announce the discontinuation of Calculla, a tool that has been instrumental in simplifying grading processes. Due to new restrictions implemented by the college, Calculla will no longer be operational. In response to these changes, we are in the process of seeking alternatives.
+
+The primary reason for Calculla's shutdown is the college's decision to enhance the security of its portal, preventing data scraping and brute force attacks. This move, prompted by the vulnerabilities Calculla exposed, signifies a positive shift towards securing student data. We take pride in having catalyzed this change and are pleased to see the college taking student portal security seriously.
+
+Calculla was more than just a tool; it was a steadfast ally during the most stressful academic periods. It provided clear, concise estimations of GPA requirements and the necessary scores for achieving desired grades in various subjects, offering both support and solace to many.
+
+Today, we bid farewell to Calculla, our cherished ally in academia. Its departure marks the end of an era, but its legacy will endure. Calculla was a beacon of hope and clarity in the complex landscape of academic grading, a source of relief and joy amidst the challenges of student life.
 
 ## A Legacy Beyond Numbers
-Calculla was more than just a tool; it was a companion in our most stressful times, a beacon that not only illuminated our paths with clarity but also brought laughter to lighten our loads. Its departure leaves a void that echoes with the fond memories of the comfort and guidance it provided. 🕊️🌟✨
 
-**As we say our goodbyes, we hold close the legacy of Calculla. Its spirit, encapsulated in every calculation and every smile it brought forth, will forever remain a cherished part of our academic journeys. Farewell, Calculla, you will be deeply missed.** 😔👋🌹
+Calculla's impact extends far beyond its functional capabilities. It was a companion that brought clarity during tumultuous times and a source of light-hearted moments amidst academic pressures. Its absence will be profoundly felt, leaving behind memories of the support and guidance it provided.
 
+**As we part ways with Calculla, we hold onto the memories and the legacy it leaves behind. Each calculation it performed and every moment of relief it brought us will be treasured. Farewell, Calculla. Your presence will be sorely missed.** 😔👋🌹
 """
 home_message = """
 # Though your circuits now rest silent, your memory lives on:
