@@ -4,4 +4,4 @@ aiohttp==3.8.4
 beautifulsoup4==4.12.2
 requests==2.29.0
 extra-streamlit-components==0.1.56
-numpy==2.0.0
+numpy==1.26.4
